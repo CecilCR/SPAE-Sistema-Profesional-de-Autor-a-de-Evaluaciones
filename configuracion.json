@@ -1,0 +1,45 @@
+{
+  "sistema": {
+    "nombre": "SPAE",
+    "descripcion": "Sistema Profesional de Autoría de Evaluaciones",
+    "version": "0.1.0",
+    "estado": "Fundación",
+    "idioma": "es-PE"
+  },
+  "principios_pedagogicos": {
+    "docente_centro": true,
+    "autenticidad_profesional": true,
+    "evaluacion_por_competencias": true,
+    "terminologia_latam": true,
+    "explicar_sugerencias": true,
+    "evitar_sobrecarga_cognitiva": true
+  },
+  "interfaz": {
+    "tema": "claro",
+    "mostrar_ayuda_contextual": true,
+    "modo": "simple",
+    "idioma": "es"
+  },
+  "curso_predeterminado": {
+    "nivel_bloom": "Aplicar",
+    "duracion_examen_min": 90,
+    "contexto": "Organizaciones LATAM"
+  },
+  "banco_preguntas": {
+    "autoguardado": true,
+    "versionado": true,
+    "retroalimentacion_obligatoria": true
+  },
+  "exportacion": {
+    "formatos_habilitados": [
+      "html",
+      "json",
+      "docx",
+      "pdf"
+    ]
+  },
+  "roadmap": {
+    "release_actual": "R0.1",
+    "siguiente": "R0.2 Dashboard"
+  }
+}
