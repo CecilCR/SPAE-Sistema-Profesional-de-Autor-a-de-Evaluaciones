@@ -71,3 +71,5 @@ SPAE/
 -   R0.7 Importación Word
 -   R0.8 Constructor de exámenes
 -   R1.0 Primera versión estable
+
+   ✍️ Créditos Elaborado por CCR Curso: Gestión de las Relaciones en las Organizaciones 
