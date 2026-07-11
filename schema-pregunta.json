@@ -1,0 +1,146 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "SPAE - Esquema de Pregunta",
+  "description": "Estructura estándar para una pregunta del banco del SPAE.",
+  "type": "object",
+  "required": [
+    "id",
+    "tipo",
+    "enunciado",
+    "alternativas",
+    "respuestaCorrecta",
+    "perfilPedagogico",
+    "auditoria",
+    "metadata"
+  ],
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "cursoId": {
+      "type": "string"
+    },
+    "unidad": {
+      "type": "string"
+    },
+    "tema": {
+      "type": "string"
+    },
+    "tipo": {
+      "type": "string",
+      "enum": [
+        "opcion_multiple",
+        "verdadero_falso",
+        "caso_aplicacion",
+        "respuesta_abierta"
+      ]
+    },
+    "enunciado": {
+      "type": "string"
+    },
+    "contextoOrganizacional": {
+      "type": "string"
+    },
+    "rolProfesional": {
+      "type": "string"
+    },
+    "alternativas": {
+      "type": "array",
+      "minItems": 2,
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "texto"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "texto": {
+            "type": "string"
+          },
+          "justificacion": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "respuestaCorrecta": {
+      "type": "string"
+    },
+    "retroalimentacion": {
+      "type": "string"
+    },
+    "perfilPedagogico": {
+      "type": "object",
+      "properties": {
+        "competencia": {
+          "type": "string"
+        },
+        "resultadoAprendizaje": {
+          "type": "string"
+        },
+        "nivelBloom": {
+          "type": "string"
+        },
+        "autenticidadProfesional": {
+          "type": "boolean"
+        },
+        "terminologiaLATAM": {
+          "type": "boolean"
+        },
+        "evitaSobrecargaCognitiva": {
+          "type": "boolean"
+        }
+      }
+    },
+    "auditoria": {
+      "type": "object",
+      "properties": {
+        "claridad": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "coherencia": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "plausibilidadDistractores": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "contextoRealista": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "estado": {
+          "type": "string"
+        }
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "properties": {
+        "autor": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        },
+        "fechaCreacion": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "ultimaActualizacion": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    }
+  }
+}
