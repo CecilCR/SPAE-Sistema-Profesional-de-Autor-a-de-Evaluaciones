@@ -1,0 +1,113 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "SPAE - Esquema de Curso",
+  "type": "object",
+  "required": [
+    "id",
+    "nombre",
+    "disciplina",
+    "perfilPedagogico",
+    "configuracion",
+    "metadata"
+  ],
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "nombre": {
+      "type": "string"
+    },
+    "codigo": {
+      "type": "string"
+    },
+    "disciplina": {
+      "type": "string"
+    },
+    "descripcion": {
+      "type": "string"
+    },
+    "programa": {
+      "type": "string"
+    },
+    "nivel": {
+      "type": "string"
+    },
+    "perfilPedagogico": {
+      "type": "object",
+      "properties": {
+        "competencias": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "resultadosAprendizaje": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "nivelBloom": {
+          "type": "string"
+        },
+        "contextoPredominante": {
+          "type": "string"
+        },
+        "terminologiaLATAM": {
+          "type": "boolean"
+        }
+      }
+    },
+    "bibliografia": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "configuracion": {
+      "type": "object",
+      "properties": {
+        "duracionExamenMin": {
+          "type": "integer"
+        },
+        "autenticidadProfesional": {
+          "type": "boolean"
+        },
+        "evitarSobrecargaCognitiva": {
+          "type": "boolean"
+        },
+        "retroalimentacionActiva": {
+          "type": "boolean"
+        }
+      }
+    },
+    "preguntas": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "examenes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "properties": {
+        "fechaCreacion": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "ultimaActualizacion": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "version": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}
