@@ -1,0 +1,151 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "SPAE - Esquema de Examen",
+  "description": "Modelo de datos para representar un examen dentro del SPAE.",
+  "type": "object",
+  "required": [
+    "id",
+    "titulo",
+    "cursoId",
+    "preguntas",
+    "configuracion",
+    "auditoria",
+    "metadata"
+  ],
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "titulo": {
+      "type": "string"
+    },
+    "cursoId": {
+      "type": "string"
+    },
+    "descripcion": {
+      "type": "string"
+    },
+    "instrucciones": {
+      "type": "string"
+    },
+    "preguntas": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "preguntaId",
+          "orden",
+          "puntaje"
+        ],
+        "properties": {
+          "preguntaId": {
+            "type": "string"
+          },
+          "orden": {
+            "type": "integer"
+          },
+          "puntaje": {
+            "type": "number"
+          },
+          "obligatoria": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "configuracion": {
+      "type": "object",
+      "properties": {
+        "duracionMin": {
+          "type": "integer"
+        },
+        "puntajeTotal": {
+          "type": "number"
+        },
+        "aleatorizarPreguntas": {
+          "type": "boolean"
+        },
+        "aleatorizarAlternativas": {
+          "type": "boolean"
+        },
+        "mostrarRetroalimentacion": {
+          "type": "boolean"
+        },
+        "intentosPermitidos": {
+          "type": "integer"
+        }
+      }
+    },
+    "distribucionPedagogica": {
+      "type": "object",
+      "properties": {
+        "competencias": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "resultadosAprendizaje": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "nivelesBloom": {
+          "type": "object"
+        },
+        "autenticidadProfesional": {
+          "type": "boolean"
+        },
+        "terminologiaLATAM": {
+          "type": "boolean"
+        },
+        "evitarSobrecargaCognitiva": {
+          "type": "boolean"
+        }
+      }
+    },
+    "auditoria": {
+      "type": "object",
+      "properties": {
+        "coberturaCompetencias": {
+          "type": "number"
+        },
+        "equilibrioBloom": {
+          "type": "number"
+        },
+        "coherenciaInterna": {
+          "type": "number"
+        },
+        "estado": {
+          "type": "string"
+        },
+        "observaciones": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "properties": {
+        "autor": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        },
+        "fechaCreacion": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "ultimaActualizacion": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    }
+  }
+}
