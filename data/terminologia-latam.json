@@ -1,0 +1,175 @@
+{
+  "version": "1.0.0",
+  "nombre": "Terminología de Administración y Gestión para Latinoamérica",
+  "descripcion": "Base de conocimiento utilizada por el SPAE para verificar el uso de conceptos, definiciones y términos técnicos aceptados en el ámbito de la Administración y Gestión en Latinoamérica.",
+
+  "politicaGeneral": {
+    "priorizarTerminologiaLATAM": true,
+    "permitirAnglicismosConsolidados": true,
+    "advertirTraduccionesLiterales": true,
+    "contextualizarSegunDisciplina": true
+  },
+
+  "categorias": [
+
+    {
+      "nombre": "Gestión Organizacional",
+
+      "terminos": [
+
+        {
+          "preferido": "retroalimentación",
+
+          "alternativas": [
+            "feedback"
+          ],
+
+          "aceptado": true,
+
+          "observacion": "En documentos académicos se recomienda utilizar 'retroalimentación'."
+        },
+
+        {
+          "preferido": "evaluación del desempeño",
+
+          "alternativas": [
+            "performance appraisal",
+            "performance evaluation"
+          ],
+
+          "aceptado": true,
+
+          "observacion": "Utilizar la denominación empleada en Gestión del Talento."
+        },
+
+        {
+          "preferido": "compromiso organizacional",
+
+          "alternativas": [
+            "engagement",
+            "employee engagement"
+          ],
+
+          "aceptado": true,
+
+          "observacion": "Cuando se utilice 'engagement', definir el concepto en el contexto del curso."
+        },
+
+        {
+          "preferido": "liderazgo",
+
+          "alternativas": [],
+
+          "aceptado": true
+        },
+
+        {
+          "preferido": "clima organizacional",
+
+          "alternativas": [],
+
+          "aceptado": true
+        },
+
+        {
+          "preferido": "cultura organizacional",
+
+          "alternativas": [],
+
+          "aceptado": true
+        },
+
+        {
+          "preferido": "gestión del cambio",
+
+          "alternativas": [
+            "change management"
+          ],
+
+          "aceptado": true
+        },
+
+        {
+          "preferido": "gestión del talento",
+
+          "alternativas": [
+            "talent management"
+          ],
+
+          "aceptado": true
+        }
+
+      ]
+    },
+
+    {
+      "nombre": "Términos que requieren revisión",
+
+      "terminos": [
+
+        {
+          "termino": "coach",
+
+          "accion": "Advertir",
+
+          "motivo": "Precisar si se refiere al rol profesional o al proceso de coaching."
+        },
+
+        {
+          "termino": "mindset",
+
+          "accion": "Sugerir revisión",
+
+          "motivo": "Evaluar si corresponde utilizar 'mentalidad' según el contexto."
+        },
+
+        {
+          "termino": "empowerment",
+
+          "accion": "Aceptar",
+
+          "motivo": "Concepto ampliamente difundido en Administración."
+        },
+
+        {
+          "termino": "accountability",
+
+          "accion": "Advertir",
+
+          "motivo": "Especificar si se refiere a rendición de cuentas, responsabilidad o responsabilización."
+        }
+
+      ]
+    }
+
+  ],
+
+  "criteriosPedagogicos": {
+
+    "usarTerminologiaConsistente": true,
+
+    "evitarSinónimosInnecesarios": true,
+
+    "preferirConceptosAceptadosEnAdministracion": true,
+
+    "evitarJergasLocales": true,
+
+    "definirConceptosEspecializadosCuandoSeaNecesario": true
+
+  },
+
+  "integracionSPAE": {
+
+    "auditorPedagogico": true,
+
+    "constructorPreguntas": true,
+
+    "importadorWord": true,
+
+    "bancoPreguntas": true,
+
+    "analizadorTerminologico": true
+
+  }
+
+}
