@@ -1,0 +1,29 @@
+/* SPAE - base.css | Release R0.1 */
+:root{
+--color-primario:#1565C0;
+--color-primario-hover:#0D47A1;
+--color-secundario:#2E7D32;
+--color-fondo:#F5F7FA;
+--color-superficie:#FFF;
+--color-borde:#D7DEE8;
+--color-texto:#263238;
+--color-texto-sec:#546E7A;
+--fuente:'Segoe UI',Arial,sans-serif;
+--radio:12px;
+--sombra:0 8px 20px rgba(0,0,0,.08);
+--esp-1:.5rem;--esp-2:1rem;--esp-3:1.5rem;--esp-4:2rem;
+--max-width:1200px;}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:var(--fuente);background:var(--color-fondo);color:var(--color-texto);line-height:1.6}
+h1,h2,h3,h4,h5,h6{margin:0 0 var(--esp-2);font-weight:700}
+p{margin:0 0 var(--esp-2);color:var(--color-texto-sec)}
+a{color:var(--color-primario);text-decoration:none}
+a:hover{text-decoration:underline}
+ul{padding-left:1.25rem}
+img{max-width:100%;display:block}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer;border:none}
+hr{border:none;border-top:1px solid var(--color-borde);margin:var(--esp-4) 0}
+.oculto{display:none!important}
+.contenedor{width:min(95%,var(--max-width));margin:auto}
