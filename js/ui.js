@@ -1076,4 +1076,295 @@ on("keydown", (event) => {
     }
 
 });
-  
+/*==========================================================
+ LOADER
+==========================================================*/
+
+function ensureLoader() {
+
+    if (dom.loader) {
+        return dom.loader;
+    }
+
+    let loader = $("#spae-loader");
+
+    if (!loader) {
+
+        loader = create("div", {
+            id: "spae-loader",
+            className: "spae-loader hidden"
+        });
+
+        loader.innerHTML = `
+            <div class="spae-loader-backdrop"></div>
+            <div class="spae-loader-content">
+                <div class="spae-spinner"></div>
+                <div class="spae-loader-text">Procesando...</div>
+            </div>
+        `;
+
+        document.body.appendChild(loader);
+
+    }
+
+    dom.loader = loader;
+
+    return loader;
+
+}
+
+/*==========================================================
+ SHOW LOADER
+==========================================================*/
+
+function showLoader(message = "Procesando...") {
+
+    const loader = ensureLoader();
+
+    const text = loader.querySelector(".spae-loader-text");
+
+    if (text) {
+
+        text.textContent = message;
+
+    }
+
+    removeClass(loader, "hidden");
+
+    addClass(loader, "visible");
+
+    state.loading = true;
+
+    emit("loading:start");
+
+}
+
+/*==========================================================
+ HIDE LOADER
+==========================================================*/
+
+function hideLoader() {
+
+    if (!dom.loader) {
+
+        return;
+
+    }
+
+    removeClass(dom.loader, "visible");
+
+    addClass(dom.loader, "hidden");
+
+    state.loading = false;
+
+    emit("loading:end");
+
+}
+
+/*==========================================================
+ BUSY STATE
+==========================================================*/
+
+function setBusy(message = "Procesando...") {
+
+    showLoader(message);
+
+}
+
+function setIdle() {
+
+    hideLoader();
+
+}
+
+/*==========================================================
+ OVERLAY
+==========================================================*/
+
+function createOverlay(id = "spae-overlay") {
+
+    let overlay = document.getElementById(id);
+
+    if (overlay) {
+
+        return overlay;
+
+    }
+
+    overlay = create("div", {
+
+        id,
+
+        className: "spae-overlay"
+
+    });
+
+    document.body.appendChild(overlay);
+
+    return overlay;
+
+}
+
+function removeOverlay(id = "spae-overlay") {
+
+    const overlay = document.getElementById(id);
+
+    if (overlay) {
+
+        remove(overlay);
+
+    }
+
+}
+
+/*==========================================================
+ EMPTY STATE
+==========================================================*/
+
+function emptyState({
+
+    icon = "📄",
+
+    title = "Sin información",
+
+    description = "",
+
+    action = null
+
+} = {}) {
+
+    const container = create("div", {
+
+        className: "spae-empty-state"
+
+    });
+
+    container.innerHTML = `
+
+        <div class="spae-empty-icon">${icon}</div>
+
+        <h3>${title}</h3>
+
+        <p>${description}</p>
+
+    `;
+
+    if (action) {
+
+        const button = create("button", {
+
+            className: "btn btn-primary",
+
+            text: action.label || "Aceptar"
+
+        });
+
+        button.addEventListener("click", action.onClick);
+
+        container.appendChild(button);
+
+    }
+
+    return container;
+
+}
+
+/*==========================================================
+ API PÚBLICA
+==========================================================*/
+
+return {
+
+    init,
+
+    render,
+
+    clear,
+
+    append,
+
+    remove,
+
+    show,
+
+    hide,
+
+    addClass,
+
+    removeClass,
+
+    toggleClass,
+
+    hasClass,
+
+    attr,
+
+    data,
+
+    on,
+
+    emit,
+
+    setView,
+
+    getView,
+
+    toast,
+
+    success,
+
+    warning,
+
+    error,
+
+    info,
+
+    alertDialog,
+
+    confirmDialog,
+
+    enqueueNotification,
+
+    clearNotifications,
+
+    notifySuccess,
+
+    notifyWarning,
+
+    notifyError,
+
+    notifyInfo,
+
+    showLoader,
+
+    hideLoader,
+
+    setBusy,
+
+    setIdle,
+
+    createOverlay,
+
+    removeOverlay,
+
+    emptyState,
+
+    create,
+
+    $,
+
+    $$
+
+};
+
+})();
+
+/*==========================================================
+ INICIALIZACIÓN
+==========================================================*/
+
+document.addEventListener("DOMContentLoaded", () => {
+
+    SPAEUI.init();
+
+});  
