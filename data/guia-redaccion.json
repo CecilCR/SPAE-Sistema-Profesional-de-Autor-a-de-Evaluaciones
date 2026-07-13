@@ -1,0 +1,193 @@
+{
+  "version": "1.0.0",
+  "nombre": "Guía de Redacción de Preguntas SPAE",
+  "descripcion": "Reglas pedagógicas y técnicas para la elaboración de preguntas de evaluación de alta calidad en educación superior.",
+
+  "principiosGenerales": {
+
+    "claridad": {
+      "activo": true,
+      "descripcion": "La redacción debe ser precisa, directa y comprensible para el estudiante.",
+      "criterios": [
+        "Evitar ambigüedad.",
+        "Una sola interpretación posible.",
+        "Eliminar información irrelevante."
+      ]
+    },
+
+    "precisionConceptual": {
+      "activo": true,
+      "descripcion": "Las definiciones y conceptos deben corresponder a los aceptados en Administración y Gestión en Latinoamérica.",
+      "criterios": [
+        "Utilizar terminología disciplinar.",
+        "Evitar conceptos propios de otras disciplinas cuando no sean necesarios.",
+        "Mantener coherencia conceptual."
+      ]
+    },
+
+    "autenticidadProfesional": {
+      "activo": true,
+      "descripcion": "La pregunta debe situarse en un contexto organizacional realista.",
+      "criterios": [
+        "Existe un rol profesional.",
+        "Existe una decisión.",
+        "Existe una consecuencia organizacional.",
+        "Existe un contexto de gestión."
+      ]
+    },
+
+    "sobrecargaCognitiva": {
+      "activo": true,
+      "descripcion": "Reducir elementos que aumentan la carga cognitiva sin aportar al objetivo de evaluación.",
+      "criterios": [
+        "Evitar párrafos innecesarios.",
+        "No introducir conceptos irrelevantes.",
+        "Lenguaje sencillo.",
+        "Una idea principal por pregunta."
+      ]
+    }
+
+  },
+
+  "enunciado": {
+
+    "longitudMaximaPalabras": 120,
+
+    "dobleNegacion": false,
+
+    "preguntasCapciosas": false,
+
+    "usoMayusculas": "solo cuando corresponda",
+
+    "usoNegritas": "solo para destacar información relevante",
+
+    "usoTerminologiaLATAM": true
+  },
+
+  "alternativas": {
+
+    "cantidadRecomendada": 4,
+
+    "unaRespuestaCorrecta": true,
+
+    "distractoresPlausibles": true,
+
+    "alternativasMutuamenteExcluyentes": true,
+
+    "alternativasLongitudSimilar": true,
+
+    "evitarTodasLasAnteriores": true,
+
+    "evitarNingunaDeLasAnteriores": true,
+
+    "evitarPistasGramaticales": true,
+
+    "evitarRespuestaMasLarga": true
+  },
+
+  "casos": {
+
+    "rolProfesionalObligatorio": true,
+
+    "decisionProfesional": true,
+
+    "contextoVerosimil": true,
+
+    "consecuenciaOrganizacional": true,
+
+    "usoTerminologiaGestion": true
+  },
+
+  "preguntasAbiertas": {
+
+    "respuestaEsperadaMinPalabras": 80,
+
+    "respuestaEsperadaMaxPalabras": 120,
+
+    "requiereJustificacion": true,
+
+    "requiereArgumentacion": true,
+
+    "alineacionCompetencias": true
+  },
+
+  "erroresFrecuentes": [
+
+    {
+      "codigo": "ER001",
+      "descripcion": "La respuesta correcta es demasiado evidente."
+    },
+
+    {
+      "codigo": "ER002",
+      "descripcion": "Distractores poco plausibles."
+    },
+
+    {
+      "codigo": "ER003",
+      "descripcion": "Enunciado ambiguo."
+    },
+
+    {
+      "codigo": "ER004",
+      "descripcion": "Caso organizacional poco realista."
+    },
+
+    {
+      "codigo": "ER005",
+      "descripcion": "Terminología inconsistente."
+    },
+
+    {
+      "codigo": "ER006",
+      "descripcion": "Nivel de Bloom no coherente con el verbo utilizado."
+    },
+
+    {
+      "codigo": "ER007",
+      "descripcion": "Carga cognitiva innecesaria."
+    }
+
+  ],
+
+  "listaVerificacionSPAE": [
+
+    "Existe un contexto organizacional.",
+
+    "Existe un rol profesional.",
+
+    "Existe una decisión.",
+
+    "Existe una consecuencia.",
+
+    "La pregunta evalúa gestión y no otra disciplina.",
+
+    "Se utiliza terminología LATAM.",
+
+    "Los distractores son plausibles.",
+
+    "Existe una única respuesta correcta.",
+
+    "La longitud es adecuada.",
+
+    "No existe sobrecarga cognitiva.",
+
+    "La pregunta está alineada con la competencia.",
+
+    "El verbo corresponde al nivel de Bloom."
+
+  ],
+
+  "integracionSPAE": {
+
+    "auditorPedagogico": true,
+
+    "constructorPreguntas": true,
+
+    "importadorWord": true,
+
+    "generadorRetroalimentacion": true
+
+  }
+
+}
