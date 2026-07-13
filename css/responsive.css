@@ -1,0 +1,396 @@
+/* ==========================================================
+   SPAE
+   Sistema Profesional de Autoría de Evaluaciones
+   responsive.css
+   Release R0.1
+==========================================================*/
+
+/* ==========================================================
+   PANTALLAS GRANDES
+==========================================================*/
+
+@media (min-width:1600px){
+
+    :root{
+        --max-width:1450px;
+    }
+
+}
+
+/* ==========================================================
+   LAPTOPS
+==========================================================*/
+
+@media (max-width:1200px){
+
+    main{
+
+        width:96%;
+
+    }
+
+    header{
+
+        padding:20px 25px;
+
+    }
+
+    .dashboard{
+
+        grid-template-columns:repeat(2,1fr);
+
+    }
+
+}
+
+/* ==========================================================
+   TABLETS HORIZONTALES
+==========================================================*/
+
+@media (max-width:992px){
+
+    header{
+
+        flex-direction:column;
+
+        align-items:flex-start;
+
+        gap:12px;
+
+    }
+
+    .dashboard{
+
+        grid-template-columns:1fr;
+
+    }
+
+    .flex{
+
+        flex-direction:column;
+
+    }
+
+    .acciones{
+
+        justify-content:center;
+
+    }
+
+    .stats{
+
+        grid-template-columns:repeat(2,1fr);
+
+    }
+
+}
+
+/* ==========================================================
+   TABLETS VERTICALES
+==========================================================*/
+
+@media (max-width:768px){
+
+    body{
+
+        font-size:15px;
+
+    }
+
+    header{
+
+        padding:18px;
+
+    }
+
+    header h1{
+
+        font-size:1.7rem;
+
+    }
+
+    header p{
+
+        font-size:.95rem;
+
+    }
+
+    main{
+
+        width:95%;
+
+        margin:20px auto;
+
+    }
+
+    .panel{
+
+        padding:20px;
+
+    }
+
+    .bienvenida{
+
+        padding:22px;
+
+    }
+
+    .card{
+
+        padding:20px;
+
+    }
+
+    .acciones{
+
+        flex-direction:column;
+
+        align-items:stretch;
+
+    }
+
+    .acciones button{
+
+        width:100%;
+
+    }
+
+    .stats{
+
+        grid-template-columns:1fr;
+
+    }
+
+    .table{
+
+        display:block;
+
+        overflow-x:auto;
+
+        white-space:nowrap;
+
+    }
+
+    .modal-content{
+
+        width:96%;
+
+        padding:22px;
+
+    }
+
+}
+
+/* ==========================================================
+   TELÉFONOS
+==========================================================*/
+
+@media (max-width:576px){
+
+    body{
+
+        font-size:14px;
+
+    }
+
+    header{
+
+        text-align:center;
+
+        align-items:center;
+
+    }
+
+    header h1{
+
+        font-size:1.5rem;
+
+    }
+
+    header p{
+
+        font-size:.9rem;
+
+    }
+
+    .bienvenida h2{
+
+        font-size:1.3rem;
+
+    }
+
+    .card-title{
+
+        font-size:1rem;
+
+    }
+
+    .btn{
+
+        width:100%;
+
+        justify-content:center;
+
+    }
+
+    .tabs{
+
+        flex-direction:column;
+
+        gap:0;
+
+    }
+
+    .tab{
+
+        border-bottom:1px solid var(--color-borde);
+
+    }
+
+    .tab.active{
+
+        border-left:5px solid var(--color-primario);
+
+        border-bottom:1px solid var(--color-borde);
+
+    }
+
+    .input-group input,
+
+    .input-group textarea,
+
+    .input-group select{
+
+        font-size:16px;
+
+    }
+
+}
+
+/* ==========================================================
+   TELÉFONOS PEQUEÑOS
+==========================================================*/
+
+@media (max-width:400px){
+
+    header{
+
+        padding:15px;
+
+    }
+
+    main{
+
+        width:97%;
+
+    }
+
+    .panel{
+
+        padding:15px;
+
+    }
+
+    .bienvenida{
+
+        padding:18px;
+
+    }
+
+    .card{
+
+        padding:16px;
+
+    }
+
+    .modal-content{
+
+        padding:18px;
+
+    }
+
+}
+
+/* ==========================================================
+   MODO IMPRESIÓN
+==========================================================*/
+
+@media print{
+
+    body{
+
+        background:white;
+
+        color:black;
+
+    }
+
+    header,
+
+    footer,
+
+    .acciones,
+
+    .btn,
+
+    .modal{
+
+        display:none !important;
+
+    }
+
+    main{
+
+        width:100%;
+
+        margin:0;
+
+    }
+
+    .panel,
+
+    .card{
+
+        border:none;
+
+        box-shadow:none;
+
+        page-break-inside:avoid;
+
+    }
+
+}
+
+/* ==========================================================
+   PREFERENCIAS DE MOVIMIENTO REDUCIDO
+==========================================================*/
+
+@media (prefers-reduced-motion: reduce){
+
+    *{
+
+        animation:none !important;
+
+        transition:none !important;
+
+        scroll-behavior:auto !important;
+
+    }
+
+}
+
+/* ==========================================================
+   MODO OSCURO (Preparado para futuras versiones)
+==========================================================*/
+
+@media (prefers-color-scheme: dark){
+
+    /*
+
+    En Release 1.0 se habilitará el tema oscuro.
+    Se deja preparada la estructura para evitar
+    refactorizaciones posteriores.
+
+    */
+
+}
