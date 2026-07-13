@@ -1,0 +1,260 @@
+{
+  "version": "1.0.0",
+  "nombre": "Taxonomía de Bloom Revisada",
+  "descripcion": "Modelo cognitivo utilizado por el SPAE para apoyar el diseño y auditoría de evaluaciones universitarias.",
+
+  "niveles": [
+
+    {
+      "codigo": 1,
+      "nombre": "Recordar",
+      "descripcion": "Recuperar información previamente aprendida.",
+
+      "verbos": [
+        "identificar",
+        "reconocer",
+        "recordar",
+        "enumerar",
+        "definir",
+        "nombrar",
+        "listar",
+        "describir"
+      ],
+
+      "accionesEsperadas": [
+        "Reconocer conceptos",
+        "Recordar definiciones",
+        "Identificar elementos"
+      ],
+
+      "evidencias": [
+        "Reconocimiento",
+        "Memorización",
+        "Identificación"
+      ],
+
+      "erroresFrecuentes": [
+        "Confundir recordar con comprender.",
+        "Evaluar únicamente memoria."
+      ],
+
+      "recomendacionSPAE": "Debe representar una proporción reducida del examen."
+    },
+
+    {
+      "codigo": 2,
+      "nombre": "Comprender",
+
+      "descripcion": "Interpretar el significado de conceptos o información.",
+
+      "verbos": [
+        "explicar",
+        "interpretar",
+        "clasificar",
+        "comparar",
+        "resumir",
+        "parafrasear",
+        "distinguir"
+      ],
+
+      "accionesEsperadas": [
+        "Interpretar situaciones",
+        "Explicar relaciones",
+        "Comparar conceptos"
+      ],
+
+      "evidencias": [
+        "Comprensión conceptual",
+        "Interpretación"
+      ],
+
+      "erroresFrecuentes": [
+        "Preguntas demasiado literales.",
+        "Definiciones copiadas del material."
+      ],
+
+      "recomendacionSPAE": "Incorporar ejemplos organizacionales."
+    },
+
+    {
+      "codigo": 3,
+      "nombre": "Aplicar",
+
+      "descripcion": "Utilizar conocimientos para resolver situaciones reales.",
+
+      "verbos": [
+        "aplicar",
+        "utilizar",
+        "resolver",
+        "seleccionar",
+        "emplear",
+        "ejecutar"
+      ],
+
+      "accionesEsperadas": [
+        "Tomar decisiones",
+        "Resolver casos",
+        "Aplicar modelos"
+      ],
+
+      "evidencias": [
+        "Resolución de problemas",
+        "Aplicación práctica"
+      ],
+
+      "erroresFrecuentes": [
+        "Caso poco realista.",
+        "Aplicación mecánica."
+      ],
+
+      "recomendacionSPAE": "Priorizar situaciones organizacionales reales."
+    },
+
+    {
+      "codigo": 4,
+      "nombre": "Analizar",
+
+      "descripcion": "Examinar relaciones, causas y consecuencias.",
+
+      "verbos": [
+        "analizar",
+        "examinar",
+        "diferenciar",
+        "inferir",
+        "diagnosticar",
+        "relacionar"
+      ],
+
+      "accionesEsperadas": [
+        "Diagnosticar problemas",
+        "Analizar escenarios",
+        "Explicar causas"
+      ],
+
+      "evidencias": [
+        "Análisis crítico",
+        "Relaciones causales"
+      ],
+
+      "erroresFrecuentes": [
+        "Casos demasiado simples.",
+        "Una sola pista evidente."
+      ],
+
+      "recomendacionSPAE": "Nivel recomendado para programas universitarios de Administración."
+    },
+
+    {
+      "codigo": 5,
+      "nombre": "Evaluar",
+
+      "descripcion": "Emitir juicios fundamentados mediante criterios.",
+
+      "verbos": [
+        "evaluar",
+        "justificar",
+        "priorizar",
+        "argumentar",
+        "valorar",
+        "criticar"
+      ],
+
+      "accionesEsperadas": [
+        "Justificar decisiones",
+        "Seleccionar alternativas",
+        "Argumentar recomendaciones"
+      ],
+
+      "evidencias": [
+        "Juicio profesional",
+        "Argumentación"
+      ],
+
+      "erroresFrecuentes": [
+        "Opiniones sin criterios.",
+        "Ausencia de evidencia."
+      ],
+
+      "recomendacionSPAE": "Ideal para casos complejos de gestión."
+    },
+
+    {
+      "codigo": 6,
+      "nombre": "Crear",
+
+      "descripcion": "Generar propuestas originales integrando conocimientos.",
+
+      "verbos": [
+        "diseñar",
+        "proponer",
+        "formular",
+        "elaborar",
+        "construir",
+        "desarrollar"
+      ],
+
+      "accionesEsperadas": [
+        "Diseñar estrategias",
+        "Crear soluciones",
+        "Integrar modelos"
+      ],
+
+      "evidencias": [
+        "Innovación",
+        "Diseño",
+        "Síntesis"
+      ],
+
+      "erroresFrecuentes": [
+        "Consignas ambiguas.",
+        "Falta de criterios de evaluación."
+      ],
+
+      "recomendacionSPAE": "Debe acompañarse de una rúbrica."
+    }
+
+  ],
+
+  "recomendacionesGenerales": {
+
+    "distribucionSugerida": {
+
+      "Recordar": 10,
+      "Comprender": 15,
+      "Aplicar": 25,
+      "Analizar": 30,
+      "Evaluar": 15,
+      "Crear": 5
+
+    },
+
+    "observaciones": [
+
+      "Evitar exámenes centrados únicamente en memoria.",
+
+      "Favorecer niveles Aplicar y Analizar en cursos profesionales.",
+
+      "Las preguntas deben evaluar decisiones organizacionales.",
+
+      "La autenticidad profesional prevalece sobre la complejidad artificial.",
+
+      "Los verbos deben ser coherentes con la evidencia solicitada."
+
+    ]
+
+  },
+
+  "integracionSPAE": {
+
+    "auditorPedagogico": true,
+
+    "constructorExamenes": true,
+
+    "bancoPreguntas": true,
+
+    "estadisticas": true,
+
+    "sugerenciasAutomaticas": true
+
+  }
+}
