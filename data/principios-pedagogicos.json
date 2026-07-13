@@ -1,0 +1,183 @@
+{
+  "version": "1.0.0",
+  "nombre": "Principios Pedagógicos del SPAE",
+  "descripcion": "Conjunto de principios que orientan la construcción de evaluaciones válidas, auténticas y pedagógicamente efectivas para docentes de educación superior en Latinoamérica.",
+
+  "principios": [
+
+    {
+      "id": "PP01",
+      "nombre": "Centralidad del docente",
+      "prioridad": "crítica",
+      "activo": true,
+      "descripcion": "El sistema orienta, acompaña y realiza sugerencias, pero las decisiones académicas y pedagógicas corresponden siempre al docente.",
+      "criterios": [
+        "Nunca reemplazar el juicio profesional del docente.",
+        "Toda sugerencia debe poder aceptarse o rechazarse.",
+        "Las recomendaciones no modifican automáticamente una pregunta."
+      ]
+    },
+
+    {
+      "id": "PP02",
+      "nombre": "Alineación constructiva",
+      "prioridad": "crítica",
+      "activo": true,
+      "descripcion": "Toda pregunta debe estar alineada con competencias, resultados de aprendizaje y evidencias de desempeño.",
+      "criterios": [
+        "Cada pregunta debe indicar el resultado de aprendizaje asociado.",
+        "Toda competencia debe tener evidencia suficiente.",
+        "La evaluación debe medir lo que declara medir."
+      ]
+    },
+
+    {
+      "id": "PP03",
+      "nombre": "Autenticidad profesional",
+      "prioridad": "crítica",
+      "activo": true,
+      "descripcion": "Las preguntas deben situarse en contextos organizacionales reales y verosímiles para el rol profesional.",
+      "criterios": [
+        "Contexto organizacional reconocible.",
+        "Existencia de una decisión profesional.",
+        "Consecuencias organizacionales plausibles.",
+        "Uso de roles como gerente, coordinador, supervisor, líder o consultor."
+      ]
+    },
+
+    {
+      "id": "PP04",
+      "nombre": "Terminología de Administración y Gestión utilizada en Latinoamérica",
+      "prioridad": "alta",
+      "activo": true,
+      "descripcion": "El lenguaje utilizado debe corresponder al uso profesional predominante en organizaciones latinoamericanas.",
+      "criterios": [
+        "Preferir terminología ampliamente utilizada en LATAM.",
+        "Evitar traducciones literales innecesarias.",
+        "Utilizar conceptos aceptados en administración y comportamiento organizacional."
+      ]
+    },
+
+    {
+      "id": "PP05",
+      "nombre": "Validez disciplinar",
+      "prioridad": "alta",
+      "activo": true,
+      "descripcion": "Las preguntas deben evaluarse desde la perspectiva de la gestión organizacional y no desde disciplinas auxiliares.",
+      "criterios": [
+        "No convertir la evaluación en un examen de psicología.",
+        "No evaluar neurociencia como disciplina independiente.",
+        "El razonamiento debe ser organizacional."
+      ]
+    },
+
+    {
+      "id": "PP06",
+      "nombre": "Carga cognitiva adecuada",
+      "prioridad": "crítica",
+      "activo": true,
+      "descripcion": "Las preguntas deben minimizar la carga cognitiva irrelevante para favorecer el razonamiento del estudiante.",
+      "criterios": [
+        "Evitar información innecesaria.",
+        "Evitar enunciados excesivamente extensos.",
+        "Reducir ambigüedad.",
+        "Utilizar lenguaje claro."
+      ]
+    },
+
+    {
+      "id": "PP07",
+      "nombre": "Calidad de los distractores",
+      "prioridad": "alta",
+      "activo": true,
+      "descripcion": "Los distractores deben ser plausibles y representar errores conceptuales frecuentes.",
+      "criterios": [
+        "No incluir respuestas absurdas.",
+        "Longitud semejante entre alternativas.",
+        "Una única respuesta claramente correcta."
+      ]
+    },
+
+    {
+      "id": "PP08",
+      "nombre": "Diversidad cognitiva",
+      "prioridad": "alta",
+      "activo": true,
+      "descripcion": "El examen debe distribuir preguntas entre distintos niveles de complejidad cognitiva.",
+      "criterios": [
+        "Evitar predominio de memorización.",
+        "Favorecer aplicación y análisis.",
+        "Incluir decisiones organizacionales."
+      ]
+    },
+
+    {
+      "id": "PP09",
+      "nombre": "Retroalimentación formativa",
+      "prioridad": "media",
+      "activo": true,
+      "descripcion": "Cuando corresponda, el sistema apoyará la elaboración de retroalimentaciones útiles para el aprendizaje.",
+      "criterios": [
+        "Explicar por qué la respuesta correcta es correcta.",
+        "Explicar por qué los distractores son incorrectos.",
+        "Relacionar la respuesta con el material del curso."
+      ]
+    },
+
+    {
+      "id": "PP10",
+      "nombre": "Mejora continua",
+      "prioridad": "media",
+      "activo": true,
+      "descripcion": "Las recomendaciones del sistema evolucionan a partir del uso del docente, sin alterar su autonomía.",
+      "criterios": [
+        "Registrar patrones de uso.",
+        "Personalizar sugerencias.",
+        "Mantener transparencia en las recomendaciones."
+      ]
+    }
+
+  ],
+
+  "reglasGlobales": {
+
+    "autenticidadProfesionalObligatoria": true,
+
+    "terminologiaLATAMObligatoria": true,
+
+    "evitarSobrecargaCognitiva": true,
+
+    "alineacionCompetencias": true,
+
+    "alineacionResultadosAprendizaje": true,
+
+    "retroalimentacionFormativa": true,
+
+    "unaRespuestaCorrecta": true,
+
+    "distractoresPlausibles": true,
+
+    "lenguajeClaro": true,
+
+    "contextoOrganizacional": true
+
+  },
+
+  "filosofiaSPAE": {
+
+    "proposito": "Ayudar al docente universitario a diseñar evaluaciones válidas, auténticas y pedagógicamente efectivas.",
+
+    "noEs": [
+      "Un generador automático de preguntas.",
+      "Un sustituto del juicio profesional del docente.",
+      "Un corrector inflexible."
+    ],
+
+    "es": [
+      "Una herramienta profesional de apoyo.",
+      "Un asistente para el diseño de evaluaciones.",
+      "Un auditor pedagógico basado en evidencia."
+    ]
+
+  }
+}
