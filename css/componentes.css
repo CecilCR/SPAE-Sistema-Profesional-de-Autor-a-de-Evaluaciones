@@ -1,0 +1,699 @@
+/* ==========================================================
+   SPAE
+   Sistema Profesional de Autoría de Evaluaciones
+   componentes.css
+   Release R0.1
+==========================================================*/
+
+
+/*===========================================================
+=            BOTONES
+===========================================================*/
+
+.btn{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    gap:8px;
+
+    padding:12px 22px;
+
+    border:none;
+
+    border-radius:var(--radio);
+
+    cursor:pointer;
+
+    font-size:.95rem;
+
+    font-weight:600;
+
+    transition:.25s;
+
+    text-decoration:none;
+
+}
+
+.btn:hover{
+
+    transform:translateY(-2px);
+
+}
+
+.btn:active{
+
+    transform:scale(.98);
+
+}
+
+.btn-primary{
+
+    background:var(--color-primario);
+
+    color:white;
+
+}
+
+.btn-primary:hover{
+
+    background:var(--color-primario-hover);
+
+}
+
+.btn-secondary{
+
+    background:var(--color-secundario);
+
+    color:white;
+
+}
+
+.btn-secondary:hover{
+
+    filter:brightness(.92);
+
+}
+
+.btn-outline{
+
+    background:white;
+
+    color:var(--color-primario);
+
+    border:2px solid var(--color-primario);
+
+}
+
+.btn-outline:hover{
+
+    background:var(--color-primario);
+
+    color:white;
+
+}
+
+.btn-danger{
+
+    background:var(--color-error);
+
+    color:white;
+
+}
+
+.btn-danger:hover{
+
+    filter:brightness(.9);
+
+}
+
+
+
+/*===========================================================
+=            INPUTS
+===========================================================*/
+
+.input-group{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:8px;
+
+    margin-bottom:20px;
+
+}
+
+.input-group label{
+
+    font-weight:600;
+
+}
+
+.input-group input,
+
+.input-group textarea,
+
+.input-group select{
+
+    padding:12px;
+
+    border:1px solid var(--color-borde);
+
+    border-radius:10px;
+
+    background:white;
+
+    transition:.25s;
+
+}
+
+.input-group textarea{
+
+    resize:vertical;
+
+    min-height:110px;
+
+}
+
+.input-group input:focus,
+
+.input-group textarea:focus,
+
+.input-group select:focus{
+
+    outline:none;
+
+    border-color:var(--color-primario);
+
+    box-shadow:0 0 0 3px rgba(21,101,192,.15);
+
+}
+
+
+
+/*===========================================================
+=            TARJETAS
+===========================================================*/
+
+.card{
+
+    background:white;
+
+    border-radius:var(--radio);
+
+    padding:25px;
+
+    box-shadow:var(--sombra);
+
+    border:1px solid var(--color-borde);
+
+}
+
+.card-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:20px;
+
+}
+
+.card-title{
+
+    font-size:1.2rem;
+
+    font-weight:700;
+
+    color:var(--color-primario);
+
+}
+
+.card-body{
+
+    margin-top:10px;
+
+}
+
+.card-footer{
+
+    margin-top:20px;
+
+}
+
+
+
+/*===========================================================
+=            BADGES
+===========================================================*/
+
+.badge{
+
+    display:inline-block;
+
+    padding:5px 12px;
+
+    border-radius:30px;
+
+    font-size:.80rem;
+
+    font-weight:600;
+
+}
+
+.badge-primary{
+
+    background:#E3F2FD;
+
+    color:#1565C0;
+
+}
+
+.badge-success{
+
+    background:#E8F5E9;
+
+    color:#2E7D32;
+
+}
+
+.badge-warning{
+
+    background:#FFF3E0;
+
+    color:#EF6C00;
+
+}
+
+.badge-danger{
+
+    background:#FFEBEE;
+
+    color:#C62828;
+
+}
+
+
+
+/*===========================================================
+=            TABLAS
+===========================================================*/
+
+.table{
+
+    width:100%;
+
+    border-collapse:collapse;
+
+    margin-top:20px;
+
+}
+
+.table th{
+
+    background:var(--color-primario);
+
+    color:white;
+
+    padding:14px;
+
+    text-align:left;
+
+}
+
+.table td{
+
+    padding:14px;
+
+    border-bottom:1px solid var(--color-borde);
+
+}
+
+.table tbody tr:hover{
+
+    background:#F8FAFC;
+
+}
+
+
+
+/*===========================================================
+=            MODALES
+===========================================================*/
+
+.modal{
+
+    position:fixed;
+
+    inset:0;
+
+    background:rgba(0,0,0,.45);
+
+    display:none;
+
+    align-items:center;
+
+    justify-content:center;
+
+    z-index:999;
+
+}
+
+.modal.activo{
+
+    display:flex;
+
+}
+
+.modal-content{
+
+    background:white;
+
+    width:min(900px,95%);
+
+    border-radius:14px;
+
+    padding:30px;
+
+    box-shadow:var(--sombra);
+
+    animation:modalEntrada .3s;
+
+}
+
+@keyframes modalEntrada{
+
+    from{
+
+        opacity:0;
+
+        transform:translateY(20px);
+
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:translateY(0);
+
+    }
+
+}
+
+
+
+/*===========================================================
+=            TABS
+===========================================================*/
+
+.tabs{
+
+    display:flex;
+
+    gap:10px;
+
+    margin-bottom:20px;
+
+    border-bottom:1px solid var(--color-borde);
+
+}
+
+.tab{
+
+    padding:12px 18px;
+
+    cursor:pointer;
+
+    font-weight:600;
+
+    border-bottom:3px solid transparent;
+
+    transition:.25s;
+
+}
+
+.tab:hover{
+
+    color:var(--color-primario);
+
+}
+
+.tab.active{
+
+    color:var(--color-primario);
+
+    border-bottom-color:var(--color-primario);
+
+}
+
+
+
+/*===========================================================
+=            ACORDEÓN
+===========================================================*/
+
+.accordion{
+
+    border:1px solid var(--color-borde);
+
+    border-radius:10px;
+
+    overflow:hidden;
+
+}
+
+.accordion-item{
+
+    border-bottom:1px solid var(--color-borde);
+
+}
+
+.accordion-header{
+
+    padding:18px;
+
+    cursor:pointer;
+
+    background:#FAFAFA;
+
+    font-weight:600;
+
+}
+
+.accordion-body{
+
+    display:none;
+
+    padding:18px;
+
+    background:white;
+
+}
+
+.accordion-item.open .accordion-body{
+
+    display:block;
+
+}
+
+
+
+/*===========================================================
+=            PROGRESS
+===========================================================*/
+
+.progress{
+
+    width:100%;
+
+    height:12px;
+
+    background:#ECEFF1;
+
+    border-radius:20px;
+
+    overflow:hidden;
+
+}
+
+.progress-bar{
+
+    height:100%;
+
+    background:var(--color-primario);
+
+    width:0%;
+
+    transition:width .4s;
+
+}
+
+
+
+/*===========================================================
+=            TOOLTIP
+===========================================================*/
+
+.tooltip{
+
+    position:relative;
+
+    cursor:help;
+
+}
+
+.tooltip::after{
+
+    content:attr(data-tooltip);
+
+    position:absolute;
+
+    left:50%;
+
+    bottom:130%;
+
+    transform:translateX(-50%);
+
+    background:#263238;
+
+    color:white;
+
+    padding:8px 12px;
+
+    border-radius:8px;
+
+    font-size:.8rem;
+
+    white-space:nowrap;
+
+    opacity:0;
+
+    pointer-events:none;
+
+    transition:.25s;
+
+}
+
+.tooltip:hover::after{
+
+    opacity:1;
+
+}
+
+
+
+/*===========================================================
+=            ALERTAS
+===========================================================*/
+
+.alert{
+
+    padding:16px 20px;
+
+    border-radius:10px;
+
+    margin:15px 0;
+
+}
+
+.alert-info{
+
+    background:#E3F2FD;
+
+    color:#0D47A1;
+
+}
+
+.alert-success{
+
+    background:#E8F5E9;
+
+    color:#1B5E20;
+
+}
+
+.alert-warning{
+
+    background:#FFF8E1;
+
+    color:#F57F17;
+
+}
+
+.alert-error{
+
+    background:#FFEBEE;
+
+    color:#B71C1C;
+
+}
+
+
+
+/*===========================================================
+=            LOADER
+===========================================================*/
+
+.loader{
+
+    width:42px;
+
+    height:42px;
+
+    border:4px solid #E3F2FD;
+
+    border-top:4px solid var(--color-primario);
+
+    border-radius:50%;
+
+    animation:spin 1s linear infinite;
+
+    margin:auto;
+
+}
+
+@keyframes spin{
+
+    to{
+
+        transform:rotate(360deg);
+
+    }
+
+}
+
+
+
+/*===========================================================
+=            UTILIDADES
+===========================================================*/
+
+.text-center{
+
+    text-align:center;
+
+}
+
+.text-right{
+
+    text-align:right;
+
+}
+
+.w-100{
+
+    width:100%;
+
+}
+
+.hidden{
+
+    display:none!important;
+
+}
+
+.shadow{
+
+    box-shadow:var(--sombra);
+
+}
+
+.rounded{
+
+    border-radius:var(--radio);
+
+}
+
+.border{
+
+    border:1px solid var(--color-borde);
+
+}
