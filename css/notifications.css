@@ -1,172 +1,125 @@
-/*==========================================================
+/**********************************************************
  SPAE
  Sistema Profesional de Autoría de Evaluaciones
 
- css/notifications.css
- Release 1.0
-==========================================================*/
+ Archivo : css/notifications.css
+ Versión : 1.0
+***********************************************************/
 
-/*==========================================================
- CONTENEDOR
-==========================================================*/
+
+/*=========================================================
+CONTENEDOR DE NOTIFICACIONES
+=========================================================*/
 
 .spae-notifications{
 
     position:fixed;
 
-    top:20px;
+    top:25px;
+    right:25px;
 
-    right:20px;
+    width:380px;
+    max-width:95vw;
 
     display:flex;
 
     flex-direction:column;
 
-    gap:12px;
+    gap:15px;
 
-    width:360px;
-
-    max-width:90vw;
-
-    z-index:99999;
-
-    pointer-events:none;
+    z-index:15000;
 
 }
 
-.spae-notifications.top-left{
 
-    left:20px;
+/*=========================================================
+NOTIFICACIÓN BASE
+=========================================================*/
 
-    right:auto;
-
-}
-
-.spae-notifications.bottom-right{
-
-    top:auto;
-
-    bottom:20px;
-
-}
-
-.spae-notifications.bottom-left{
-
-    top:auto;
-
-    left:20px;
-
-    bottom:20px;
-
-    right:auto;
-
-}
-
-/*==========================================================
- TOAST
-==========================================================*/
-
-.spae-toast{
+.notification{
 
     display:flex;
 
-    align-items:center;
+    align-items:flex-start;
 
-    gap:14px;
+    gap:15px;
 
-    padding:16px;
+    padding:18px 20px;
 
-    border-radius:12px;
+    border-radius:16px;
 
-    background:#ffffff;
+    background:#FFFFFF;
 
-    border-left:5px solid #3b82f6;
+    border-left:6px solid #1E3A8A;
 
     box-shadow:
 
-        0 8px 25px rgba(0,0,0,.12);
+        0 15px 35px rgba(0,0,0,.12);
 
-    opacity:0;
+    animation:
 
-    transform:translateX(40px);
+        notificationIn .30s ease;
 
-    transition:
-
-        opacity .25s ease,
-
-        transform .25s ease;
-
-    pointer-events:auto;
+    position:relative;
 
     overflow:hidden;
 
 }
 
-.spae-toast.show{
 
-    opacity:1;
+/*=========================================================
+ICONOS
+=========================================================*/
 
-    transform:translateX(0);
+.notification-icon{
 
-}
+    font-size:24px;
 
-.spae-toast.hide{
-
-    opacity:0;
-
-    transform:translateX(40px);
+    min-width:30px;
 
 }
 
-/*==========================================================
- ICONO
-==========================================================*/
 
-.toast-icon{
+/*=========================================================
+CONTENIDO
+=========================================================*/
 
-    width:34px;
-
-    height:34px;
-
-    border-radius:50%;
-
-    display:flex;
-
-    justify-content:center;
-
-    align-items:center;
-
-    font-size:18px;
-
-    font-weight:700;
-
-    flex-shrink:0;
-
-}
-
-/*==========================================================
- MENSAJE
-==========================================================*/
-
-.toast-content{
+.notification-content{
 
     flex:1;
 
-    color:#1f2937;
+}
 
-    font-size:14px;
 
-    line-height:1.45;
+.notification-title{
 
-    word-break:break-word;
+    font-size:16px;
+
+    font-weight:700;
+
+    color:#111827;
+
+    margin-bottom:6px;
 
 }
 
-/*==========================================================
- BOTÓN CERRAR
-==========================================================*/
 
-.toast-close{
+.notification-message{
+
+    line-height:1.6;
+
+    color:#4B5563;
+
+    font-size:14px;
+
+}
+
+
+/*=========================================================
+BOTÓN CERRAR
+=========================================================*/
+
+.notification-close{
 
     border:none;
 
@@ -176,143 +129,253 @@
 
     font-size:18px;
 
-    color:#6b7280;
+    color:#6B7280;
 
-    transition:.2s;
-
-    padding:0;
-
-    width:24px;
-
-    height:24px;
-
-    flex-shrink:0;
+    transition:.20s ease;
 
 }
 
-.toast-close:hover{
+
+.notification-close:hover{
 
     color:#111827;
 
-    transform:scale(1.15);
+}
+
+
+/*=========================================================
+TIPOS DE NOTIFICACIONES
+=========================================================*/
+
+.notification-success{
+
+    border-left-color:#16A34A;
 
 }
 
-/*==========================================================
- TIPOS
-==========================================================*/
 
-.spae-toast.success{
+.notification-warning{
 
-    border-left-color:#22c55e;
+    border-left-color:#F59E0B;
 
 }
 
-.spae-toast.success .toast-icon{
 
-    background:#dcfce7;
+.notification-danger{
 
-    color:#15803d;
-
-}
-
-.spae-toast.info{
-
-    border-left-color:#2563eb;
+    border-left-color:#DC2626;
 
 }
 
-.spae-toast.info .toast-icon{
 
-    background:#dbeafe;
+.notification-info{
 
-    color:#1d4ed8;
-
-}
-
-.spae-toast.warning{
-
-    border-left-color:#f59e0b;
+    border-left-color:#2563EB;
 
 }
 
-.spae-toast.warning .toast-icon{
 
-    background:#fef3c7;
+/*=========================================================
+COLORES DEL CONTENIDO
+=========================================================*/
 
-    color:#b45309;
+.notification-success .notification-title{
 
-}
-
-.spae-toast.error{
-
-    border-left-color:#dc2626;
+    color:#15803D;
 
 }
 
-.spae-toast.error .toast-icon{
 
-    background:#fee2e2;
+.notification-warning .notification-title{
 
-    color:#b91c1c;
+    color:#B45309;
 
 }
 
-/*==========================================================
- BARRA DE TIEMPO
-==========================================================*/
 
-.spae-toast::after{
+.notification-danger .notification-title{
 
-    content:"";
+    color:#B91C1C;
+
+}
+
+
+.notification-info .notification-title{
+
+    color:#1D4ED8;
+
+}
+
+
+/*=========================================================
+BARRA DE PROGRESO
+=========================================================*/
+
+.notification-progress{
 
     position:absolute;
 
     left:0;
-
     bottom:0;
 
-    height:3px;
+    width:100%;
+    height:4px;
+
+    background:#E5E7EB;
+
+}
+
+
+.notification-progress-bar{
+
+    height:100%;
 
     width:100%;
 
-    background:rgba(0,0,0,.12);
+    background:#1E3A8A;
 
-    animation:toastTimer linear forwards;
+    animation:
 
-    animation-duration:4s;
-
-}
-
-.spae-toast.success::after{
-
-    background:#22c55e;
+        notificationTimer 5s linear forwards;
 
 }
 
-.spae-toast.info::after{
 
-    background:#2563eb;
+.notification-success
+.notification-progress-bar{
 
-}
-
-.spae-toast.warning::after{
-
-    background:#f59e0b;
+    background:#16A34A;
 
 }
 
-.spae-toast.error::after{
 
-    background:#dc2626;
+.notification-warning
+.notification-progress-bar{
+
+    background:#F59E0B;
 
 }
 
-/*==========================================================
- ANIMACIONES
-==========================================================*/
 
-@keyframes toastTimer{
+.notification-danger
+.notification-progress-bar{
+
+    background:#DC2626;
+
+}
+
+
+.notification-info
+.notification-progress-bar{
+
+    background:#2563EB;
+
+}
+
+
+/*=========================================================
+NOTIFICACIÓN COMPACTA
+=========================================================*/
+
+.notification-compact{
+
+    padding:15px;
+
+}
+
+
+.notification-compact .notification-title{
+
+    margin-bottom:3px;
+
+}
+
+
+/*=========================================================
+NOTIFICACIÓN LARGA
+=========================================================*/
+
+.notification-large{
+
+    padding:25px;
+
+}
+
+
+.notification-large .notification-title{
+
+    font-size:18px;
+
+}
+
+
+.notification-large .notification-message{
+
+    font-size:15px;
+
+}
+
+
+/*=========================================================
+ANIMACIONES
+=========================================================*/
+
+@keyframes notificationIn{
+
+    from{
+
+        opacity:0;
+
+        transform:
+
+            translateX(25px);
+
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:
+
+            translateX(0);
+
+    }
+
+}
+
+
+@keyframes notificationOut{
+
+    from{
+
+        opacity:1;
+
+    }
+
+    to{
+
+        opacity:0;
+
+        transform:
+
+            translateX(30px);
+
+    }
+
+}
+
+
+.notification-hide{
+
+    animation:
+
+        notificationOut .25s ease forwards;
+
+}
+
+
+@keyframes notificationTimer{
 
     from{
 
@@ -322,39 +385,131 @@
 
     to{
 
-        width:0;
+        width:0%;
 
     }
 
 }
 
-/*==========================================================
- RESPONSIVE
-==========================================================*/
 
-@media (max-width:768px){
+/*=========================================================
+ESTADOS ESPECIALES
+=========================================================*/
+
+.notification-loading{
+
+    border-left-color:#6B7280;
+
+}
+
+
+.notification-loading .notification-title{
+
+    color:#374151;
+
+}
+
+
+.notification-persistent .notification-progress{
+
+    display:none;
+
+}
+
+
+/*=========================================================
+SPINNER DE CARGA
+=========================================================*/
+
+.notification-spinner{
+
+    width:24px;
+    height:24px;
+
+    border-radius:50%;
+
+    border:
+
+        3px solid #E5E7EB;
+
+    border-top:
+
+        3px solid #1E3A8A;
+
+    animation:
+
+        rotateSpinner .8s linear infinite;
+
+}
+
+
+@keyframes rotateSpinner{
+
+    from{
+
+        transform:rotate(0deg);
+
+    }
+
+    to{
+
+        transform:rotate(360deg);
+
+    }
+
+}
+
+
+/*=========================================================
+RESPONSIVE
+=========================================================*/
+
+@media(max-width:768px){
 
     .spae-notifications{
 
-        left:12px;
+        top:15px;
+        right:15px;
 
-        right:12px;
-
-        width:auto;
-
-        top:12px;
+        width:calc(100% - 30px);
 
     }
 
-    .spae-toast{
+}
 
-        padding:14px;
+
+@media(max-width:576px){
+
+    .notification{
+
+        padding:16px;
 
     }
 
-    .toast-content{
+    .notification-title{
+
+        font-size:15px;
+
+    }
+
+    .notification-message{
 
         font-size:13px;
+
+    }
+
+}
+
+
+/*=========================================================
+IMPRESIÓN
+=========================================================*/
+
+@media print{
+
+    .spae-notifications{
+
+        display:none !important;
 
     }
 
