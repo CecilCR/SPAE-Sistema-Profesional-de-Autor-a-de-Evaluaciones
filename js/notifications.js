@@ -1,381 +1,473 @@
-/*==========================================================
+/*********************************************************
  SPAE
  Sistema Profesional de Autoría de Evaluaciones
 
- js/notifications.js
- Release 1.0
-==========================================================*/
+ Archivo : js/notifications.js
+ Versión : 1.0
 
-const SPAENotifications = (() => {
+ Sistema centralizado de notificaciones.
 
-"use strict";
+*********************************************************/
 
-/*==========================================================
- CONFIGURACIÓN
-==========================================================*/
 
-const CONFIG = {
+const Notifications = {
 
-    duration: 4000,
 
-    position: "top-right",
+    //--------------------------------------------------
+    // CONFIGURACIÓN
+    //--------------------------------------------------
 
-    maxVisible: 5
+    DEFAULT_DURATION: 5000,
 
-};
+    CONTAINER_ID: "spae-notifications",
 
-/*==========================================================
- ESTADO
-==========================================================*/
 
-const state = {
+    //--------------------------------------------------
+    // INICIALIZACIÓN
+    //--------------------------------------------------
 
-    container: null,
+    init() {
 
-    queue: []
+        this.verifyContainer();
 
-};
+        console.log(
+            "Notifications inicializado."
+        );
 
-/*==========================================================
- INICIALIZACIÓN
-==========================================================*/
+    },
 
-function init() {
 
-    createContainer();
+    //--------------------------------------------------
+    // VERIFICAR CONTENEDOR
+    //--------------------------------------------------
 
-}
+    verifyContainer() {
 
-/*==========================================================
- CONTENEDOR
-==========================================================*/
+        let container = document.getElementById(
+            this.CONTAINER_ID
+        );
 
-function createContainer() {
+        if (!container) {
 
-    if (
-
-        document.getElementById(
-
-            "spae-notifications"
-
-        )
-
-    ) {
-
-        state.container =
-
-            document.getElementById(
-
-                "spae-notifications"
-
+            container = document.createElement(
+                "div"
             );
 
-        return;
+            container.id = this.CONTAINER_ID;
 
-    }
+            container.className =
+                "spae-notifications";
 
-    state.container =
+            document.body.appendChild(
+                container
+            );
 
-        document.createElement("div");
+        }
 
-    state.container.id =
+    },
 
-        "spae-notifications";
 
-    state.container.className =
+    //--------------------------------------------------
+    // MÉTODO PRINCIPAL
+    //--------------------------------------------------
 
-        `spae-notifications ${CONFIG.position}`;
+    show(
 
-    document.body.appendChild(
-
-        state.container
-
-    );
-
-}
-
-/*==========================================================
- CREAR TOAST
-==========================================================*/
-
-function create(message, type) {
-
-    if (
-
-        state.queue.length >=
-
-        CONFIG.maxVisible
+        type = "info",
+        message = "",
+        title = "",
+        duration = this.DEFAULT_DURATION
 
     ) {
 
-        remove(
+        const notification = this.createNotification(
 
-            state.queue[0]
+            type,
+            title,
+            message,
+            duration
 
         );
 
-    }
+        this.renderNotification(
+            notification
+        );
 
-    const toast =
+    },
 
-        document.createElement("div");
 
-    toast.className =
+    //--------------------------------------------------
+    // CREAR NOTIFICACIÓN
+    //--------------------------------------------------
 
-        `spae-toast ${type}`;
+    createNotification(
 
-    toast.innerHTML = `
+        type,
+        title,
+        message,
+        duration
 
-        <div class="toast-icon">
+    ) {
 
-            ${icon(type)}
+        const wrapper = document.createElement(
+            "div"
+        );
 
-        </div>
+        wrapper.className =
 
-        <div class="toast-content">
+            `notification notification-${type}`;
 
-            ${escape(message)}
 
-        </div>
+        wrapper.innerHTML = `
 
-        <button
-            class="toast-close">
+            <div class="notification-icon">
 
-            ×
+                ${this.getIcon(type)}
 
-        </button>
+            </div>
 
-    `;
+            <div class="notification-content">
 
-    toast
+                <div class="notification-title">
 
-        .querySelector(
+                    ${title || this.getDefaultTitle(type)}
 
-            ".toast-close"
+                </div>
 
-        )
+                <div class="notification-message">
 
-        .addEventListener(
+                    ${message}
+
+                </div>
+
+            </div>
+
+            <button
+                class="notification-close">
+
+                ×
+
+            </button>
+
+            <div class="notification-progress">
+
+                <div class="notification-progress-bar">
+
+                </div>
+
+            </div>
+
+        `;
+
+
+        wrapper.dataset.duration = duration;
+
+        return wrapper;
+
+    },
+
+
+    //--------------------------------------------------
+    // RENDERIZAR
+    //--------------------------------------------------
+
+    renderNotification(notification) {
+
+        const container = document.getElementById(
+
+            this.CONTAINER_ID
+
+        );
+
+        container.prepend(
+            notification
+        );
+
+        this.bindCloseButton(
+            notification
+        );
+
+        this.scheduleRemoval(
+            notification
+        );
+
+    },
+
+
+    //--------------------------------------------------
+    // BOTÓN CERRAR
+    //--------------------------------------------------
+
+    bindCloseButton(notification) {
+
+        const button = notification.querySelector(
+
+            ".notification-close"
+
+        );
+
+        button.addEventListener(
 
             "click",
 
-            () => remove(toast)
+            () => {
+
+                this.removeNotification(
+                    notification
+                );
+
+            }
 
         );
 
-    state.container.appendChild(
+    },
 
-        toast
 
-    );
+    //--------------------------------------------------
+    // ELIMINAR AUTOMÁTICAMENTE
+    //--------------------------------------------------
 
-    state.queue.push(toast);
+    scheduleRemoval(notification) {
 
-    requestAnimationFrame(() => {
+        const duration = parseInt(
 
-        toast.classList.add(
-
-            "show"
+            notification.dataset.duration
 
         );
 
-    });
+        setTimeout(() => {
 
-    setTimeout(
-
-        () => remove(toast),
-
-        CONFIG.duration
-
-    );
-
-}
-
-/*==========================================================
- ELIMINAR
-==========================================================*/
-
-function remove(toast) {
-
-    if (!toast) return;
-
-    toast.classList.remove(
-
-        "show"
-
-    );
-
-    toast.classList.add(
-
-        "hide"
-
-    );
-
-    setTimeout(() => {
-
-        toast.remove();
-
-        state.queue =
-
-            state.queue.filter(
-
-                item => item !== toast
-
+            this.removeNotification(
+                notification
             );
 
-    }, 300);
+        }, duration);
 
-}
+    },
 
-/*==========================================================
- ICONOS
-==========================================================*/
 
-function icon(type) {
+    //--------------------------------------------------
+    // ELIMINAR
+    //--------------------------------------------------
 
-    switch(type){
+    removeNotification(notification) {
 
-        case "success":
+        if (!notification) {
 
-            return "✓";
+            return;
 
-        case "warning":
+        }
 
-            return "⚠";
+        notification.classList.add(
+            "notification-hide"
+        );
 
-        case "error":
+        setTimeout(() => {
 
-            return "✖";
+            notification.remove();
 
-        default:
+        }, 250);
 
-            return "ℹ";
+    },
+
+
+    //--------------------------------------------------
+    // ICONOS
+    //--------------------------------------------------
+
+    getIcon(type) {
+
+        switch(type){
+
+            case "success":
+                return "✓";
+
+            case "warning":
+                return "⚠";
+
+            case "danger":
+                return "✖";
+
+            case "info":
+                return "ℹ";
+
+            case "loading":
+                return `
+                <div class="notification-spinner"></div>
+                `;
+
+            default:
+                return "ℹ";
+
+        }
+
+    },
+
+
+    //--------------------------------------------------
+    // TÍTULOS POR DEFECTO
+    //--------------------------------------------------
+
+    getDefaultTitle(type) {
+
+        switch(type){
+
+            case "success":
+                return "Operación exitosa";
+
+            case "warning":
+                return "Advertencia";
+
+            case "danger":
+                return "Error";
+
+            case "info":
+                return "Información";
+
+            case "loading":
+                return "Procesando";
+
+            default:
+                return "SPAE";
+
+        }
+
+    },
+
+
+    //--------------------------------------------------
+    // MÉTODOS RÁPIDOS
+    //--------------------------------------------------
+
+    success(message, duration = 4000) {
+
+        this.show(
+
+            "success",
+            message,
+            "",
+            duration
+
+        );
+
+    },
+
+
+    warning(message, duration = 5000) {
+
+        this.show(
+
+            "warning",
+            message,
+            "",
+            duration
+
+        );
+
+    },
+
+
+    danger(message, duration = 6000) {
+
+        this.show(
+
+            "danger",
+            message,
+            "",
+            duration
+
+        );
+
+    },
+
+
+    info(message, duration = 4000) {
+
+        this.show(
+
+            "info",
+            message,
+            "",
+            duration
+
+        );
+
+    },
+
+
+    loading(message) {
+
+        this.show(
+
+            "loading",
+            message,
+            "Procesando...",
+            10000
+
+        );
+
+    },
+
+
+    //--------------------------------------------------
+    // LIMPIAR TODAS
+    //--------------------------------------------------
+
+    clear() {
+
+        const container = document.getElementById(
+
+            this.CONTAINER_ID
+
+        );
+
+        if (!container) {
+
+            return;
+
+        }
+
+        container.innerHTML = "";
+
+    },
+
+
+    //--------------------------------------------------
+    // DEBUG
+    //--------------------------------------------------
+
+    debug(message) {
+
+        this.info(
+            message
+        );
 
     }
 
-}
-
-/*==========================================================
- UTILIDAD
-==========================================================*/
-
-function escape(text=""){
-
-    return String(text)
-
-        .replaceAll("&","&amp;")
-
-        .replaceAll("<","&lt;")
-
-        .replaceAll(">","&gt;")
-
-        .replaceAll('"',"&quot;")
-
-        .replaceAll("'","&#39;");
-
-}
-
-/*==========================================================
- MÉTODOS PÚBLICOS
-==========================================================*/
-
-function success(message){
-
-    create(
-
-        message,
-
-        "success"
-
-    );
-
-}
-
-function info(message){
-
-    create(
-
-        message,
-
-        "info"
-
-    );
-
-}
-
-function warning(message){
-
-    create(
-
-        message,
-
-        "warning"
-
-    );
-
-}
-
-function error(message){
-
-    create(
-
-        message,
-
-        "error"
-
-    );
-
-}
-
-/*==========================================================
- LIMPIAR
-==========================================================*/
-
-function clear(){
-
-    state.queue.forEach(
-
-        toast => toast.remove()
-
-    );
-
-    state.queue=[];
-
-}
-
-/*==========================================================
- API
-==========================================================*/
-
-return{
-
-    init,
-
-    success,
-
-    info,
-
-    warning,
-
-    error,
-
-    clear
 
 };
 
-})();
 
-/*==========================================================
- INICIALIZACIÓN
-==========================================================*/
+
+/*********************************************************
+EXPORTACIÓN GLOBAL
+*********************************************************/
+
+window.Notifications = Notifications;
+
+
+
+/*********************************************************
+INICIALIZACIÓN AUTOMÁTICA
+*********************************************************/
 
 document.addEventListener(
 
     "DOMContentLoaded",
 
-    ()=>{
+    () => {
 
-        SPAENotifications.init();
+        Notifications.init();
 
     }
 
