@@ -1,895 +1,534 @@
-/*==========================================================
+/*********************************************************
  SPAE
  Sistema Profesional de Autoría de Evaluaciones
 
- app.js
- Versión 1.0
-==========================================================*/
+ Archivo : js/app.js
+ Versión : 1.0
 
-const SPAE = (() => {
+ Núcleo principal del sistema.
 
-"use strict";
+*********************************************************/
 
-/*==========================================================
- CONFIGURACIÓN
-==========================================================*/
 
-const CONFIG = {
+const SPAE = {
 
-    appName: "SPAE",
 
-    version: "1.0.0",
+    //--------------------------------------------------
+    // CONFIGURACIÓN GENERAL
+    //--------------------------------------------------
 
-    autoSave: true,
+    VERSION: "1.0.0",
 
-    autoSaveInterval: 30000
+    NAME: "SPAE",
 
-};
+    COURSE_LOADED: null,
 
-/*==========================================================
- ESTADO GLOBAL
-==========================================================*/
+    MODULES: {
 
-const state = {
+        ui: false,
+        dashboard: false,
+        notifications: false,
+        dialogs: false,
+        courses: false,
+        questionBank: false,
+        examBuilder: false
 
-    initialized: false,
+    },
 
-    currentCourse: null,
 
-    currentExam: null,
+    //--------------------------------------------------
+    // INICIALIZACIÓN DEL SISTEMA
+    //--------------------------------------------------
 
-    currentQuestion: null,
+    init() {
 
-    currentView: "dashboard",
-
-    autoSaveTimer: null
-
-};
-
-/*==========================================================
- INICIALIZACIÓN GENERAL
-==========================================================*/
-
-async function init() {
-
-    console.log(
-
-        `${CONFIG.appName} ${CONFIG.version}`
-
-    );
-
-    initializeModules();
-
-    registerEvents();
-
-    loadApplication();
-
-    startAutoSave();
-
-    state.initialized = true;
-
-}
-
-/*==========================================================
- INICIALIZAR MÓDULOS
-==========================================================*/
-
-function initializeModules() {
-
-    if (window.SPAEStorage)
-
-        SPAEStorage.init();
-
-    if (window.SPAECourses)
-
-        SPAECourses.init();
-
-    if (window.SPAEQuestionBank)
-
-        SPAEQuestionBank.init();
-
-    if (window.SPAEExamBuilder)
-
-        SPAEExamBuilder.init();
-
-    if (window.SPAEQualityEngine)
-
-        SPAEQualityEngine.init();
-
-    if (window.SPAEBloomEngine)
-
-        SPAEBloomEngine.init();
-
-    if (window.SPAEDistractorEngine)
-
-        SPAEDistractorEngine.init();
-
-    if (window.SPAECaseGenerator)
-
-        SPAECaseGenerator.init();
-
-    if (window.SPAEAdvisorEngine)
-
-        SPAEAdvisorEngine.init();
-
-    if (window.SPAERouter)
-
-        SPAERouter.init();
-
-    if (window.SPAEUI)
-
-        SPAEUI.init();
-
-}
-
-/*==========================================================
- CARGAR APLICACIÓN
-==========================================================*/
-
-function loadApplication() {
-
-    loadRecentCourses();
-
-    updateDashboard();
-
-}
-
-/*==========================================================
- CURSOS RECIENTES
-==========================================================*/
-
-function loadRecentCourses() {
-
-    if (!window.SPAECourses)
-
-        return;
-
-    const list =
-
-        SPAECourses.getCourses();
-
-    SPAEUI.renderRecentCourses(
-
-        list
-
-    );
-
-}
-
-/*==========================================================
- DASHBOARD
-==========================================================*/
-
-function updateDashboard() {
-
-    if (!window.SPAEUI)
-
-        return;
-
-    SPAEUI.updateDashboard({
-
-        currentCourse:
-
-            state.currentCourse,
-
-        version:
-
-            CONFIG.version
-
-    });
-
-}
-/*==========================================================
- REGISTRO DE EVENTOS
-==========================================================*/
-
-function registerEvents() {
-
-    bindButton(
-
-        "btnCreateCourse",
-
-        createCourse
-
-    );
-
-    bindButton(
-
-        "btnOpenCourse",
-
-        openCourse
-
-    );
-
-    bindButton(
-
-        "btnImportWord",
-
-        importWord
-
-    );
-
-    bindButton(
-
-        "btnQuestionBank",
-
-        openQuestionBank
-
-    );
-
-    bindButton(
-
-        "btnBuildExam",
-
-        buildExam
-
-    );
-
-    window.addEventListener(
-
-        "beforeunload",
-
-        beforeExit
-
-    );
-
-}
-
-/*==========================================================
- UTILIDADES
-==========================================================*/
-
-function bindButton(id, callback) {
-
-    const button =
-
-        document.getElementById(id);
-
-    if (!button) {
-
-        console.warn(
-
-            `No existe el botón ${id}`
-
+        console.group(
+            "SPAE - Inicialización"
         );
 
-        return;
+        this.showWelcome();
 
-    }
+        this.initializeModules();
 
-    button.addEventListener(
+        this.bindGlobalEvents();
 
-        "click",
+        this.checkSystemStatus();
 
-        callback
+        this.loadDashboard();
 
-    );
+        console.groupEnd();
 
-}
+    },
 
-/*==========================================================
- CREAR CURSO
-==========================================================*/
 
-function createCourse() {
+    //--------------------------------------------------
+    // MENSAJE DE INICIO
+    //--------------------------------------------------
 
-    if (
+    showWelcome() {
 
-        window.SPAEDialogs
-
-    ) {
-
-        SPAEDialogs.openCourseDialog({
-
-            mode: "create",
-
-            onSave: saveCourse
-
-        });
-
-        return;
-
-    }
-
-    // Modo temporal hasta completar dialogs.js
-
-    const name = prompt(
-
-        "Nombre del curso"
-
-    );
-
-    if (
-
-        !name ||
-
-        !name.trim()
-
-    ) {
-
-        return;
-
-    }
-
-    const program = prompt(
-
-        "Programa",
-
-        ""
-
-    ) || "";
-
-    const semester = prompt(
-
-        "Semestre",
-
-        ""
-
-    ) || "";
-
-    saveCourse({
-
-        id: crypto.randomUUID(),
-
-        name: name.trim(),
-
-        program,
-
-        semester,
-
-        createdAt:
-
-            new Date().toISOString(),
-
-        updatedAt:
-
-            new Date().toISOString()
-
-    });
-
-}
-
-/*==========================================================
- GUARDAR CURSO
-==========================================================*/
-
-function saveCourse(course) {
-
-    if (
-
-        !window.SPAECourses
-
-    ) {
-
-        console.error(
-
-            "SPAECourses no está disponible."
-
+        console.log(
+            "Sistema SPAE iniciado."
         );
 
-        return;
-
-    }
-
-    SPAECourses.addCourse(
-
-        course
-
-    );
-
-    state.currentCourse =
-
-        course;
-
-    if (
-
-        window.SPAENotifications
-
-    ) {
-
-        SPAENotifications.success(
-
-            "Curso creado correctamente."
-
+        console.log(
+            "Versión:",
+            this.VERSION
         );
 
-    }
+    },
 
-    refreshCourses();
 
-}
+    //--------------------------------------------------
+    // INICIALIZAR MÓDULOS
+    //--------------------------------------------------
 
-/*==========================================================
- ACTUALIZAR LISTA
-==========================================================*/
+    initializeModules() {
 
-function refreshCourses() {
+        this.initializeUI();
 
-    if (
+        this.initializeDashboard();
 
-        !window.SPAECourses ||
+        this.initializeNotifications();
 
-        !window.SPAEUI
+        this.initializeDialogs();
 
-    ) {
+        this.initializeCourses();
 
-        return;
+        this.initializeQuestionBank();
 
-    }
+        this.initializeExamBuilder();
 
-    const list =
+    },
 
-        SPAECourses.getCourses();
 
-    SPAEUI.renderRecentCourses(
+    //--------------------------------------------------
+    // UI
+    //--------------------------------------------------
 
-        list
+    initializeUI() {
 
-    );
+        if (window.SPAEUI) {
 
-    updateDashboard();
-
-}
-
-/*==========================================================
- ABRIR CURSO
-==========================================================*/
-
-function openCourse() {
-
-    const courses =
-
-        SPAECourses.getCourses();
-
-    if (
-
-        courses.length === 0
-
-    ) {
-
-        notify(
-
-            "No existen cursos registrados."
-
-        );
-
-        return;
-
-    }
-
-    if (
-
-        window.SPAEDialogs
-
-    ) {
-
-        SPAEDialogs.openCourseSelector(
-
-            courses,
-
-            loadCourse
-
-        );
-
-        return;
-
-    }
-
-    loadCourse(
-
-        courses[0]
-
-    );
-
-}
-
-/*==========================================================
- CARGAR CURSO
-==========================================================*/
-
-function loadCourse(course) {
-
-    state.currentCourse =
-
-        course;
-
-    if (
-
-        window.SPAERouter
-
-    ) {
-
-        SPAERouter.navigate(
-
-            "course"
-
-        );
-
-    }
-
-    updateDashboard();
-
-    notify(
-
-        `Curso activo: ${course.name}`
-
-    );
-
-} 
-/*==========================================================
- IMPORTAR DOCUMENTOS
-==========================================================*/
-
-function importWord() {
-
-    const input = document.createElement("input");
-
-    input.type = "file";
-
-    input.accept = ".doc,.docx,.txt,.pdf";
-
-    input.addEventListener(
-
-        "change",
-
-        event => {
-
-            const file =
-
-                event.target.files[0];
-
-            if (!file) {
-
-                return;
-
-            }
-
-            notify(
-
-                `Archivo seleccionado: ${file.name}`
-
-            );
-
-            // Integración futura:
-            // SPAEImportEngine.import(file);
+            this.MODULES.ui = true;
 
         }
 
-    );
+    },
 
-    input.click();
 
-}
+    //--------------------------------------------------
+    // DASHBOARD
+    //--------------------------------------------------
 
-/*==========================================================
- BANCO DE PREGUNTAS
-==========================================================*/
+    initializeDashboard() {
 
-function openQuestionBank() {
+        if (window.DashboardModule) {
 
-    if (!state.currentCourse) {
+            this.MODULES.dashboard = true;
 
-        notify(
+        }
 
-            "Primero debe abrir un curso."
+    },
 
+
+    //--------------------------------------------------
+    // NOTIFICACIONES
+    //--------------------------------------------------
+
+    initializeNotifications() {
+
+        if (window.Notifications) {
+
+            this.MODULES.notifications = true;
+
+        }
+
+    },
+
+
+    //--------------------------------------------------
+    // DIALOGS
+    //--------------------------------------------------
+
+    initializeDialogs() {
+
+        if (window.Dialogs) {
+
+            this.MODULES.dialogs = true;
+
+        }
+
+    },
+
+
+    //--------------------------------------------------
+    // CURSOS
+    //--------------------------------------------------
+
+    initializeCourses() {
+
+        if (window.CourseManager) {
+
+            this.MODULES.courses = true;
+
+        }
+
+    },
+
+
+    //--------------------------------------------------
+    // BANCO DE PREGUNTAS
+    //--------------------------------------------------
+
+    initializeQuestionBank() {
+
+        if (window.QuestionBank) {
+
+            this.MODULES.questionBank = true;
+
+        }
+
+    },
+
+
+    //--------------------------------------------------
+    // EXAM BUILDER
+    //--------------------------------------------------
+
+    initializeExamBuilder() {
+
+        if (window.ExamBuilder) {
+
+            this.MODULES.examBuilder = true;
+
+        }
+
+    },
+
+
+    //--------------------------------------------------
+    // DASHBOARD INICIAL
+    //--------------------------------------------------
+
+    loadDashboard() {
+
+        if (
+
+            window.SPAEUI &&
+            SPAEUI.showView
+
+        ) {
+
+            SPAEUI.showView(
+                "view-dashboard"
+            );
+
+        }
+
+    },
+
+
+    //--------------------------------------------------
+    // CURSO ACTUAL
+    //--------------------------------------------------
+
+    setCurrentCourse(course) {
+
+        this.COURSE_LOADED = course;
+
+        if (
+
+            window.SPAEUI &&
+            SPAEUI.updateCourseStatus
+
+        ) {
+
+            SPAEUI.updateCourseStatus(
+                course.name
+            );
+
+        }
+
+    },
+
+
+    getCurrentCourse() {
+
+        return this.COURSE_LOADED;
+
+    },
+
+
+    //--------------------------------------------------
+    // EVENTOS GLOBALES
+    //--------------------------------------------------
+
+    bindGlobalEvents() {
+
+        this.bindMenuEvents();
+
+        this.bindKeyboardShortcuts();
+
+    },
+
+
+    //--------------------------------------------------
+    // MENÚ PRINCIPAL
+    //--------------------------------------------------
+
+    bindMenuEvents() {
+
+        const buttons = document.querySelectorAll(
+            "[data-view]"
         );
 
-        return;
+        buttons.forEach(button => {
 
-    }
+            button.addEventListener(
 
-    if (
+                "click",
 
-        window.SPAERouter
+                () => {
 
-    ) {
+                    const viewID = button.dataset.view;
 
-        SPAERouter.navigate(
+                    if (
 
-            "question-bank"
+                        window.SPAEUI &&
+                        SPAEUI.showView
 
-        );
+                    ) {
 
-    }
+                        SPAEUI.showView(
+                            viewID
+                        );
 
-}
+                    }
 
-/*==========================================================
- CONSTRUCTOR DE EXÁMENES
-==========================================================*/
+                }
 
-function buildExam() {
+            );
 
-    if (!state.currentCourse) {
+        });
 
-        notify(
+    },
 
-            "Seleccione un curso antes de crear un examen."
 
-        );
+    //--------------------------------------------------
+    // ATAJOS DE TECLADO
+    //--------------------------------------------------
 
-        return;
+    bindKeyboardShortcuts() {
 
-    }
+        document.addEventListener(
 
-    if (
+            "keydown",
 
-        window.SPAERouter
+            (event) => {
 
-    ) {
+                if (
 
-        SPAERouter.navigate(
+                    event.ctrlKey &&
+                    event.key === "s"
 
-            "exam-builder"
+                ) {
 
-        );
+                    event.preventDefault();
 
-    }
+                    this.saveProject();
 
-}
+                }
 
-/*==========================================================
- AUTOGUARDADO
-==========================================================*/
 
-function startAutoSave() {
+                if (
 
-    if (
+                    event.ctrlKey &&
+                    event.key === "e"
 
-        !CONFIG.autoSave
+                ) {
 
-    ) {
+                    event.preventDefault();
 
-        return;
+                    this.exportProject();
 
-    }
-
-    stopAutoSave();
-
-    state.autoSaveTimer =
-
-        setInterval(
-
-            autoSave,
-
-            CONFIG.autoSaveInterval
-
-        );
-
-}
-
-function stopAutoSave() {
-
-    if (
-
-        state.autoSaveTimer
-
-    ) {
-
-        clearInterval(
-
-            state.autoSaveTimer
-
-        );
-
-        state.autoSaveTimer = null;
-
-    }
-
-}
-
-function autoSave() {
-
-    if (
-
-        !window.SPAEStorage
-
-    ) {
-
-        return;
-
-    }
-
-    try {
-
-        SPAEStorage.save(
-
-            "spae-session",
-
-            {
-
-                currentCourse:
-
-                    state.currentCourse,
-
-                currentExam:
-
-                    state.currentExam,
-
-                currentQuestion:
-
-                    state.currentQuestion,
-
-                currentView:
-
-                    state.currentView,
-
-                savedAt:
-
-                    new Date().toISOString()
+                }
 
             }
 
         );
 
-    }
+    },
 
-    catch (error) {
 
-        console.error(
+    //--------------------------------------------------
+    // GUARDAR PROYECTO
+    //--------------------------------------------------
 
-            error
+    saveProject() {
 
+        console.log(
+            "Guardar proyecto."
         );
 
-    }
+        this.notify(
 
-}
+            "success",
 
-/*==========================================================
- RECUPERAR SESIÓN
-==========================================================*/
-
-function restoreSession() {
-
-    if (
-
-        !window.SPAEStorage
-
-    ) {
-
-        return;
-
-    }
-
-    const session =
-
-        SPAEStorage.load(
-
-            "spae-session"
-
-        );
-
-    if (!session) {
-
-        return;
-
-    }
-
-    state.currentCourse =
-
-        session.currentCourse || null;
-
-    state.currentExam =
-
-        session.currentExam || null;
-
-    state.currentQuestion =
-
-        session.currentQuestion || null;
-
-    state.currentView =
-
-        session.currentView || "dashboard";
-
-}
-
-/*==========================================================
- CIERRE SEGURO
-==========================================================*/
-
-function beforeExit() {
-
-    autoSave();
-
-}
-
-/*==========================================================
- NOTIFICACIONES
-==========================================================*/
-
-function notify(message) {
-
-    if (
-
-        window.SPAENotifications
-
-    ) {
-
-        SPAENotifications.info(
-
-            message
-
-        );
-
-    }
-
-    else {
-
-        console.log(message);
-
-    }
-
-}
-
-/*==========================================================
- API PÚBLICA
-==========================================================*/
-
-return {
-
-    init,
-
-    createCourse,
-
-    saveCourse,
-
-    openCourse,
-
-    loadCourse,
-
-    importWord,
-
-    openQuestionBank,
-
-    buildExam,
-
-    refreshCourses,
-
-    updateDashboard,
-
-    autoSave,
-
-    restoreSession,
-
-    currentCourse() {
-
-        return structuredClone(
-
-            state.currentCourse
+            "Proyecto guardado correctamente."
 
         );
 
     },
 
-    currentExam() {
 
-        return structuredClone(
+    //--------------------------------------------------
+    // EXPORTAR
+    //--------------------------------------------------
 
-            state.currentExam
+    exportProject() {
+
+        console.log(
+            "Exportar proyecto."
+        );
+
+        this.notify(
+
+            "info",
+
+            "Preparando exportación."
 
         );
 
     },
 
-    currentQuestion() {
 
-        return structuredClone(
+    //--------------------------------------------------
+    // NOTIFICACIONES
+    //--------------------------------------------------
 
-            state.currentQuestion
+    notify(type, message) {
+
+        if (
+
+            window.Notifications &&
+            Notifications.show
+
+        ) {
+
+            Notifications.show(
+
+                type,
+                message
+
+            );
+
+        }
+
+    },
+
+
+    //--------------------------------------------------
+    // ESTADO DEL SISTEMA
+    //--------------------------------------------------
+
+    checkSystemStatus() {
+
+        const loadedModules = Object.values(
+            this.MODULES
+        ).filter(Boolean).length;
+
+
+        console.log(
+
+            "Módulos activos:",
+            loadedModules
 
         );
+
+    },
+
+
+    //--------------------------------------------------
+    // VALIDACIONES
+    //--------------------------------------------------
+
+    isModuleLoaded(moduleName) {
+
+        return this.MODULES[moduleName] || false;
+
+    },
+
+
+    //--------------------------------------------------
+    // RESET
+    //--------------------------------------------------
+
+    resetApplication() {
+
+        this.COURSE_LOADED = null;
+
+        if (
+
+            window.SPAEUI &&
+            SPAEUI.clearWorkspace
+
+        ) {
+
+            SPAEUI.clearWorkspace();
+
+        }
+
+    },
+
+
+    //--------------------------------------------------
+    // DEBUG
+    //--------------------------------------------------
+
+    debug() {
+
+        console.table(
+
+            this.MODULES
+
+        );
+
+    },
+
+
+    //--------------------------------------------------
+    // INFORMACIÓN DEL SISTEMA
+    //--------------------------------------------------
+
+    getSystemInformation() {
+
+        return {
+
+            name: this.NAME,
+            version: this.VERSION,
+            course: this.COURSE_LOADED,
+            modules: this.MODULES
+
+        };
 
     }
 
 };
 
-})();
 
-/*==========================================================
- ARRANQUE DE LA APLICACIÓN
-==========================================================*/
+
+/*********************************************************
+EXPORTACIÓN GLOBAL
+*********************************************************/
+
+window.SPAE = SPAE;
+
+
+
+/*********************************************************
+INICIALIZACIÓN DEL SISTEMA
+*********************************************************/
 
 document.addEventListener(
 
@@ -899,8 +538,6 @@ document.addEventListener(
 
         SPAE.init();
 
-        SPAE.restoreSession();
-
     }
 
-);  
+);
