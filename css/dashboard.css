@@ -1,0 +1,650 @@
+/**********************************************************
+ SPAE
+ Sistema Profesional de Autoría de Evaluaciones
+
+ Archivo : css/dashboard.css
+ Versión : 1.0
+***********************************************************/
+
+
+/*=========================================================
+GRID DE ESTADÍSTICAS
+=========================================================*/
+
+.dashboard-grid{
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(auto-fit, minmax(230px,1fr));
+
+    gap:24px;
+
+    margin-bottom:32px;
+
+}
+
+
+/*=========================================================
+TARJETAS DE ESTADÍSTICAS
+=========================================================*/
+
+.stat-card{
+
+    background:white;
+
+    border-radius:16px;
+
+    padding:24px;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:18px;
+
+    box-shadow:
+
+        0 8px 20px rgba(0,0,0,.05);
+
+    border:
+
+        1px solid #E5E7EB;
+
+    transition:all .25s ease;
+
+}
+
+
+.stat-card:hover{
+
+    transform:translateY(-3px);
+
+    box-shadow:
+
+        0 15px 30px rgba(0,0,0,.08);
+
+}
+
+
+.stat-icon{
+
+    width:65px;
+    height:65px;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    font-size:28px;
+
+    border-radius:14px;
+
+    background:
+
+        rgba(30,58,138,.08);
+
+}
+
+
+.stat-info{
+
+    display:flex;
+
+    flex-direction:column;
+
+}
+
+
+.stat-title{
+
+    font-size:14px;
+
+    color:#6B7280;
+
+    margin-bottom:6px;
+
+}
+
+
+.stat-value{
+
+    font-size:30px;
+
+    font-weight:700;
+
+    color:#1F2937;
+
+}
+
+
+/*=========================================================
+PANEL PRINCIPAL DEL DASHBOARD
+=========================================================*/
+
+.dashboard-main{
+
+    display:grid;
+
+    grid-template-columns:
+
+        1fr 1fr;
+
+    gap:28px;
+
+    margin-bottom:32px;
+
+}
+
+
+/*=========================================================
+PANELES GENERALES
+=========================================================*/
+
+.dashboard-panel{
+
+    background:white;
+
+    border-radius:18px;
+
+    padding:28px;
+
+    border:
+
+        1px solid #E5E7EB;
+
+    box-shadow:
+
+        0 8px 24px rgba(0,0,0,.04);
+
+    margin-bottom:30px;
+
+}
+
+
+.panel-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:24px;
+
+}
+
+
+.panel-header h2{
+
+    font-size:24px;
+
+    font-weight:700;
+
+}
+
+
+/*=========================================================
+CURSO ACTIVO
+=========================================================*/
+
+#currentCourse{
+
+    min-height:280px;
+
+}
+
+
+.current-course-title{
+
+    font-size:28px;
+
+    font-weight:700;
+
+    margin-bottom:18px;
+
+}
+
+
+.current-course-info{
+
+    display:grid;
+
+    gap:12px;
+
+}
+
+
+.course-property{
+
+    padding:12px;
+
+    border-radius:10px;
+
+    background:#F7F9FC;
+
+}
+
+
+/*=========================================================
+CURSOS RECIENTES
+=========================================================*/
+
+.recent-courses{
+
+    display:grid;
+
+    gap:18px;
+
+}
+
+
+.course-card{
+
+    background:#F9FAFB;
+
+    border:
+
+        1px solid #E5E7EB;
+
+    border-radius:14px;
+
+    padding:22px;
+
+    transition:.25s ease;
+
+}
+
+
+.course-card:hover{
+
+    transform:translateY(-2px);
+
+    box-shadow:
+
+        0 10px 24px rgba(0,0,0,.05);
+
+}
+
+
+.course-card__header{
+
+    margin-bottom:14px;
+
+}
+
+
+.course-card__header h3{
+
+    font-size:20px;
+
+}
+
+
+.course-card__body{
+
+    display:grid;
+
+    gap:8px;
+
+    color:#4B5563;
+
+    margin-bottom:20px;
+
+}
+
+
+.course-card__footer{
+
+    display:flex;
+
+    gap:12px;
+
+    flex-wrap:wrap;
+
+}
+
+
+/*=========================================================
+ACCIONES RÁPIDAS
+=========================================================*/
+
+.quick-actions{
+
+    display:grid;
+
+    grid-template-columns:
+
+        repeat(auto-fit,minmax(220px,1fr));
+
+    gap:20px;
+
+}
+
+
+.quick-card{
+
+    border:none;
+
+    cursor:pointer;
+
+    padding:26px;
+
+    border-radius:16px;
+
+    background:#F8FAFC;
+
+    border:
+
+        1px solid #E5E7EB;
+
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:center;
+    align-items:center;
+
+    gap:14px;
+
+    transition:.25s;
+
+    font-size:16px;
+
+    font-weight:600;
+
+}
+
+
+.quick-card:hover{
+
+    background:#EEF4FF;
+
+    transform:translateY(-3px);
+
+}
+
+
+.quick-icon{
+
+    font-size:34px;
+
+}
+
+
+/*=========================================================
+PRINCIPIOS PEDAGÓGICOS
+=========================================================*/
+
+.principles{
+
+    display:grid;
+
+    grid-template-columns:
+
+        repeat(auto-fit,minmax(260px,1fr));
+
+    gap:18px;
+
+}
+
+
+.principle{
+
+    padding:18px;
+
+    background:#F9FAFB;
+
+    border:
+
+        1px solid #E5E7EB;
+
+    border-radius:12px;
+
+    font-weight:600;
+
+}
+
+
+/*=========================================================
+WORKSPACE
+=========================================================*/
+
+.workspace{
+
+    min-height:300px;
+
+}
+
+
+/*=========================================================
+ESTADO DEL SISTEMA
+=========================================================*/
+
+.system-status{
+
+    display:grid;
+
+    gap:18px;
+
+}
+
+
+.status-item{
+
+    padding:16px;
+
+    border-radius:12px;
+
+    background:#F9FAFB;
+
+    border:
+
+        1px solid #E5E7EB;
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+}
+
+
+/*=========================================================
+INFORMACIÓN DE LA SESIÓN
+=========================================================*/
+
+.session-grid{
+
+    display:grid;
+
+    grid-template-columns:
+
+        repeat(auto-fit,minmax(220px,1fr));
+
+    gap:18px;
+
+}
+
+
+.session-item{
+
+    padding:18px;
+
+    background:#F8FAFC;
+
+    border:
+
+        1px solid #E5E7EB;
+
+    border-radius:12px;
+
+}
+
+
+/*=========================================================
+PANEL DE DEPURACIÓN
+=========================================================*/
+
+.debug-console{
+
+    min-height:180px;
+
+    background:#111827;
+
+    color:#E5E7EB;
+
+    padding:20px;
+
+    border-radius:14px;
+
+    overflow:auto;
+
+    font-family:
+
+        Consolas,
+        monospace;
+
+    font-size:14px;
+
+}
+
+
+/*=========================================================
+BOTONES GENERALES
+=========================================================*/
+
+.btn{
+
+    border:none;
+
+    cursor:pointer;
+
+    padding:
+
+        12px 18px;
+
+    border-radius:10px;
+
+    font-size:15px;
+
+    transition:.25s ease;
+
+}
+
+
+.btn-primary{
+
+    background:#1E3A8A;
+
+    color:white;
+
+}
+
+
+.btn-primary:hover{
+
+    background:#274CB8;
+
+}
+
+
+.btn-secondary{
+
+    background:#F3F4F6;
+
+    color:#111827;
+
+}
+
+
+.btn-secondary:hover{
+
+    background:#E5E7EB;
+
+}
+
+
+.btn-danger{
+
+    background:#DC2626;
+
+    color:white;
+
+}
+
+
+.btn-danger:hover{
+
+    background:#B91C1C;
+
+}
+
+
+/*=========================================================
+ESTADOS VACÍOS
+=========================================================*/
+
+.empty-card{
+
+    min-height:220px;
+
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:center;
+    align-items:center;
+
+    text-align:center;
+
+    color:#6B7280;
+
+    gap:12px;
+
+}
+
+
+.empty-card h2{
+
+    color:#1F2937;
+
+}
+
+
+/*=========================================================
+ANIMACIONES
+=========================================================*/
+
+.dashboard-panel,
+.stat-card,
+.course-card,
+.quick-card{
+
+    animation:
+
+        fadeIn .35s ease;
+
+}
+
+
+@keyframes fadeIn{
+
+    from{
+
+        opacity:0;
+
+        transform:translateY(10px);
+
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:translateY(0);
+
+    }
+
+}
