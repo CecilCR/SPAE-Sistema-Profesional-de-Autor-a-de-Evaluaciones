@@ -1,0 +1,610 @@
+/**********************************************************
+ SPAE
+ Sistema Profesional de Autoría de Evaluaciones
+
+ Archivo : css/forms.css
+ Versión : 1.0
+***********************************************************/
+
+
+/*=========================================================
+CONTENEDORES DE FORMULARIOS
+=========================================================*/
+
+.form-container {
+
+    width: 100%;
+
+}
+
+
+.form-section {
+
+    margin-bottom: 32px;
+
+}
+
+
+.form-section-title {
+
+    font-size: 1.5rem;
+
+    font-weight: 700;
+
+    color: #1F2937;
+
+    margin-bottom: 20px;
+
+    padding-bottom: 10px;
+
+    border-bottom: 2px solid #E5E7EB;
+
+}
+
+
+/*=========================================================
+GRUPOS DE FORMULARIOS
+=========================================================*/
+
+.form-group {
+
+    margin-bottom: 22px;
+
+}
+
+
+.form-row {
+
+    display: grid;
+
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+
+    gap: 20px;
+
+}
+
+
+.form-label {
+
+    display: block;
+
+    margin-bottom: 8px;
+
+    font-weight: 600;
+
+    color: #374151;
+
+}
+
+
+.required::after {
+
+    content: " *";
+
+    color: #DC2626;
+
+}
+
+
+/*=========================================================
+INPUTS
+=========================================================*/
+
+.form-control {
+
+    width: 100%;
+
+    padding: 14px 16px;
+
+    font-size: 15px;
+
+    border: 1px solid #D1D5DB;
+
+    border-radius: 10px;
+
+    background: #FFFFFF;
+
+    transition: all .20s ease;
+
+}
+
+
+.form-control:focus {
+
+    outline: none;
+
+    border-color: #1E3A8A;
+
+    box-shadow:
+
+        0 0 0 4px rgba(30,58,138,.12);
+
+}
+
+
+.form-control::placeholder {
+
+    color: #9CA3AF;
+
+}
+
+
+/*=========================================================
+TEXTAREA
+=========================================================*/
+
+textarea.form-control {
+
+    resize: vertical;
+
+    min-height: 140px;
+
+}
+
+
+/*=========================================================
+SELECT
+=========================================================*/
+
+select.form-control {
+
+    cursor: pointer;
+
+}
+
+
+/*=========================================================
+CHECKBOXES Y RADIO BUTTONS
+=========================================================*/
+
+.checkbox-group,
+.radio-group {
+
+    display: flex;
+
+    flex-wrap: wrap;
+
+    gap: 18px;
+
+}
+
+
+.checkbox-item,
+.radio-item {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+}
+
+
+.checkbox-item label,
+.radio-item label {
+
+    cursor: pointer;
+
+}
+
+
+/*=========================================================
+INPUT CON ICONO
+=========================================================*/
+
+.input-with-icon {
+
+    position: relative;
+
+}
+
+
+.input-with-icon i,
+.input-with-icon span {
+
+    position: absolute;
+
+    top: 50%;
+
+    left: 15px;
+
+    transform: translateY(-50%);
+
+    color: #6B7280;
+
+}
+
+
+.input-with-icon input {
+
+    padding-left: 44px;
+
+}
+
+
+/*=========================================================
+VALIDACIONES
+=========================================================*/
+
+.input-valid {
+
+    border-color: #16A34A;
+
+}
+
+
+.input-invalid {
+
+    border-color: #DC2626;
+
+}
+
+
+.validation-message {
+
+    margin-top: 6px;
+
+    font-size: 13px;
+
+}
+
+
+.validation-success {
+
+    color: #16A34A;
+
+}
+
+
+.validation-error {
+
+    color: #DC2626;
+
+}
+
+
+/*=========================================================
+BOTONES
+=========================================================*/
+
+.form-actions {
+
+    display: flex;
+
+    justify-content: flex-end;
+
+    gap: 15px;
+
+    flex-wrap: wrap;
+
+}
+
+
+.btn {
+
+    border: none;
+
+    cursor: pointer;
+
+    padding: 13px 22px;
+
+    border-radius: 10px;
+
+    font-size: 15px;
+
+    font-weight: 600;
+
+    transition: all .20s ease;
+
+}
+
+
+.btn:hover {
+
+    transform: translateY(-1px);
+
+}
+
+
+.btn-primary {
+
+    background: #1E3A8A;
+
+    color: #FFFFFF;
+
+}
+
+
+.btn-primary:hover {
+
+    background: #274CB8;
+
+}
+
+
+.btn-secondary {
+
+    background: #F3F4F6;
+
+    color: #111827;
+
+}
+
+
+.btn-secondary:hover {
+
+    background: #E5E7EB;
+
+}
+
+
+.btn-success {
+
+    background: #16A34A;
+
+    color: #FFFFFF;
+
+}
+
+
+.btn-success:hover {
+
+    background: #15803D;
+
+}
+
+
+.btn-danger {
+
+    background: #DC2626;
+
+    color: #FFFFFF;
+
+}
+
+
+.btn-danger:hover {
+
+    background: #B91C1C;
+
+}
+
+
+.btn-warning {
+
+    background: #F59E0B;
+
+    color: #FFFFFF;
+
+}
+
+
+.btn-warning:hover {
+
+    background: #D97706;
+
+}
+
+
+/*=========================================================
+AYUDAS DEL FORMULARIO
+=========================================================*/
+
+.form-help {
+
+    margin-top: 8px;
+
+    font-size: 13px;
+
+    color: #6B7280;
+
+    line-height: 1.5;
+
+}
+
+
+/*=========================================================
+BLOQUES DE INFORMACIÓN
+=========================================================*/
+
+.form-info {
+
+    padding: 18px;
+
+    border-radius: 12px;
+
+    margin-bottom: 24px;
+
+    line-height: 1.7;
+
+}
+
+
+.form-info-primary {
+
+    background: #EEF4FF;
+
+    color: #1E40AF;
+
+}
+
+
+.form-info-success {
+
+    background: #ECFDF5;
+
+    color: #15803D;
+
+}
+
+
+.form-info-warning {
+
+    background: #FFFBEB;
+
+    color: #B45309;
+
+}
+
+
+.form-info-danger {
+
+    background: #FEF2F2;
+
+    color: #B91C1C;
+
+}
+
+
+/*=========================================================
+CAMPOS DE BÚSQUEDA
+=========================================================*/
+
+.search-box {
+
+    width: 100%;
+
+    margin-bottom: 24px;
+
+}
+
+
+.search-box input {
+
+    width: 100%;
+
+    padding: 15px 18px;
+
+    border: 1px solid #D1D5DB;
+
+    border-radius: 12px;
+
+    font-size: 15px;
+
+}
+
+
+/*=========================================================
+UPLOAD DE ARCHIVOS
+=========================================================*/
+
+.file-upload {
+
+    border: 2px dashed #CBD5E1;
+
+    border-radius: 14px;
+
+    padding: 32px;
+
+    text-align: center;
+
+    background: #F8FAFC;
+
+    transition: all .25s ease;
+
+}
+
+
+.file-upload:hover {
+
+    border-color: #1E3A8A;
+
+    background: #EEF4FF;
+
+}
+
+
+.file-upload input[type="file"] {
+
+    margin-top: 18px;
+
+}
+
+
+.file-upload-title {
+
+    font-weight: 700;
+
+    margin-bottom: 10px;
+
+}
+
+
+.file-upload-description {
+
+    color: #6B7280;
+
+    line-height: 1.6;
+
+}
+
+
+/*=========================================================
+ANIMACIONES
+=========================================================*/
+
+.form-section {
+
+    animation: fadeForm .25s ease;
+
+}
+
+
+@keyframes fadeForm {
+
+    from {
+
+        opacity: 0;
+
+        transform: translateY(8px);
+
+    }
+
+    to {
+
+        opacity: 1;
+
+        transform: translateY(0);
+
+    }
+
+}
+
+
+/*=========================================================
+RESPONSIVE
+=========================================================*/
+
+@media (max-width: 768px) {
+
+    .form-row {
+
+        grid-template-columns: 1fr;
+
+    }
+
+    .form-actions {
+
+        flex-direction: column;
+
+    }
+
+    .btn {
+
+        width: 100%;
+
+    }
+
+}
+
+
+@media (max-width: 576px) {
+
+    .form-section-title {
+
+        font-size: 1.25rem;
+
+    }
+
+}
