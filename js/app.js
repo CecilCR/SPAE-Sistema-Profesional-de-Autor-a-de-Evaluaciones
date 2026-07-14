@@ -1,235 +1,906 @@
-/* ==========================================================
-   SPAE
-   Sistema Profesional de Autoría de Evaluaciones
-   app.js
-   Release R0.5
+/*==========================================================
+ SPAE
+ Sistema Profesional de Autoría de Evaluaciones
 
-   Núcleo de la aplicación.
-
-   Responsabilidades:
-   - Inicializar el sistema.
-   - Cargar configuración.
-   - Coordinar módulos.
-   - Gestionar el estado global.
-   - Iniciar la interfaz.
+ app.js
+ Versión 1.0
 ==========================================================*/
 
 const SPAE = (() => {
 
-    "use strict";
+"use strict";
 
-    /*=========================================================
-        ESTADO GLOBAL
-    =========================================================*/
+/*==========================================================
+ CONFIGURACIÓN
+==========================================================*/
 
-    const estado = {
+const CONFIG = {
 
-        version : "0.5.0",
+    appName: "SPAE",
 
-        curso : null,
+    version: "1.0.0",
 
-        examen : null,
+    autoSave: true,
 
-        pregunta : null,
+    autoSaveInterval: 30000
 
-        vista : "dashboard",
+};
 
-        configuracion : {},
+/*==========================================================
+ ESTADO GLOBAL
+==========================================================*/
 
-        iniciado : false
+const state = {
 
-    };
+    initialized: false,
 
+    currentCourse: null,
 
+    currentExam: null,
 
-    /*=========================================================
-        CONFIGURACIÓN
-    =========================================================*/
+    currentQuestion: null,
 
-    function cargarConfiguracion(){
+    currentView: "dashboard",
 
-        estado.configuracion =
+    autoSaveTimer: null
 
-            SPAEStorage.obtenerConfiguracion() || {};
+};
+
+/*==========================================================
+ INICIALIZACIÓN GENERAL
+==========================================================*/
+
+async function init() {
+
+    console.log(
+
+        `${CONFIG.appName} ${CONFIG.version}`
+
+    );
+
+    initializeModules();
+
+    registerEvents();
+
+    loadApplication();
+
+    startAutoSave();
+
+    state.initialized = true;
+
+}
+
+/*==========================================================
+ INICIALIZAR MÓDULOS
+==========================================================*/
+
+function initializeModules() {
+
+    if (window.SPAEStorage)
+
+        SPAEStorage.init();
+
+    if (window.SPAECourses)
+
+        SPAECourses.init();
+
+    if (window.SPAEQuestionBank)
+
+        SPAEQuestionBank.init();
+
+    if (window.SPAEExamBuilder)
+
+        SPAEExamBuilder.init();
+
+    if (window.SPAEQualityEngine)
+
+        SPAEQualityEngine.init();
+
+    if (window.SPAEBloomEngine)
+
+        SPAEBloomEngine.init();
+
+    if (window.SPAEDistractorEngine)
+
+        SPAEDistractorEngine.init();
+
+    if (window.SPAECaseGenerator)
+
+        SPAECaseGenerator.init();
+
+    if (window.SPAEAdvisorEngine)
+
+        SPAEAdvisorEngine.init();
+
+    if (window.SPAERouter)
+
+        SPAERouter.init();
+
+    if (window.SPAEUI)
+
+        SPAEUI.init();
+
+}
+
+/*==========================================================
+ CARGAR APLICACIÓN
+==========================================================*/
+
+function loadApplication() {
+
+    loadRecentCourses();
+
+    updateDashboard();
+
+}
+
+/*==========================================================
+ CURSOS RECIENTES
+==========================================================*/
+
+function loadRecentCourses() {
+
+    if (!window.SPAECourses)
+
+        return;
+
+    const list =
+
+        SPAECourses.getCourses();
+
+    SPAEUI.renderRecentCourses(
+
+        list
+
+    );
+
+}
+
+/*==========================================================
+ DASHBOARD
+==========================================================*/
+
+function updateDashboard() {
+
+    if (!window.SPAEUI)
+
+        return;
+
+    SPAEUI.updateDashboard({
+
+        currentCourse:
+
+            state.currentCourse,
+
+        version:
+
+            CONFIG.version
+
+    });
+
+}
+/*==========================================================
+ REGISTRO DE EVENTOS
+==========================================================*/
+
+function registerEvents() {
+
+    bindButton(
+
+        "btnCreateCourse",
+
+        createCourse
+
+    );
+
+    bindButton(
+
+        "btnOpenCourse",
+
+        openCourse
+
+    );
+
+    bindButton(
+
+        "btnImportWord",
+
+        importWord
+
+    );
+
+    bindButton(
+
+        "btnQuestionBank",
+
+        openQuestionBank
+
+    );
+
+    bindButton(
+
+        "btnBuildExam",
+
+        buildExam
+
+    );
+
+    window.addEventListener(
+
+        "beforeunload",
+
+        beforeExit
+
+    );
+
+}
+
+/*==========================================================
+ UTILIDADES
+==========================================================*/
+
+function bindButton(id, callback) {
+
+    const button =
+
+        document.getElementById(id);
+
+    if (!button) {
+
+        console.warn(
+
+            `No existe el botón ${id}`
+
+        );
+
+        return;
 
     }
 
+    button.addEventListener(
 
+        "click",
 
-    /*=========================================================
-        INICIALIZACIÓN
-    =========================================================*/
+        callback
 
-    function iniciar(){
+    );
 
-        if(estado.iniciado){
+}
 
-            return;
+/*==========================================================
+ CREAR CURSO
+==========================================================*/
+
+function createCourse() {
+
+    if (
+
+        window.SPAEDialogs
+
+    ) {
+
+        SPAEDialogs.openCourseDialog({
+
+            mode: "create",
+
+            onSave: saveCourse
+
+        });
+
+        return;
+
+    }
+
+    // Modo temporal hasta completar dialogs.js
+
+    const name = prompt(
+
+        "Nombre del curso"
+
+    );
+
+    if (
+
+        !name ||
+
+        !name.trim()
+
+    ) {
+
+        return;
+
+    }
+
+    const program = prompt(
+
+        "Programa",
+
+        ""
+
+    ) || "";
+
+    const semester = prompt(
+
+        "Semestre",
+
+        ""
+
+    ) || "";
+
+    saveCourse({
+
+        id: crypto.randomUUID(),
+
+        name: name.trim(),
+
+        program,
+
+        semester,
+
+        createdAt:
+
+            new Date().toISOString(),
+
+        updatedAt:
+
+            new Date().toISOString()
+
+    });
+
+}
+
+/*==========================================================
+ GUARDAR CURSO
+==========================================================*/
+
+function saveCourse(course) {
+
+    if (
+
+        !window.SPAECourses
+
+    ) {
+
+        console.error(
+
+            "SPAECourses no está disponible."
+
+        );
+
+        return;
+
+    }
+
+    SPAECourses.addCourse(
+
+        course
+
+    );
+
+    state.currentCourse =
+
+        course;
+
+    if (
+
+        window.SPAENotifications
+
+    ) {
+
+        SPAENotifications.success(
+
+            "Curso creado correctamente."
+
+        );
+
+    }
+
+    refreshCourses();
+
+}
+
+/*==========================================================
+ ACTUALIZAR LISTA
+==========================================================*/
+
+function refreshCourses() {
+
+    if (
+
+        !window.SPAECourses ||
+
+        !window.SPAEUI
+
+    ) {
+
+        return;
+
+    }
+
+    const list =
+
+        SPAECourses.getCourses();
+
+    SPAEUI.renderRecentCourses(
+
+        list
+
+    );
+
+    updateDashboard();
+
+}
+
+/*==========================================================
+ ABRIR CURSO
+==========================================================*/
+
+function openCourse() {
+
+    const courses =
+
+        SPAECourses.getCourses();
+
+    if (
+
+        courses.length === 0
+
+    ) {
+
+        notify(
+
+            "No existen cursos registrados."
+
+        );
+
+        return;
+
+    }
+
+    if (
+
+        window.SPAEDialogs
+
+    ) {
+
+        SPAEDialogs.openCourseSelector(
+
+            courses,
+
+            loadCourse
+
+        );
+
+        return;
+
+    }
+
+    loadCourse(
+
+        courses[0]
+
+    );
+
+}
+
+/*==========================================================
+ CARGAR CURSO
+==========================================================*/
+
+function loadCourse(course) {
+
+    state.currentCourse =
+
+        course;
+
+    if (
+
+        window.SPAERouter
+
+    ) {
+
+        SPAERouter.navigate(
+
+            "course"
+
+        );
+
+    }
+
+    updateDashboard();
+
+    notify(
+
+        `Curso activo: ${course.name}`
+
+    );
+
+} 
+/*==========================================================
+ IMPORTAR DOCUMENTOS
+==========================================================*/
+
+function importWord() {
+
+    const input = document.createElement("input");
+
+    input.type = "file";
+
+    input.accept = ".doc,.docx,.txt,.pdf";
+
+    input.addEventListener(
+
+        "change",
+
+        event => {
+
+            const file =
+
+                event.target.files[0];
+
+            if (!file) {
+
+                return;
+
+            }
+
+            notify(
+
+                `Archivo seleccionado: ${file.name}`
+
+            );
+
+            // Integración futura:
+            // SPAEImportEngine.import(file);
 
         }
 
-        console.log(
+    );
 
-            "%cSPAE",
+    input.click();
 
-            "font-size:18px;font-weight:bold;color:#005BAC"
+}
 
-        );
+/*==========================================================
+ BANCO DE PREGUNTAS
+==========================================================*/
 
-        console.log(
+function openQuestionBank() {
 
-            "Sistema Profesional de Autoría de Evaluaciones"
+    if (!state.currentCourse) {
 
-        );
+        notify(
 
-        console.log(
-
-            "Versión",
-
-            estado.version
+            "Primero debe abrir un curso."
 
         );
 
-        cargarConfiguracion();
-
-        registrarRutas();
-
-        registrarEventos();
-
-        SPAERouter.iniciar("dashboard");
-
-        estado.iniciado = true;
+        return;
 
     }
 
+    if (
 
+        window.SPAERouter
 
-    /*=========================================================
-        EVENTOS GLOBALES
-    =========================================================*/
+    ) {
 
-    function registrarEventos(){
+        SPAERouter.navigate(
 
-        document.addEventListener(
-
-            "click",
-
-            manejarClick
+            "question-bank"
 
         );
 
     }
 
+}
 
+/*==========================================================
+ CONSTRUCTOR DE EXÁMENES
+==========================================================*/
 
-    function manejarClick(event){
+function buildExam() {
 
-        const boton = event.target.closest("[data-route]");
+    if (!state.currentCourse) {
 
-        if(!boton) return;
+        notify(
 
-        event.preventDefault();
+            "Seleccione un curso antes de crear un examen."
 
-        const ruta = boton.dataset.route;
+        );
 
-        SPAERouter.navegar(ruta);
-
-    }
-
-
-
-    /*=========================================================
-        REGISTRO DE RUTAS
-    =========================================================*/
-
-    function registrarRutas(){
-
-        SPAERouter.registrarRutasBase();
+        return;
 
     }
 
+    if (
 
+        window.SPAERouter
 
-    /*=========================================================
-        ESTADO
-    =========================================================*/
+    ) {
 
-    function obtenerEstado(){
+        SPAERouter.navigate(
 
-        return structuredClone(estado);
+            "exam-builder"
 
-    }
-
-
-
-    function establecerCurso(curso){
-
-        estado.curso = curso;
+        );
 
     }
 
+}
 
+/*==========================================================
+ AUTOGUARDADO
+==========================================================*/
 
-    function establecerPregunta(pregunta){
+function startAutoSave() {
 
-        estado.pregunta = pregunta;
+    if (
 
-    }
+        !CONFIG.autoSave
 
+    ) {
 
-
-    function establecerExamen(examen){
-
-        estado.examen = examen;
-
-    }
-
-
-
-    function establecerVista(vista){
-
-        estado.vista = vista;
+        return;
 
     }
 
+    stopAutoSave();
 
+    state.autoSaveTimer =
 
-    /*=========================================================
-        API
-    =========================================================*/
+        setInterval(
 
-    return{
+            autoSave,
 
-        iniciar,
+            CONFIG.autoSaveInterval
 
-        obtenerEstado,
+        );
 
-        establecerCurso,
+}
 
-        establecerPregunta,
+function stopAutoSave() {
 
-        establecerExamen,
+    if (
 
-        establecerVista
+        state.autoSaveTimer
 
-    };
+    ) {
+
+        clearInterval(
+
+            state.autoSaveTimer
+
+        );
+
+        state.autoSaveTimer = null;
+
+    }
+
+}
+
+function autoSave() {
+
+    if (
+
+        !window.SPAEStorage
+
+    ) {
+
+        return;
+
+    }
+
+    try {
+
+        SPAEStorage.save(
+
+            "spae-session",
+
+            {
+
+                currentCourse:
+
+                    state.currentCourse,
+
+                currentExam:
+
+                    state.currentExam,
+
+                currentQuestion:
+
+                    state.currentQuestion,
+
+                currentView:
+
+                    state.currentView,
+
+                savedAt:
+
+                    new Date().toISOString()
+
+            }
+
+        );
+
+    }
+
+    catch (error) {
+
+        console.error(
+
+            error
+
+        );
+
+    }
+
+}
+
+/*==========================================================
+ RECUPERAR SESIÓN
+==========================================================*/
+
+function restoreSession() {
+
+    if (
+
+        !window.SPAEStorage
+
+    ) {
+
+        return;
+
+    }
+
+    const session =
+
+        SPAEStorage.load(
+
+            "spae-session"
+
+        );
+
+    if (!session) {
+
+        return;
+
+    }
+
+    state.currentCourse =
+
+        session.currentCourse || null;
+
+    state.currentExam =
+
+        session.currentExam || null;
+
+    state.currentQuestion =
+
+        session.currentQuestion || null;
+
+    state.currentView =
+
+        session.currentView || "dashboard";
+
+}
+
+/*==========================================================
+ CIERRE SEGURO
+==========================================================*/
+
+function beforeExit() {
+
+    autoSave();
+
+}
+
+/*==========================================================
+ NOTIFICACIONES
+==========================================================*/
+
+function notify(message) {
+
+    if (
+
+        window.SPAENotifications
+
+    ) {
+
+        SPAENotifications.info(
+
+            message
+
+        );
+
+    }
+
+    else {
+
+        console.log(message);
+
+    }
+
+}
+
+/*==========================================================
+ API PÚBLICA
+==========================================================*/
+
+return {
+
+    init,
+
+    createCourse,
+
+    saveCourse,
+
+    openCourse,
+
+    loadCourse,
+
+    importWord,
+
+    openQuestionBank,
+
+    buildExam,
+
+    refreshCourses,
+
+    updateDashboard,
+
+    autoSave,
+
+    restoreSession,
+
+    currentCourse() {
+
+        return structuredClone(
+
+            state.currentCourse
+
+        );
+
+    },
+
+    currentExam() {
+
+        return structuredClone(
+
+            state.currentExam
+
+        );
+
+    },
+
+    currentQuestion() {
+
+        return structuredClone(
+
+            state.currentQuestion
+
+        );
+
+    }
+
+};
 
 })();
 
-
-
-/*=========================================================
-    ARRANQUE
+/*==========================================================
+ ARRANQUE DE LA APLICACIÓN
 ==========================================================*/
 
-window.addEventListener(
+document.addEventListener(
 
     "DOMContentLoaded",
 
     () => {
 
-        SPAE.iniciar();
+        SPAE.init();
+
+        SPAE.restoreSession();
 
     }
 
-);
+);  
