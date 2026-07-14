@@ -1,0 +1,361 @@
+/*==========================================================
+ SPAE
+ Sistema Profesional de Autoría de Evaluaciones
+
+ css/notifications.css
+ Release 1.0
+==========================================================*/
+
+/*==========================================================
+ CONTENEDOR
+==========================================================*/
+
+.spae-notifications{
+
+    position:fixed;
+
+    top:20px;
+
+    right:20px;
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:12px;
+
+    width:360px;
+
+    max-width:90vw;
+
+    z-index:99999;
+
+    pointer-events:none;
+
+}
+
+.spae-notifications.top-left{
+
+    left:20px;
+
+    right:auto;
+
+}
+
+.spae-notifications.bottom-right{
+
+    top:auto;
+
+    bottom:20px;
+
+}
+
+.spae-notifications.bottom-left{
+
+    top:auto;
+
+    left:20px;
+
+    bottom:20px;
+
+    right:auto;
+
+}
+
+/*==========================================================
+ TOAST
+==========================================================*/
+
+.spae-toast{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:14px;
+
+    padding:16px;
+
+    border-radius:12px;
+
+    background:#ffffff;
+
+    border-left:5px solid #3b82f6;
+
+    box-shadow:
+
+        0 8px 25px rgba(0,0,0,.12);
+
+    opacity:0;
+
+    transform:translateX(40px);
+
+    transition:
+
+        opacity .25s ease,
+
+        transform .25s ease;
+
+    pointer-events:auto;
+
+    overflow:hidden;
+
+}
+
+.spae-toast.show{
+
+    opacity:1;
+
+    transform:translateX(0);
+
+}
+
+.spae-toast.hide{
+
+    opacity:0;
+
+    transform:translateX(40px);
+
+}
+
+/*==========================================================
+ ICONO
+==========================================================*/
+
+.toast-icon{
+
+    width:34px;
+
+    height:34px;
+
+    border-radius:50%;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    font-size:18px;
+
+    font-weight:700;
+
+    flex-shrink:0;
+
+}
+
+/*==========================================================
+ MENSAJE
+==========================================================*/
+
+.toast-content{
+
+    flex:1;
+
+    color:#1f2937;
+
+    font-size:14px;
+
+    line-height:1.45;
+
+    word-break:break-word;
+
+}
+
+/*==========================================================
+ BOTÓN CERRAR
+==========================================================*/
+
+.toast-close{
+
+    border:none;
+
+    background:none;
+
+    cursor:pointer;
+
+    font-size:18px;
+
+    color:#6b7280;
+
+    transition:.2s;
+
+    padding:0;
+
+    width:24px;
+
+    height:24px;
+
+    flex-shrink:0;
+
+}
+
+.toast-close:hover{
+
+    color:#111827;
+
+    transform:scale(1.15);
+
+}
+
+/*==========================================================
+ TIPOS
+==========================================================*/
+
+.spae-toast.success{
+
+    border-left-color:#22c55e;
+
+}
+
+.spae-toast.success .toast-icon{
+
+    background:#dcfce7;
+
+    color:#15803d;
+
+}
+
+.spae-toast.info{
+
+    border-left-color:#2563eb;
+
+}
+
+.spae-toast.info .toast-icon{
+
+    background:#dbeafe;
+
+    color:#1d4ed8;
+
+}
+
+.spae-toast.warning{
+
+    border-left-color:#f59e0b;
+
+}
+
+.spae-toast.warning .toast-icon{
+
+    background:#fef3c7;
+
+    color:#b45309;
+
+}
+
+.spae-toast.error{
+
+    border-left-color:#dc2626;
+
+}
+
+.spae-toast.error .toast-icon{
+
+    background:#fee2e2;
+
+    color:#b91c1c;
+
+}
+
+/*==========================================================
+ BARRA DE TIEMPO
+==========================================================*/
+
+.spae-toast::after{
+
+    content:"";
+
+    position:absolute;
+
+    left:0;
+
+    bottom:0;
+
+    height:3px;
+
+    width:100%;
+
+    background:rgba(0,0,0,.12);
+
+    animation:toastTimer linear forwards;
+
+    animation-duration:4s;
+
+}
+
+.spae-toast.success::after{
+
+    background:#22c55e;
+
+}
+
+.spae-toast.info::after{
+
+    background:#2563eb;
+
+}
+
+.spae-toast.warning::after{
+
+    background:#f59e0b;
+
+}
+
+.spae-toast.error::after{
+
+    background:#dc2626;
+
+}
+
+/*==========================================================
+ ANIMACIONES
+==========================================================*/
+
+@keyframes toastTimer{
+
+    from{
+
+        width:100%;
+
+    }
+
+    to{
+
+        width:0;
+
+    }
+
+}
+
+/*==========================================================
+ RESPONSIVE
+==========================================================*/
+
+@media (max-width:768px){
+
+    .spae-notifications{
+
+        left:12px;
+
+        right:12px;
+
+        width:auto;
+
+        top:12px;
+
+    }
+
+    .spae-toast{
+
+        padding:14px;
+
+    }
+
+    .toast-content{
+
+        font-size:13px;
+
+    }
+
+}
