@@ -1,61 +1,614 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SPAE | Sistema Profesional de Autoría de Evaluaciones</title>
-<link rel="stylesheet" href="css/base.css">
-<link rel="stylesheet" href="css/layout.css">
-<link rel="stylesheet" href="css/componentes.css">
-<link rel="stylesheet" href="css/responsive.css">
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="description"
+        content="SPAE - Sistema Profesional de Autoría de Evaluaciones">
+
+    <meta
+        name="author"
+        content="SPAE">
+
+    <title>
+
+        SPAE |
+        Sistema Profesional de Autoría de Evaluaciones
+
+    </title>
+
+    <!-- ======================================================
+         CSS BASE
+    ======================================================= -->
+
+    <link rel="stylesheet" href="css/base.css">
+
+    <link rel="stylesheet" href="css/layout.css">
+
+    <link rel="stylesheet" href="css/componentes.css">
+
+    <link rel="stylesheet" href="css/responsive.css">
+
+    <!-- Nuevos módulos -->
+
+    <link rel="stylesheet" href="css/dashboard.css">
+
+    <link rel="stylesheet" href="css/dialogs.css">
+
+    <link rel="stylesheet" href="css/notifications.css">
+
+    <link rel="stylesheet" href="css/forms.css">
+
+    <link rel="stylesheet" href="css/cards.css">
+
+    <link rel="stylesheet" href="css/tables.css">
+
+    <link rel="stylesheet" href="css/editor.css">
+
 </head>
+
 <body>
-<header>
-  <h1>SPAE</h1>
-  <p>Sistema Profesional de Autoría de Evaluaciones</p>
+
+<!-- ======================================================
+     LOADER
+======================================================= -->
+
+<div id="appLoader" class="app-loader">
+
+    <div class="loader-spinner"></div>
+
+    <div class="loader-text">
+
+        Iniciando SPAE...
+
+    </div>
+
+</div>
+
+<!-- ======================================================
+     CONTENEDOR PRINCIPAL
+======================================================= -->
+
+<div id="app" class="app hidden">
+
+<!-- ======================================================
+     BARRA SUPERIOR
+======================================================= -->
+
+<header class="topbar">
+
+    <div class="topbar-left">
+
+        <div class="logo">
+
+            SPAE
+
+        </div>
+
+        <div class="logo-text">
+
+            Sistema Profesional de Autoría de Evaluaciones
+
+        </div>
+
+    </div>
+
+    <div class="topbar-right">
+
+        <span
+            id="appVersion"
+            class="badge">
+
+            Release 1.0
+
+        </span>
+
+    </div>
+
 </header>
 
-<main class="contenedor">
-<section class="bienvenida">
-<h2>Bienvenido</h2>
-<p>Diseñe evaluaciones auténticas para sus cursos. El sistema le acompaña durante el proceso; las decisiones pedagógicas siguen siendo suyas.</p>
+<!-- ======================================================
+     CUERPO
+======================================================= -->
+
+<div class="app-body">
+
+<!-- ======================================================
+     MENÚ LATERAL
+======================================================= -->
+
+<aside class="sidebar">
+
+    <nav class="sidebar-menu">
+
+        <button
+            id="btnCreateCourse"
+            class="menu-button active">
+
+            📚 Crear curso
+
+        </button>
+
+        <button
+            id="btnOpenCourse"
+            class="menu-button">
+
+            📂 Abrir curso
+
+        </button>
+
+        <button
+            id="btnImportWord"
+            class="menu-button">
+
+            📄 Importar Word
+
+        </button>
+
+        <button
+            id="btnQuestionBank"
+            class="menu-button">
+
+            📝 Banco de preguntas
+
+        </button>
+
+        <button
+            id="btnBuildExam"
+            class="menu-button">
+
+            🧩 Construir examen
+
+        </button>
+
+        <hr>
+
+        <button
+            id="btnDashboard"
+            class="menu-button">
+
+            📊 Dashboard
+
+        </button>
+
+        <button
+            id="btnReports"
+            class="menu-button">
+
+            📈 Reportes
+
+        </button>
+
+        <button
+            id="btnSettings"
+            class="menu-button">
+
+            ⚙ Configuración
+
+        </button>
+
+    </nav>
+
+</aside>
+
+<!-- ======================================================
+     CONTENIDO PRINCIPAL
+======================================================= -->
+
+<main id="mainContent" class="main-content">
+
+<!-- ======================================================
+     CABECERA DEL DASHBOARD
+======================================================= -->
+
+<section class="page-header">
+
+    <div>
+
+        <h1>
+
+            Panel principal
+
+        </h1>
+
+        <p>
+
+            Diseñe evaluaciones alineadas con resultados de aprendizaje,
+            competencias y Taxonomía de Bloom.
+
+        </p>
+
+    </div>
+
 </section>
 
-<section class="acciones">
-<button id="btnNuevoCurso">Crear curso</button>
-<button id="btnAbrirCurso">Abrir curso</button>
-<button id="btnImportar">Importar Word</button>
-<button id="btnBanco">Banco de preguntas</button>
-<button id="btnExamen">Construir examen</button>
+<!-- ======================================================
+     CONTENEDOR DE ESTADÍSTICAS
+     (La Parte 2 comenzará aquí)
+======================================================= -->
+
+<section
+    id="dashboardStatistics"
+    class="dashboard-statistics">
+
+</section>
+<!-- ======================================================
+     ESTADÍSTICAS DEL SISTEMA
+======================================================= -->
+
+<section
+    id="dashboardStatistics"
+    class="dashboard-grid">
+
+    <article class="stat-card">
+
+        <div class="stat-icon">
+
+            📚
+
+        </div>
+
+        <div class="stat-info">
+
+            <span class="stat-title">
+
+                Cursos
+
+            </span>
+
+            <span
+                id="statCourses"
+                class="stat-value">
+
+                0
+
+            </span>
+
+        </div>
+
+    </article>
+
+    <article class="stat-card">
+
+        <div class="stat-icon">
+
+            🎯
+
+        </div>
+
+        <div class="stat-info">
+
+            <span class="stat-title">
+
+                Resultados de aprendizaje
+
+            </span>
+
+            <span
+                id="statLearningOutcomes"
+                class="stat-value">
+
+                0
+
+            </span>
+
+        </div>
+
+    </article>
+
+    <article class="stat-card">
+
+        <div class="stat-icon">
+
+            📝
+
+        </div>
+
+        <div class="stat-info">
+
+            <span class="stat-title">
+
+                Preguntas
+
+            </span>
+
+            <span
+                id="statQuestions"
+                class="stat-value">
+
+                0
+
+            </span>
+
+        </div>
+
+    </article>
+
+    <article class="stat-card">
+
+        <div class="stat-icon">
+
+            📄
+
+        </div>
+
+        <div class="stat-info">
+
+            <span class="stat-title">
+
+                Exámenes
+
+            </span>
+
+            <span
+                id="statExams"
+                class="stat-value">
+
+                0
+
+            </span>
+
+        </div>
+
+    </article>
+
 </section>
 
-<section class="panel">
-<h2>Cursos recientes</h2>
-<ul id="listaCursos">
-<li>No hay cursos registrados.</li>
-</ul>
+<!-- ======================================================
+     PANEL PRINCIPAL
+======================================================= -->
+
+<section class="dashboard-main">
+
+    <!-- ==========================================
+         CURSO ACTIVO
+    =========================================== -->
+
+    <section
+        id="currentCourse"
+        class="dashboard-panel">
+
+        <div class="empty-card">
+
+            <h2>
+
+                Ningún curso seleccionado
+
+            </h2>
+
+            <p>
+
+                Cree un curso nuevo o abra uno existente para comenzar a
+                trabajar.
+
+            </p>
+
+        </div>
+
+    </section>
+
+    <!-- ==========================================
+         CURSOS RECIENTES
+    =========================================== -->
+
+    <section class="dashboard-panel">
+
+        <div class="panel-header">
+
+            <h2>
+
+                Cursos recientes
+
+            </h2>
+
+            <button
+                id="btnRefreshCourses"
+                class="btn btn-secondary">
+
+                Actualizar
+
+            </button>
+
+        </div>
+
+        <div
+            id="recentCourses"
+            class="recent-courses">
+
+            <div class="empty-state">
+
+                No existen cursos registrados.
+
+            </div>
+
+        </div>
+
+    </section>
+
 </section>
 
-<section class="panel">
-<h2>Principios del SPAE</h2>
-<ul>
-<li>Centralidad del docente.</li>
-<li>Autenticidad profesional.</li>
-<li>Terminología de Administración y Gestión utilizada en LATAM.</li>
-<li>Evaluación alineada con competencias y resultados de aprendizaje.</li>
-<li>Reducción de la sobrecarga cognitiva.</li>
-<li>Sugerencias fundamentadas, nunca imposiciones.</li>
-</ul>
+<!-- ======================================================
+     ACCESOS RÁPIDOS
+======================================================= -->
+
+<section class="dashboard-panel">
+
+    <div class="panel-header">
+
+        <h2>
+
+            Acciones rápidas
+
+        </h2>
+
+    </div>
+
+    <div class="quick-actions">
+
+        <button
+            id="quickCreateCourse"
+            class="quick-card">
+
+            <span class="quick-icon">
+
+                📚
+
+            </span>
+
+            <span>
+
+                Nuevo curso
+
+            </span>
+
+        </button>
+
+        <button
+            id="quickQuestion"
+            class="quick-card">
+
+            <span class="quick-icon">
+
+                ✏️
+
+            </span>
+
+            <span>
+
+                Nueva pregunta
+
+            </span>
+
+        </button>
+
+        <button
+            id="quickExam"
+            class="quick-card">
+
+            <span class="quick-icon">
+
+                🧩
+
+            </span>
+
+            <span>
+
+                Nuevo examen
+
+            </span>
+
+        </button>
+
+        <button
+            id="quickImport"
+            class="quick-card">
+
+            <span class="quick-icon">
+
+                📥
+
+            </span>
+
+            <span>
+
+                Importar Word
+
+            </span>
+
+        </button>
+
+    </div>
+
 </section>
-</main>
 
-<footer>
-<p>Release R0.1 · Fundación del proyecto SPAE</p>
-</footer>
+<!-- ======================================================
+     PRINCIPIOS DEL SPAE
+======================================================= -->
 
-<script src="js/storage.js"></script>
-<script src="js/router.js"></script>
-<script src="js/util.js"></script>
-<script src="js/app.js"></script>
-</body>
-</html>
+<section class="dashboard-panel">
+
+    <div class="panel-header">
+
+        <h2>
+
+            Principios del SPAE
+
+        </h2>
+
+    </div>
+
+    <div class="principles">
+
+        <div class="principle">
+
+            ✓ Centralidad del docente
+
+        </div>
+
+        <div class="principle">
+
+            ✓ Evaluación auténtica
+
+        </div>
+
+        <div class="principle">
+
+            ✓ Resultados de aprendizaje
+
+        </div>
+
+        <div class="principle">
+
+            ✓ Competencias profesionales
+
+        </div>
+
+        <div class="principle">
+
+            ✓ Taxonomía de Bloom
+
+        </div>
+
+        <div class="principle">
+
+            ✓ Calidad pedagógica
+
+        </div>
+
+        <div class="principle">
+
+            ✓ Retroalimentación formativa
+
+        </div>
+
+        <div class="principle">
+
+            ✓ Mejora continua
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- ======================================================
+     ÁREA DINÁMICA
+======================================================= -->
+
+<section
+    id="workspace"
+    class="workspace">
+
+</section>
+
+<!-- ======================================================
+     La Parte 3 continúa desde aquí
+======================================================= -->
+  
