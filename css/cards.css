@@ -1,0 +1,664 @@
+/**********************************************************
+ SPAE
+ Sistema Profesional de Autoría de Evaluaciones
+
+ Archivo : css/cards.css
+ Versión : 1.0
+***********************************************************/
+
+
+/*=========================================================
+VARIABLES LOCALES
+=========================================================*/
+
+:root{
+
+    --card-radius:18px;
+    --card-padding:24px;
+    --card-border:#E5E7EB;
+    --card-background:#FFFFFF;
+    --card-shadow:0 10px 25px rgba(0,0,0,.05);
+
+}
+
+
+/*=========================================================
+CARD BASE
+=========================================================*/
+
+.card{
+
+    background:var(--card-background);
+
+    border:1px solid var(--card-border);
+
+    border-radius:var(--card-radius);
+
+    padding:var(--card-padding);
+
+    box-shadow:var(--card-shadow);
+
+    transition:all .25s ease;
+
+}
+
+
+.card:hover{
+
+    transform:translateY(-3px);
+
+    box-shadow:
+
+        0 16px 30px rgba(0,0,0,.08);
+
+}
+
+
+/*=========================================================
+CARD HEADER
+=========================================================*/
+
+.card-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    gap:15px;
+
+    margin-bottom:20px;
+
+}
+
+
+.card-title{
+
+    font-size:22px;
+
+    font-weight:700;
+
+    color:#1F2937;
+
+}
+
+
+.card-subtitle{
+
+    margin-top:5px;
+
+    font-size:14px;
+
+    color:#6B7280;
+
+}
+
+
+/*=========================================================
+CARD BODY
+=========================================================*/
+
+.card-body{
+
+    line-height:1.7;
+
+    color:#374151;
+
+}
+
+
+/*=========================================================
+CARD FOOTER
+=========================================================*/
+
+.card-footer{
+
+    margin-top:25px;
+
+    display:flex;
+
+    justify-content:flex-end;
+
+    gap:12px;
+
+    flex-wrap:wrap;
+
+}
+
+
+/*=========================================================
+CARD DE CURSO
+=========================================================*/
+
+.course-card{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:18px;
+
+}
+
+
+.course-card-title{
+
+    font-size:24px;
+
+    font-weight:700;
+
+    color:#1E3A8A;
+
+}
+
+
+.course-card-meta{
+
+    display:grid;
+
+    gap:8px;
+
+    color:#4B5563;
+
+}
+
+
+.course-card-description{
+
+    line-height:1.8;
+
+    color:#374151;
+
+}
+
+
+/*=========================================================
+CARD DE RESULTADOS DE APRENDIZAJE
+=========================================================*/
+
+.learning-outcome-card{
+
+    padding:22px;
+
+    border-radius:16px;
+
+    background:#F8FAFC;
+
+    border-left:
+
+        6px solid #1E3A8A;
+
+}
+
+
+.learning-outcome-card h3{
+
+    margin-bottom:12px;
+
+}
+
+
+.learning-outcome-card p{
+
+    line-height:1.7;
+
+}
+
+
+/*=========================================================
+CARD DE PREGUNTAS
+=========================================================*/
+
+.question-card{
+
+    border-left:
+
+        6px solid #1E3A8A;
+
+}
+
+
+.question-card-title{
+
+    font-size:20px;
+
+    font-weight:700;
+
+    margin-bottom:15px;
+
+}
+
+
+.question-card-body{
+
+    line-height:1.8;
+
+}
+
+
+.question-options{
+
+    margin-top:20px;
+
+    display:grid;
+
+    gap:12px;
+
+}
+
+
+.question-option{
+
+    padding:15px;
+
+    border-radius:12px;
+
+    border:
+
+        1px solid #E5E7EB;
+
+    background:#FAFAFA;
+
+}
+
+
+.correct-answer{
+
+    border-color:#16A34A;
+
+    background:#ECFDF5;
+
+}
+
+
+.incorrect-answer{
+
+    border-color:#DC2626;
+
+    background:#FEF2F2;
+
+}
+
+
+/*=========================================================
+CARD DE EXAMEN
+=========================================================*/
+
+.exam-card{
+
+    border-left:
+
+        6px solid #7C3AED;
+
+}
+
+
+.exam-card h3{
+
+    margin-bottom:12px;
+
+}
+
+
+.exam-card-info{
+
+    display:grid;
+
+    gap:8px;
+
+    color:#4B5563;
+
+}
+
+
+/*=========================================================
+CARD DE CASOS
+=========================================================*/
+
+.case-card{
+
+    border-left:
+
+        6px solid #F59E0B;
+
+}
+
+
+.case-card-title{
+
+    font-size:22px;
+
+    margin-bottom:15px;
+
+    font-weight:700;
+
+}
+
+
+.case-card-body{
+
+    line-height:1.9;
+
+}
+
+
+/*=========================================================
+CARD DE REPORTES
+=========================================================*/
+
+.report-card{
+
+    border-left:
+
+        6px solid #16A34A;
+
+}
+
+
+.report-card h3{
+
+    margin-bottom:15px;
+
+}
+
+
+.report-card p{
+
+    line-height:1.8;
+
+}
+
+
+/*=========================================================
+CARD DE ESTADO
+=========================================================*/
+
+.status-card{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    gap:15px;
+
+}
+
+
+.status-indicator{
+
+    width:14px;
+
+    height:14px;
+
+    border-radius:50%;
+
+}
+
+
+.status-success{
+
+    background:#16A34A;
+
+}
+
+
+.status-warning{
+
+    background:#F59E0B;
+
+}
+
+
+.status-danger{
+
+    background:#DC2626;
+
+}
+
+
+.status-info{
+
+    background:#2563EB;
+
+}
+
+
+/*=========================================================
+BADGES
+=========================================================*/
+
+.badge-card{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    padding:6px 14px;
+
+    border-radius:50px;
+
+    font-size:13px;
+
+    font-weight:600;
+
+}
+
+
+.badge-primary{
+
+    background:#DBEAFE;
+
+    color:#1E40AF;
+
+}
+
+
+.badge-success{
+
+    background:#DCFCE7;
+
+    color:#15803D;
+
+}
+
+
+.badge-warning{
+
+    background:#FEF3C7;
+
+    color:#B45309;
+
+}
+
+
+.badge-danger{
+
+    background:#FEE2E2;
+
+    color:#B91C1C;
+
+}
+
+
+/*=========================================================
+CARDS EN GRID
+=========================================================*/
+
+.cards-grid{
+
+    display:grid;
+
+    gap:24px;
+
+    grid-template-columns:
+
+        repeat(auto-fit,
+        minmax(300px,1fr));
+
+}
+
+
+/*=========================================================
+EMPTY CARD
+=========================================================*/
+
+.empty-card{
+
+    min-height:220px;
+
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:center;
+
+    align-items:center;
+
+    text-align:center;
+
+    gap:15px;
+
+    color:#6B7280;
+
+}
+
+
+.empty-card h2{
+
+    color:#111827;
+
+}
+
+
+.empty-card p{
+
+    max-width:600px;
+
+    line-height:1.7;
+
+}
+
+
+/*=========================================================
+CARD DE INFORMACIÓN
+=========================================================*/
+
+.info-card{
+
+    background:#EEF4FF;
+
+    border-left:
+
+        6px solid #1E3A8A;
+
+}
+
+
+.success-card{
+
+    background:#ECFDF5;
+
+    border-left:
+
+        6px solid #16A34A;
+
+}
+
+
+.warning-card{
+
+    background:#FFFBEB;
+
+    border-left:
+
+        6px solid #F59E0B;
+
+}
+
+
+.error-card{
+
+    background:#FEF2F2;
+
+    border-left:
+
+        6px solid #DC2626;
+
+}
+
+
+/*=========================================================
+ANIMACIÓN DE ENTRADA
+=========================================================*/
+
+.card{
+
+    animation:
+
+        fadeCard .30s ease;
+
+}
+
+
+@keyframes fadeCard{
+
+    from{
+
+        opacity:0;
+
+        transform:translateY(10px);
+
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:translateY(0);
+
+    }
+
+}
+
+
+/*=========================================================
+RESPONSIVE
+=========================================================*/
+
+@media(max-width:768px){
+
+    .card-header{
+
+        flex-direction:column;
+
+        align-items:flex-start;
+
+    }
+
+    .card-footer{
+
+        flex-direction:column;
+
+    }
+
+    .course-card-title{
+
+        font-size:20px;
+
+    }
+
+}
+
+
+@media(max-width:576px){
+
+    .card{
+
+        padding:18px;
+
+    }
+
+}
