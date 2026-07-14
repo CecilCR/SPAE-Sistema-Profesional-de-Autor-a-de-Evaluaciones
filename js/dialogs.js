@@ -1,626 +1,672 @@
-/*==========================================================
+/*********************************************************
  SPAE
  Sistema Profesional de Autoría de Evaluaciones
 
- dialogs.js
- Release 1.0
-==========================================================*/
+ Archivo : js/dialogs.js
+ Versión : 1.0
 
-const SPAEDialogs = (()=>{
+ Administrador centralizado de diálogos y modales.
 
-"use strict";
+*********************************************************/
 
-/*==========================================================
- ESTADO
-==========================================================*/
 
-const state={
+const Dialogs = {
 
-    overlay:null,
 
-    dialog:null,
+    //--------------------------------------------------
+    // CONFIGURACIÓN
+    //--------------------------------------------------
 
-    onSave:null,
+    overlayID: "spae-dialog-overlay",
 
-    currentCourse:null,
+    dialogID: "spae-dialog",
 
-    mode:"create"
 
-};
 
-/*==========================================================
- INICIALIZACIÓN
-==========================================================*/
+    //--------------------------------------------------
+    // INICIALIZACIÓN
+    //--------------------------------------------------
 
-function init(){
+    init() {
 
-    createRoot();
+        this.createDialogContainer();
 
-}
-
-/*==========================================================
- CREAR CONTENEDOR
-==========================================================*/
-
-function createRoot(){
-
-    if(document.getElementById("spae-dialog-overlay")){
-
-        state.overlay=document.getElementById(
-            "spae-dialog-overlay"
+        console.log(
+            "Dialogs inicializado."
         );
 
-        return;
+    },
 
-    }
 
-    state.overlay=document.createElement("div");
 
-    state.overlay.id="spae-dialog-overlay";
+    //--------------------------------------------------
+    // CREAR CONTENEDOR
+    //--------------------------------------------------
 
-    state.overlay.className="spae-overlay hidden";
+    createDialogContainer() {
 
-    state.overlay.innerHTML=`
+        if (document.getElementById(this.overlayID)) {
 
-        <div class="spae-dialog" id="spae-dialog">
-
-        </div>
-
-    `;
-
-    document.body.appendChild(state.overlay);
-
-    state.dialog=document.getElementById(
-        "spae-dialog"
-    );
-
-    state.overlay.addEventListener(
-
-        "click",
-
-        event=>{
-
-            if(event.target===state.overlay){
-
-                close();
-
-            }
+            return;
 
         }
 
-    );
+        const overlay = document.createElement("div");
 
-}
+        overlay.id = this.overlayID;
 
-/*==========================================================
- ABRIR
-==========================================================*/
+        overlay.className =
+            "spae-overlay hidden";
 
-function open(html){
 
-    state.dialog.innerHTML=html;
+        overlay.innerHTML = `
 
-    state.overlay.classList.remove("hidden");
-
-}
-
-/*==========================================================
- CERRAR
-==========================================================*/
-
-function close(){
-
-    state.overlay.classList.add("hidden");
-
-    state.dialog.innerHTML="";
-
-}
-
-/*==========================================================
- DIALOGO CURSO
-==========================================================*/
-
-function openCourseDialog(options={}){
-
-    state.mode=options.mode || "create";
-
-    state.currentCourse=options.course || null;
-
-    state.onSave=options.onSave;
-
-    const course=state.currentCourse || {};
-
-    open(`
-
-    <div class="dialog-header">
-
-        <h2>
-
-        ${
-            state.mode==="create"
-            ? "Nuevo Curso"
-            : "Editar Curso"
-        }
-
-        </h2>
-
-    </div>
-
-    <div class="dialog-body">
-
-        <label>
-
-            Nombre
-
-        </label>
-
-        <input
-            id="dlgCourseName"
-            type="text"
-            value="${course.name || ""}">
-
-        <label>
-
-            Programa
-
-        </label>
-
-        <input
-            id="dlgProgram"
-            type="text"
-            value="${course.program || ""}">
-
-        <label>
-
-            Semestre
-
-        </label>
-
-        <input
-            id="dlgSemester"
-            type="text"
-            value="${course.semester || ""}">
-
-    </div>
-
-    <div class="dialog-footer">
-
-        <button
-            id="dlgCancel"
-            class="btn">
-
-            Cancelar
-
-        </button>
-
-        <button
-            id="dlgSave"
-            class="btn btn-primary">
-
-            Guardar
-
-        </button>
-
-    </div>
-
-    `);
-
-    bindCourseDialog();
-
-}
-
-/*==========================================================
- EVENTOS
-==========================================================*/
-
-function bindCourseDialog(){
-
-    document
-
-        .getElementById("dlgCancel")
-
-        .addEventListener(
-
-            "click",
-
-            close
-
-        );
-
-    document
-
-        .getElementById("dlgSave")
-
-        .addEventListener(
-
-            "click",
-
-            saveCourse
-
-        );
-
-}
-
-/*==========================================================
- VALIDACIÓN
-==========================================================*/
-
-function validateCourse(){
-
-    const name=document
-
-        .getElementById("dlgCourseName")
-
-        .value
-
-        .trim();
-
-    if(name===""){
-
-        alert(
-
-            "Debe ingresar el nombre del curso."
-
-        );
-
-        return false;
-
-    }
-
-    return true;
-
-}
-/*==========================================================
- GUARDAR CURSO
-==========================================================*/
-
-function saveCourse() {
-
-    if (!validateCourse()) {
-
-        return;
-
-    }
-
-    const course = {
-
-        id:
-
-            state.currentCourse?.id ||
-
-            crypto.randomUUID(),
-
-        name:
-
-            document
-
-                .getElementById("dlgCourseName")
-
-                .value
-
-                .trim(),
-
-        program:
-
-            document
-
-                .getElementById("dlgProgram")
-
-                .value
-
-                .trim(),
-
-        semester:
-
-            document
-
-                .getElementById("dlgSemester")
-
-                .value
-
-                .trim(),
-
-        learningOutcomes:
-
-            state.currentCourse?.learningOutcomes || [],
-
-        competencies:
-
-            state.currentCourse?.competencies || [],
-
-        questions:
-
-            state.currentCourse?.questions || [],
-
-        exams:
-
-            state.currentCourse?.exams || [],
-
-        createdAt:
-
-            state.currentCourse?.createdAt ||
-
-            new Date().toISOString(),
-
-        updatedAt:
-
-            new Date().toISOString()
-
-    };
-
-    if (typeof state.onSave === "function") {
-
-        state.onSave(course);
-
-    }
-
-    document.dispatchEvent(
-
-        new CustomEvent(
-
-            state.mode === "create"
-
-                ? "spae-course-created"
-
-                : "spae-course-updated",
-
-            {
-
-                detail: course
-
-            }
-
-        )
-
-    );
-
-    close();
-
-}
-
-/*==========================================================
- SELECTOR DE CURSOS
-==========================================================*/
-
-function openCourseSelector(courses = [], onSelect = null) {
-
-    state.onSave = onSelect;
-
-    open(`
-
-    <div class="dialog-header">
-
-        <h2>
-
-            Abrir curso
-
-        </h2>
-
-    </div>
-
-    <div class="dialog-body">
-
-        <input
-
-            id="dlgCourseSearch"
-
-            type="search"
-
-            placeholder="Buscar curso...">
-
-        <div
-
-            id="dlgCourseList"
-
-            class="course-selector">
-
-        </div>
-
-    </div>
-
-    <div class="dialog-footer">
-
-        <button
-
-            id="dlgClose"
-
-            class="btn">
-
-            Cerrar
-
-        </button>
-
-    </div>
-
-    `);
-
-    document
-
-        .getElementById("dlgClose")
-
-        .addEventListener(
-
-            "click",
-
-            close
-
-        );
-
-    document
-
-        .getElementById("dlgCourseSearch")
-
-        .addEventListener(
-
-            "input",
-
-            event => {
-
-                renderCourseSelector(
-
-                    courses,
-
-                    event.target.value
-
-                );
-
-            }
-
-        );
-
-    renderCourseSelector(
-
-        courses,
-
-        ""
-
-    );
-
-}
-
-/*==========================================================
- RENDER CURSOS
-==========================================================*/
-
-function renderCourseSelector(
-
-    courses,
-
-    filter = ""
-
-) {
-
-    const container =
-
-        document.getElementById(
-
-            "dlgCourseList"
-
-        );
-
-    if (!container) {
-
-        return;
-
-    }
-
-    const search =
-
-        filter
-
-            .toLowerCase()
-
-            .trim();
-
-    const filtered =
-
-        courses.filter(course =>
-
-            course.name
-
-                .toLowerCase()
-
-                .includes(search)
-
-        );
-
-    if (!filtered.length) {
-
-        container.innerHTML = `
-
-            <div class="empty-state">
-
-                No existen coincidencias.
+            <div id="${this.dialogID}"
+                 class="spae-dialog">
 
             </div>
 
         `;
 
-        return;
+        document.body.appendChild(
+            overlay
+        );
 
-    }
+    },
 
-    container.innerHTML = "";
 
-    filtered.forEach(course => {
 
-        const item =
+    //--------------------------------------------------
+    // ABRIR DIÁLOGO
+    //--------------------------------------------------
 
-            document.createElement("div");
+    open(config = {}) {
 
-        item.className =
+        const {
 
-            "course-selector-item";
+            title = "SPAE",
+            subtitle = "",
+            body = "",
+            footer = "",
+            size = "medium",
+            closable = true
 
-        item.innerHTML = `
+        } = config;
 
-            <strong>
 
-                ${course.name}
+        const overlay = document.getElementById(
+            this.overlayID
+        );
 
-            </strong>
+        const dialog = document.getElementById(
+            this.dialogID
+        );
 
-            <small>
 
-                ${course.program || ""}
+        dialog.className =
+            `spae-dialog dialog-${size}`;
 
-            </small>
+
+        dialog.innerHTML = `
+
+            <div class="dialog-header">
+
+                <div>
+
+                    <h2>${title}</h2>
+
+                    <p>${subtitle}</p>
+
+                </div>
+
+                ${
+                    closable
+                    ? `<button id="dialog-close">
+                        ×
+                       </button>`
+                    : ""
+                }
+
+            </div>
+
+            <div class="dialog-body">
+
+                ${body}
+
+            </div>
+
+            <div class="dialog-footer">
+
+                ${footer}
+
+            </div>
 
         `;
 
-        item.addEventListener(
+
+        overlay.classList.remove(
+            "hidden"
+        );
+
+
+        if (closable) {
+
+            this.bindCloseButton();
+
+        }
+
+        this.bindOutsideClick();
+
+    },
+
+
+
+    //--------------------------------------------------
+    // CERRAR
+    //--------------------------------------------------
+
+    close() {
+
+        const overlay = document.getElementById(
+            this.overlayID
+        );
+
+        overlay.classList.add(
+            "hidden"
+        );
+
+    },
+
+
+
+    //--------------------------------------------------
+    // BOTÓN CERRAR
+    //--------------------------------------------------
+
+    bindCloseButton() {
+
+        const button = document.getElementById(
+            "dialog-close"
+        );
+
+        if (!button) {
+
+            return;
+
+        }
+
+        button.addEventListener(
 
             "click",
 
             () => {
 
-                if (
-
-                    typeof state.onSave ===
-
-                    "function"
-
-                ) {
-
-                    state.onSave(course);
-
-                }
-
-                close();
+                this.close();
 
             }
 
         );
 
-        container.appendChild(item);
+    },
 
-    });
 
-}
 
-/*==========================================================
- API PÚBLICA
-==========================================================*/
+    //--------------------------------------------------
+    // CERRAR AL HACER CLICK FUERA
+    //--------------------------------------------------
 
-return {
+    bindOutsideClick() {
 
-    init,
+        const overlay = document.getElementById(
+            this.overlayID
+        );
 
-    close,
+        overlay.onclick = (event) => {
 
-    open,
+            if (
 
-    openCourseDialog,
+                event.target === overlay
 
-    openCourseSelector
+            ) {
+
+                this.close();
+
+            }
+
+        };
+
+    },
+
+
+
+    //--------------------------------------------------
+    // ALERTA
+    //--------------------------------------------------
+
+    alert(
+
+        title,
+        message
+
+    ) {
+
+        this.open({
+
+            title,
+
+            body: `
+
+                <p>
+
+                    ${message}
+
+                </p>
+
+            `,
+
+            footer: `
+
+                <button
+                class="btn btn-primary"
+                id="dialog-ok">
+
+                    Aceptar
+
+                </button>
+
+            `
+
+        });
+
+
+        setTimeout(() => {
+
+            const button =
+                document.getElementById(
+                    "dialog-ok"
+                );
+
+            if (button) {
+
+                button.onclick = () => {
+
+                    this.close();
+
+                };
+
+            }
+
+        }, 50);
+
+    },
+
+
+
+    //--------------------------------------------------
+    // CONFIRMACIÓN
+    //--------------------------------------------------
+
+    confirm(
+
+        title,
+        message,
+        callback
+
+    ) {
+
+        this.open({
+
+            title,
+
+            body: `
+
+                <p>
+
+                    ${message}
+
+                </p>
+
+            `,
+
+            footer: `
+
+                <button
+                class="btn btn-secondary"
+                id="dialog-cancel">
+
+                    Cancelar
+
+                </button>
+
+                <button
+                class="btn btn-primary"
+                id="dialog-confirm">
+
+                    Confirmar
+
+                </button>
+
+            `
+
+        });
+
+
+        setTimeout(() => {
+
+            const confirmButton =
+                document.getElementById(
+                    "dialog-confirm"
+                );
+
+            const cancelButton =
+                document.getElementById(
+                    "dialog-cancel"
+                );
+
+
+            if (confirmButton) {
+
+                confirmButton.onclick = () => {
+
+                    this.close();
+
+                    if (callback) {
+
+                        callback();
+
+                    }
+
+                };
+
+            }
+
+
+            if (cancelButton) {
+
+                cancelButton.onclick = () => {
+
+                    this.close();
+
+                };
+
+            }
+
+        }, 50);
+
+    },
+
+
+
+    //--------------------------------------------------
+    // WIZARD DE CURSOS
+    //--------------------------------------------------
+
+    openCourseWizard() {
+
+        this.open({
+
+            title:
+            "Crear nuevo curso",
+
+            subtitle:
+            "Configuración inicial.",
+
+            size:
+            "large",
+
+            body:
+
+            `
+
+            <div class="form-group">
+
+                <label>
+
+                    Nombre del curso
+
+                </label>
+
+                <input
+                    id="course-name"
+                    class="form-control"
+                    type="text">
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+
+                    Código
+
+                </label>
+
+                <input
+                    id="course-code"
+                    class="form-control"
+                    type="text">
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+
+                    Nivel
+
+                </label>
+
+                <select
+                    id="course-level"
+                    class="form-control">
+
+                    <option>
+
+                        Pregrado
+
+                    </option>
+
+                    <option>
+
+                        Posgrado
+
+                    </option>
+
+                    <option>
+
+                        Ejecutivo
+
+                    </option>
+
+                </select>
+
+            </div>
+
+            `,
+
+
+            footer:
+
+            `
+
+            <button
+            class="btn btn-secondary"
+            id="course-cancel">
+
+                Cancelar
+
+            </button>
+
+            <button
+            class="btn btn-primary"
+            id="course-save">
+
+                Guardar
+
+            </button>
+
+            `
+
+        });
+
+
+        this.bindCourseWizard();
+
+    },
+
+
+
+    //--------------------------------------------------
+    // GUARDAR CURSO
+    //--------------------------------------------------
+
+    bindCourseWizard() {
+
+        setTimeout(() => {
+
+            const saveButton =
+                document.getElementById(
+                    "course-save"
+                );
+
+            const cancelButton =
+                document.getElementById(
+                    "course-cancel"
+                );
+
+
+            if (cancelButton) {
+
+                cancelButton.onclick =
+                () => this.close();
+
+            }
+
+
+            if (saveButton) {
+
+                saveButton.onclick =
+                () => {
+
+                    const name =
+                    document.getElementById(
+                        "course-name"
+                    ).value;
+
+                    const code =
+                    document.getElementById(
+                        "course-code"
+                    ).value;
+
+                    const level =
+                    document.getElementById(
+                        "course-level"
+                    ).value;
+
+
+                    const course = {
+
+                        name,
+                        code,
+                        level
+
+                    };
+
+
+                    console.log(
+                        course
+                    );
+
+
+                    if (
+                        window.Notifications
+                    ) {
+
+                        Notifications.success(
+
+                            "Curso creado correctamente."
+
+                        );
+
+                    }
+
+                    this.close();
+
+                };
+
+            }
+
+        }, 50);
+
+    },
+
+
+
+    //--------------------------------------------------
+    // MOSTRAR HTML PERSONALIZADO
+    //--------------------------------------------------
+
+    custom(config) {
+
+        this.open(config);
+
+    },
+
+
+
+    //--------------------------------------------------
+    // UTILIDADES
+    //--------------------------------------------------
+
+    isOpen() {
+
+        const overlay =
+            document.getElementById(
+                this.overlayID
+            );
+
+        return !overlay.classList.contains(
+            "hidden"
+        );
+
+    },
+
+
+
+    //--------------------------------------------------
+    // DEBUG
+    //--------------------------------------------------
+
+    debug() {
+
+        console.log(
+
+            "Dialog abierto:",
+            this.isOpen()
+
+        );
+
+    }
+
 
 };
 
-})();
 
-/*==========================================================
- INICIALIZACIÓN
-==========================================================*/
+
+
+/*********************************************************
+EXPORTACIÓN GLOBAL
+*********************************************************/
+
+window.Dialogs = Dialogs;
+
+
+
+/*********************************************************
+INICIALIZACIÓN AUTOMÁTICA
+*********************************************************/
 
 document.addEventListener(
 
@@ -628,8 +674,8 @@ document.addEventListener(
 
     () => {
 
-        SPAEDialogs.init();
+        Dialogs.init();
 
     }
 
-);  
+);
