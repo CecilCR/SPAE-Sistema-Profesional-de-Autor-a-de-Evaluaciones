@@ -611,4 +611,993 @@
 <!-- ======================================================
      La Parte 3 continúa desde aquí
 ======================================================= -->
-  
+  <!-- ======================================================
+     VISTAS DE LA APLICACIÓN
+======================================================= -->
+
+<section id="viewsContainer" class="views-container">
+
+    <!-- ==========================================
+         DASHBOARD
+    =========================================== -->
+
+    <section
+        id="view-dashboard"
+        class="app-view active-view">
+
+    </section>
+
+
+    <!-- ==========================================
+         CURSO
+    =========================================== -->
+
+    <section
+        id="view-course"
+        class="app-view hidden-view">
+
+        <div class="panel-header">
+
+            <h2>
+
+                Gestión del Curso
+
+            </h2>
+
+        </div>
+
+        <div id="courseWorkspace">
+
+            <div class="empty-state">
+
+                Seleccione un curso para comenzar.
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ==========================================
+         RESULTADOS DE APRENDIZAJE
+    =========================================== -->
+
+    <section
+        id="view-learning-outcomes"
+        class="app-view hidden-view">
+
+        <div class="panel-header">
+
+            <h2>
+
+                Resultados de aprendizaje
+
+            </h2>
+
+        </div>
+
+        <div
+            id="learningOutcomesWorkspace">
+
+        </div>
+
+    </section>
+
+
+    <!-- ==========================================
+         BANCO DE PREGUNTAS
+    =========================================== -->
+
+    <section
+        id="view-question-bank"
+        class="app-view hidden-view">
+
+        <div class="panel-header">
+
+            <h2>
+
+                Banco de preguntas
+
+            </h2>
+
+        </div>
+
+        <div
+            id="questionBankWorkspace">
+
+        </div>
+
+    </section>
+
+
+    <!-- ==========================================
+         EDITOR DE PREGUNTAS
+    =========================================== -->
+
+    <section
+        id="view-question-editor"
+        class="app-view hidden-view">
+
+        <div class="panel-header">
+
+            <h2>
+
+                Editor de preguntas
+
+            </h2>
+
+        </div>
+
+        <div
+            id="questionEditorWorkspace">
+
+        </div>
+
+    </section>
+
+
+    <!-- ==========================================
+         CONSTRUCTOR DE EXÁMENES
+    =========================================== -->
+
+    <section
+        id="view-exam-builder"
+        class="app-view hidden-view">
+
+        <div class="panel-header">
+
+            <h2>
+
+                Constructor de exámenes
+
+            </h2>
+
+        </div>
+
+        <div
+            id="examBuilderWorkspace">
+
+        </div>
+
+    </section>
+
+
+    <!-- ==========================================
+         VISTA PREVIA DEL EXAMEN
+    =========================================== -->
+
+    <section
+        id="view-exam-preview"
+        class="app-view hidden-view">
+
+        <div class="panel-header">
+
+            <h2>
+
+                Vista previa del examen
+
+            </h2>
+
+        </div>
+
+        <div
+            id="examPreviewWorkspace">
+
+        </div>
+
+    </section>
+
+
+    <!-- ==========================================
+         REPORTES
+    =========================================== -->
+
+    <section
+        id="view-reports"
+        class="app-view hidden-view">
+
+        <div class="panel-header">
+
+            <h2>
+
+                Reportes pedagógicos
+
+            </h2>
+
+        </div>
+
+        <div
+            id="reportsWorkspace">
+
+        </div>
+
+    </section>
+
+
+    <!-- ==========================================
+         CONFIGURACIÓN
+    =========================================== -->
+
+    <section
+        id="view-settings"
+        class="app-view hidden-view">
+
+        <div class="panel-header">
+
+            <h2>
+
+                Configuración
+
+            </h2>
+
+        </div>
+
+        <div
+            id="settingsWorkspace">
+
+        </div>
+
+    </section>
+
+</section>
+
+
+<!-- ======================================================
+     PLANTILLAS REUTILIZABLES
+======================================================= -->
+
+<template id="loadingTemplate">
+
+    <div class="loading-state">
+
+        <div class="loading-spinner"></div>
+
+        <p>
+
+            Cargando información...
+
+        </p>
+
+    </div>
+
+</template>
+
+
+<template id="emptyStateTemplate">
+
+    <div class="empty-state">
+
+        <h3>
+
+            No existen elementos disponibles.
+
+        </h3>
+
+    </div>
+
+</template>
+
+
+<template id="errorStateTemplate">
+
+    <div class="error-state">
+
+        <h3>
+
+            Se ha producido un error.
+
+        </h3>
+
+        <p>
+
+            Intente nuevamente.
+
+        </p>
+
+    </div>
+
+</template>
+
+
+<!-- ======================================================
+     PANEL DE INFORMACIÓN DEL SISTEMA
+======================================================= -->
+
+<section class="dashboard-panel">
+
+    <div class="panel-header">
+
+        <h2>
+
+            Estado del sistema
+
+        </h2>
+
+    </div>
+
+    <div class="system-status">
+
+        <div class="status-item">
+
+            Aplicación:
+
+            <span id="statusApplication">
+
+                Inicializando...
+
+            </span>
+
+        </div>
+
+        <div class="status-item">
+
+            Almacenamiento:
+
+            <span id="statusStorage">
+
+                Disponible
+
+            </span>
+
+        </div>
+
+        <div class="status-item">
+
+            Curso activo:
+
+            <span id="statusCourse">
+
+                Ninguno
+
+            </span>
+
+        </div>
+
+        <div class="status-item">
+
+            Sesión:
+
+            <span id="statusSession">
+
+                Activa
+
+            </span>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ======================================================
+     La Parte 4 comenzará desde aquí
+======================================================= -->
+ <!-- ======================================================
+     OVERLAY GENERAL DE LA APLICACIÓN
+======================================================= -->
+
+<div id="appOverlay" class="app-overlay hidden">
+
+    <div class="overlay-content">
+
+        <div class="overlay-spinner"></div>
+
+        <h3>
+
+            Procesando solicitud...
+
+        </h3>
+
+        <p>
+
+            Por favor espere unos segundos.
+
+        </p>
+
+    </div>
+
+</div>
+
+
+<!-- ======================================================
+     CONTENEDOR DE DIÁLOGOS
+======================================================= -->
+
+<div
+    id="spae-dialog-overlay"
+    class="spae-overlay hidden">
+
+    <div
+        id="spae-dialog"
+        class="spae-dialog">
+
+    </div>
+
+</div>
+
+
+<!-- ======================================================
+     CONTENEDOR DE NOTIFICACIONES
+======================================================= -->
+
+<div
+    id="spae-notifications"
+    class="spae-notifications">
+
+</div>
+
+
+<!-- ======================================================
+     MODAL DE CONFIRMACIÓN
+======================================================= -->
+
+<div
+    id="confirmationModal"
+    class="modal hidden">
+
+    <div class="modal-content">
+
+        <div class="modal-header">
+
+            <h2>
+
+                Confirmación requerida
+
+            </h2>
+
+        </div>
+
+        <div class="modal-body">
+
+            <p id="confirmationMessage">
+
+                ¿Desea continuar con la operación?
+
+            </p>
+
+        </div>
+
+        <div class="modal-footer">
+
+            <button
+                id="btnConfirmCancel"
+                class="btn btn-secondary">
+
+                Cancelar
+
+            </button>
+
+            <button
+                id="btnConfirmAccept"
+                class="btn btn-primary">
+
+                Confirmar
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ======================================================
+     MODAL DE VISTA PREVIA
+======================================================= -->
+
+<div
+    id="previewModal"
+    class="modal hidden">
+
+    <div class="modal-content modal-large">
+
+        <div class="modal-header">
+
+            <h2>
+
+                Vista previa
+
+            </h2>
+
+            <button
+                id="btnClosePreview"
+                class="modal-close">
+
+                ×
+
+            </button>
+
+        </div>
+
+        <div
+            id="previewContent"
+            class="modal-body">
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ======================================================
+     LOADER SECUNDARIO
+======================================================= -->
+
+<div
+    id="secondaryLoader"
+    class="secondary-loader hidden">
+
+    <div class="loader-spinner"></div>
+
+    <span>
+
+        Cargando recursos...
+
+    </span>
+
+</div>
+
+
+<!-- ======================================================
+     INFORMACIÓN DE LA SESIÓN
+======================================================= -->
+
+<section
+    id="sessionInformation"
+    class="dashboard-panel">
+
+    <div class="panel-header">
+
+        <h2>
+
+            Información de la sesión
+
+        </h2>
+
+    </div>
+
+    <div class="session-grid">
+
+        <div class="session-item">
+
+            Fecha:
+
+            <span id="sessionDate">
+
+                --
+
+            </span>
+
+        </div>
+
+        <div class="session-item">
+
+            Usuario:
+
+            <span id="sessionUser">
+
+                Docente
+
+            </span>
+
+        </div>
+
+        <div class="session-item">
+
+            Versión:
+
+            <span id="sessionVersion">
+
+                SPAE 1.0
+
+            </span>
+
+        </div>
+
+        <div class="session-item">
+
+            Estado:
+
+            <span id="sessionStatus">
+
+                Operativo
+
+            </span>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ======================================================
+     PANEL DE DESARROLLO (SOLO DEBUG)
+======================================================= -->
+
+<section
+    id="debugPanel"
+    class="dashboard-panel hidden">
+
+    <div class="panel-header">
+
+        <h2>
+
+            Panel de depuración
+
+        </h2>
+
+    </div>
+
+    <div
+        id="debugConsole"
+        class="debug-console">
+
+    </div>
+
+</section>
+
+
+<!-- ======================================================
+     FOOTER PROFESIONAL DEL SISTEMA
+======================================================= -->
+
+<footer class="app-footer">
+
+    <div class="footer-left">
+
+        SPAE · Sistema Profesional de Autoría de Evaluaciones
+
+    </div>
+
+    <div class="footer-center">
+
+        Evaluación auténtica · Calidad pedagógica · Mejora continua
+
+    </div>
+
+    <div class="footer-right">
+
+        Release 1.0
+
+    </div>
+
+</footer>
+
+
+<!-- ======================================================
+     CIERRE DE LOS CONTENEDORES PRINCIPALES
+======================================================= -->
+
+</main>
+
+</div>
+
+</div>
+
+
+<!-- ======================================================
+     La Parte 5 incluirá:
+
+     - Todos los scripts JavaScript.
+     - Orden correcto de carga.
+     - Inicialización del sistema.
+     - Cierre del body.
+     - Cierre del documento HTML.
+======================================================= -->
+<!-- ======================================================
+     CARGA DE MÓDULOS JAVASCRIPT
+
+     IMPORTANTE:
+     El orden de carga NO debe modificarse.
+======================================================= -->
+
+<!-- ======================================================
+     UTILIDADES Y PERSISTENCIA
+======================================================= -->
+
+<script src="js/storage.js"></script>
+<script src="js/router.js"></script>
+<script src="js/util.js"></script>
+
+<!-- ======================================================
+     INTERFAZ DE USUARIO
+======================================================= -->
+
+<script src="js/ui.js"></script>
+<script src="js/dialogs.js"></script>
+<script src="js/notifications.js"></script>
+<script src="js/dashboard.js"></script>
+
+<!-- ======================================================
+     GESTIÓN ACADÉMICA
+======================================================= -->
+
+<script src="js/courses.js"></script>
+
+<!-- ======================================================
+     BANCO DE PREGUNTAS
+======================================================= -->
+
+<script src="js/question-bank.js"></script>
+<script src="js/distractor-engine.js"></script>
+<script src="js/bloom-engine.js"></script>
+
+<!-- ======================================================
+     CONSTRUCCIÓN DE EXÁMENES
+======================================================= -->
+
+<script src="js/exam-builder.js"></script>
+<script src="js/case-generator.js"></script>
+<script src="js/quality-engine.js"></script>
+<script src="js/advisor-engine.js"></script>
+
+<!-- ======================================================
+     CONTROLADOR PRINCIPAL
+======================================================= -->
+
+<script src="js/app.js"></script>
+
+
+<!-- ======================================================
+     INICIALIZACIÓN GENERAL DEL SISTEMA
+======================================================= -->
+
+<script>
+
+document.addEventListener(
+
+    "DOMContentLoaded",
+
+    () => {
+
+        console.log(
+
+            "========================================"
+
+        );
+
+        console.log(
+
+            "SPAE 1.0"
+
+        );
+
+        console.log(
+
+            "Sistema Profesional de Autoría de Evaluaciones"
+
+        );
+
+        console.log(
+
+            "Inicializando módulos..."
+
+        );
+
+        console.log(
+
+            "========================================"
+
+        );
+
+        /*
+        ------------------------------------------------------
+        LOADER INICIAL
+        ------------------------------------------------------
+        */
+
+        const loader = document.getElementById(
+
+            "appLoader"
+
+        );
+
+        const app = document.getElementById(
+
+            "app"
+
+        );
+
+        setTimeout(() => {
+
+            if(loader){
+
+                loader.classList.add(
+
+                    "hidden"
+
+                );
+
+            }
+
+            if(app){
+
+                app.classList.remove(
+
+                    "hidden"
+
+                );
+
+            }
+
+        },500);
+
+
+        /*
+        ------------------------------------------------------
+        FECHA DE SESIÓN
+        ------------------------------------------------------
+        */
+
+        const sessionDate = document.getElementById(
+
+            "sessionDate"
+
+        );
+
+        if(sessionDate){
+
+            sessionDate.textContent =
+
+                new Date()
+
+                .toLocaleDateString(
+
+                    "es-PE",
+
+                    {
+
+                        year:"numeric",
+
+                        month:"long",
+
+                        day:"numeric"
+
+                    }
+
+                );
+
+        }
+
+
+        /*
+        ------------------------------------------------------
+        BOTONES DE ACCESO RÁPIDO
+        ------------------------------------------------------
+        */
+
+        const mapButtons = [
+
+            ["quickCreateCourse","btnCreateCourse"],
+
+            ["quickQuestion","btnQuestionBank"],
+
+            ["quickExam","btnBuildExam"],
+
+            ["quickImport","btnImportWord"]
+
+        ];
+
+        mapButtons.forEach(
+
+            item => {
+
+                const quick =
+
+                    document.getElementById(
+
+                        item[0]
+
+                    );
+
+                const target =
+
+                    document.getElementById(
+
+                        item[1]
+
+                    );
+
+                if(
+
+                    quick &&
+
+                    target
+
+                ){
+
+                    quick.addEventListener(
+
+                        "click",
+
+                        ()=>target.click()
+
+                    );
+
+                }
+
+            }
+
+        );
+
+
+        /*
+        ------------------------------------------------------
+        ACTUALIZAR CURSOS
+        ------------------------------------------------------
+        */
+
+        const refresh = document.getElementById(
+
+            "btnRefreshCourses"
+
+        );
+
+        if(refresh){
+
+            refresh.addEventListener(
+
+                "click",
+
+                ()=>{
+
+                    if(window.SPAEDashboard){
+
+                        SPAEDashboard.refresh();
+
+                    }
+
+                }
+
+            );
+
+        }
+
+
+        /*
+        ------------------------------------------------------
+        ESTADO DEL SISTEMA
+        ------------------------------------------------------
+        */
+
+        const statusApplication =
+
+            document.getElementById(
+
+                "statusApplication"
+
+            );
+
+        if(statusApplication){
+
+            statusApplication.textContent =
+
+                "Operativo";
+
+        }
+
+        console.log(
+
+            "SPAE cargado correctamente."
+
+        );
+
+    }
+
+);
+
+</script>
+
+
+<!-- ======================================================
+     FIN DEL DOCUMENTO
+======================================================= -->
+
+</body>
+
+</html>    
