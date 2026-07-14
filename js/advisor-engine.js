@@ -500,3 +500,264 @@ function generateGeneralObservations() {
     return observations;
 
 }  
+/*==========================================================
+ EVALUACIÓN INTEGRAL
+==========================================================*/
+
+function evaluate() {
+
+    if (!state.question) {
+
+        throw new Error(
+
+            "No existe una pregunta para evaluar."
+
+        );
+
+    }
+
+    state.reports = {};
+
+    runQualityEngine();
+
+    runBloomEngine();
+
+    runPedagogicalEngine();
+
+    runDistractorEngine();
+
+    const consolidated =
+
+        consolidateReports();
+
+    const globalIndex =
+
+        calculateGlobalIndex();
+
+    state.finalReport = {
+
+        generatedAt:
+
+            new Date().toISOString(),
+
+        globalIndex,
+
+        qualityLevel:
+
+            qualityLevel(globalIndex),
+
+        observations:
+
+            generateGeneralObservations(),
+
+        strengths:
+
+            consolidated.strengths,
+
+        warnings:
+
+            consolidated.warnings,
+
+        recommendations:
+
+            consolidated.recommendations,
+
+        modules:
+
+            consolidated.modules
+
+    };
+
+    return getReport();
+
+}
+
+/*==========================================================
+ RESUMEN EJECUTIVO
+==========================================================*/
+
+function executiveSummary() {
+
+    if (!state.finalReport) {
+
+        evaluate();
+
+    }
+
+    return {
+
+        score:
+
+            state.finalReport.globalIndex,
+
+        quality:
+
+            state.finalReport.qualityLevel,
+
+        strengths:
+
+            state.finalReport.strengths.length,
+
+        warnings:
+
+            state.finalReport.warnings.length,
+
+        recommendations:
+
+            state.finalReport.recommendations.length
+
+    };
+
+}
+
+/*==========================================================
+ INDICADORES
+==========================================================*/
+
+function indicators() {
+
+    if (!state.finalReport) {
+
+        evaluate();
+
+    }
+
+    return {
+
+        bloom:
+
+            state.reports.bloom
+
+                ?.alignmentIndex || 0,
+
+        quality:
+
+            state.reports.quality
+
+                ?.globalScore || 0,
+
+        pedagogical:
+
+            state.reports.pedagogical
+
+                ?.scores?.overall || 0,
+
+        distractors:
+
+            state.reports.distractors
+
+                ?.averageScore || 0,
+
+        global:
+
+            state.finalReport.globalIndex
+
+    };
+
+}
+
+/*==========================================================
+ INFORME
+==========================================================*/
+
+function getReport() {
+
+    return structuredClone(
+
+        state.finalReport
+
+    );
+
+}
+
+/*==========================================================
+ EXPORTACIÓN
+==========================================================*/
+
+function exportJSON() {
+
+    return JSON.stringify(
+
+        state.finalReport,
+
+        null,
+
+        2
+
+    );
+
+}
+
+function exportReport() {
+
+    return structuredClone(
+
+        state.finalReport
+
+    );
+
+}
+
+/*==========================================================
+ API PÚBLICA
+==========================================================*/
+
+return {
+
+    init,
+
+    reset,
+
+    setQuestion,
+
+    setCourse,
+
+    setLearningOutcome,
+
+    currentQuestion,
+
+    evaluate,
+
+    executiveSummary,
+
+    indicators,
+
+    getReport,
+
+    exportJSON,
+
+    exportReport,
+
+    runBloomEngine,
+
+    runQualityEngine,
+
+    runPedagogicalEngine,
+
+    runDistractorEngine,
+
+    consolidateReports,
+
+    calculateGlobalIndex,
+
+    qualityLevel
+
+};
+
+})();
+
+/*==========================================================
+ INICIALIZACIÓN
+==========================================================*/
+
+document.addEventListener(
+
+    "DOMContentLoaded",
+
+    () => {
+
+        SPAEAdvisorEngine.init();
+
+    }
+
+);
