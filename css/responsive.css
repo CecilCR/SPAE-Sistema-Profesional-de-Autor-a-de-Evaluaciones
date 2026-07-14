@@ -1,55 +1,210 @@
-/* ==========================================================
-   SPAE
-   Sistema Profesional de Autoría de Evaluaciones
-   responsive.css
-   Release R0.1
-==========================================================*/
+/**********************************************************
+ SPAE
+ Sistema Profesional de Autoría de Evaluaciones
 
-/* ==========================================================
-   PANTALLAS GRANDES
-==========================================================*/
+ Archivo : css/responsive.css
+ Versión : 1.0
+***********************************************************/
 
-@media (min-width:1600px){
 
-    :root{
-        --max-width:1450px;
+/*=========================================================
+BREAKPOINTS UTILIZADOS
+
+1400 px -> Monitores pequeños
+1200 px -> Laptop
+992 px  -> Tablet horizontal
+768 px  -> Tablet vertical
+576 px  -> Smartphone
+420 px  -> Smartphone pequeño
+
+=========================================================*/
+
+
+/*=========================================================
+PANTALLAS MENORES A 1400 PX
+=========================================================*/
+
+@media (max-width:1400px){
+
+    .dashboard-grid{
+
+        grid-template-columns:
+        repeat(2,1fr);
+
     }
 
 }
 
-/* ==========================================================
-   LAPTOPS
-==========================================================*/
+
+/*=========================================================
+PANTALLAS MENORES A 1200 PX
+=========================================================*/
 
 @media (max-width:1200px){
 
-    main{
+    .main-content{
 
-        width:96%;
-
-    }
-
-    header{
-
-        padding:20px 25px;
+        padding:28px;
 
     }
 
-    .dashboard{
+    .dashboard-main{
 
-        grid-template-columns:repeat(2,1fr);
+        grid-template-columns:1fr;
+
+    }
+
+    .cards-grid{
+
+        grid-template-columns:
+        repeat(auto-fit,minmax(280px,1fr));
 
     }
 
 }
 
-/* ==========================================================
-   TABLETS HORIZONTALES
-==========================================================*/
+
+/*=========================================================
+PANTALLAS MENORES A 992 PX
+=========================================================*/
 
 @media (max-width:992px){
 
-    header{
+    /*
+    -------------------------------------
+    LAYOUT GENERAL
+    -------------------------------------
+    */
+
+    .app-body{
+
+        flex-direction:column;
+
+    }
+
+    /*
+    -------------------------------------
+    SIDEBAR
+    -------------------------------------
+    */
+
+    .sidebar{
+
+        width:100%;
+
+        border-right:none;
+
+        border-bottom:
+
+        1px solid #E5E7EB;
+
+    }
+
+    .sidebar-menu{
+
+        display:grid;
+
+        grid-template-columns:
+        repeat(auto-fit,minmax(220px,1fr));
+
+        gap:12px;
+
+    }
+
+    /*
+    -------------------------------------
+    TOP BAR
+    -------------------------------------
+    */
+
+    .topbar{
+
+        padding:20px;
+
+        flex-direction:column;
+
+        align-items:flex-start;
+
+        gap:12px;
+
+        height:auto;
+
+    }
+
+    .logo-text{
+
+        font-size:14px;
+
+    }
+
+    /*
+    -------------------------------------
+    DASHBOARD
+    -------------------------------------
+    */
+
+    .dashboard-grid{
+
+        grid-template-columns:
+        repeat(auto-fit,minmax(250px,1fr));
+
+    }
+
+    .quick-actions{
+
+        grid-template-columns:
+        repeat(auto-fit,minmax(220px,1fr));
+
+    }
+
+    /*
+    -------------------------------------
+    DIALOGS
+    -------------------------------------
+    */
+
+    .spae-dialog{
+
+        width:100%;
+
+        max-height:92vh;
+
+    }
+
+}
+
+
+/*=========================================================
+PANTALLAS MENORES A 768 PX
+=========================================================*/
+
+@media (max-width:768px){
+
+    /*
+    -------------------------------------
+    CONTENIDO PRINCIPAL
+    -------------------------------------
+    */
+
+    .main-content{
+
+        padding:20px;
+
+    }
+
+    /*
+    -------------------------------------
+    ENCABEZADOS
+    -------------------------------------
+    */
+
+    .page-header h1{
+
+        font-size:28px;
+
+    }
+
+    .panel-header{
 
         flex-direction:column;
 
@@ -59,37 +214,110 @@
 
     }
 
-    .dashboard{
+    /*
+    -------------------------------------
+    ESTADÍSTICAS
+    -------------------------------------
+    */
+
+    .dashboard-grid{
 
         grid-template-columns:1fr;
 
     }
 
-    .flex{
+    .stat-card{
+
+        width:100%;
+
+    }
+
+    /*
+    -------------------------------------
+    CARDS
+    -------------------------------------
+    */
+
+    .card-header{
+
+        flex-direction:column;
+
+        align-items:flex-start;
+
+    }
+
+    .card-footer{
 
         flex-direction:column;
 
     }
 
-    .acciones{
+    /*
+    -------------------------------------
+    FORMULARIOS
+    -------------------------------------
+    */
 
-        justify-content:center;
+    .form-row{
+
+        grid-template-columns:1fr;
 
     }
 
-    .stats{
+    .form-actions{
 
-        grid-template-columns:repeat(2,1fr);
+        flex-direction:column;
+
+    }
+
+    /*
+    -------------------------------------
+    BOTONES
+    -------------------------------------
+    */
+
+    .btn{
+
+        width:100%;
+
+    }
+
+    .quick-card{
+
+        width:100%;
+
+    }
+
+    /*
+    -------------------------------------
+    FOOTER
+    -------------------------------------
+    */
+
+    .app-footer{
+
+        flex-direction:column;
+
+        text-align:center;
+
+        gap:14px;
 
     }
 
 }
 
-/* ==========================================================
-   TABLETS VERTICALES
-==========================================================*/
 
-@media (max-width:768px){
+/*=========================================================
+PANTALLAS MENORES A 576 PX
+=========================================================*/
+
+@media (max-width:576px){
+
+    /*
+    -------------------------------------
+    GENERAL
+    -------------------------------------
+    */
 
     body{
 
@@ -97,275 +325,247 @@
 
     }
 
-    header{
+    /*
+    -------------------------------------
+    TOP BAR
+    -------------------------------------
+    */
 
-        padding:18px;
+    .logo{
 
-    }
-
-    header h1{
-
-        font-size:1.7rem;
-
-    }
-
-    header p{
-
-        font-size:.95rem;
+        font-size:24px;
 
     }
 
-    main{
+    .logo-text{
 
-        width:95%;
-
-        margin:20px auto;
+        font-size:13px;
 
     }
 
-    .panel{
+    /*
+    -------------------------------------
+    PAGE HEADER
+    -------------------------------------
+    */
 
-        padding:20px;
+    .page-header h1{
 
-    }
-
-    .bienvenida{
-
-        padding:22px;
-
-    }
-
-    .card{
-
-        padding:20px;
+        font-size:24px;
 
     }
 
-    .acciones{
-
-        flex-direction:column;
-
-        align-items:stretch;
-
-    }
-
-    .acciones button{
-
-        width:100%;
-
-    }
-
-    .stats{
-
-        grid-template-columns:1fr;
-
-    }
-
-    .table{
-
-        display:block;
-
-        overflow-x:auto;
-
-        white-space:nowrap;
-
-    }
-
-    .modal-content{
-
-        width:96%;
-
-        padding:22px;
-
-    }
-
-}
-
-/* ==========================================================
-   TELÉFONOS
-==========================================================*/
-
-@media (max-width:576px){
-
-    body{
+    .page-header p{
 
         font-size:14px;
 
     }
 
-    header{
+    /*
+    -------------------------------------
+    PANELES
+    -------------------------------------
+    */
 
-        text-align:center;
+    .dashboard-panel{
 
-        align-items:center;
-
-    }
-
-    header h1{
-
-        font-size:1.5rem;
-
-    }
-
-    header p{
-
-        font-size:.9rem;
-
-    }
-
-    .bienvenida h2{
-
-        font-size:1.3rem;
-
-    }
-
-    .card-title{
-
-        font-size:1rem;
-
-    }
-
-    .btn{
-
-        width:100%;
-
-        justify-content:center;
-
-    }
-
-    .tabs{
-
-        flex-direction:column;
-
-        gap:0;
-
-    }
-
-    .tab{
-
-        border-bottom:1px solid var(--color-borde);
-
-    }
-
-    .tab.active{
-
-        border-left:5px solid var(--color-primario);
-
-        border-bottom:1px solid var(--color-borde);
-
-    }
-
-    .input-group input,
-
-    .input-group textarea,
-
-    .input-group select{
-
-        font-size:16px;
-
-    }
-
-}
-
-/* ==========================================================
-   TELÉFONOS PEQUEÑOS
-==========================================================*/
-
-@media (max-width:400px){
-
-    header{
-
-        padding:15px;
-
-    }
-
-    main{
-
-        width:97%;
-
-    }
-
-    .panel{
-
-        padding:15px;
-
-    }
-
-    .bienvenida{
-
-        padding:18px;
+        padding:20px;
 
     }
 
     .card{
 
-        padding:16px;
+        padding:18px;
 
     }
 
+    /*
+    -------------------------------------
+    ESTADÍSTICAS
+    -------------------------------------
+    */
+
+    .stat-card{
+
+        flex-direction:column;
+
+        text-align:center;
+
+    }
+
+    .stat-icon{
+
+        margin-bottom:8px;
+
+    }
+
+    /*
+    -------------------------------------
+    DIALOGS
+    -------------------------------------
+    */
+
+    .spae-overlay{
+
+        padding:12px;
+
+    }
+
+    .dialog-header{
+
+        padding:20px;
+
+    }
+
+    .dialog-body{
+
+        padding:20px;
+
+    }
+
+    .dialog-footer{
+
+        padding:20px;
+
+        flex-direction:column;
+
+    }
+
+    /*
+    -------------------------------------
+    MODALES
+    -------------------------------------
+    */
+
     .modal-content{
 
-        padding:18px;
+        width:100%;
 
     }
 
 }
 
-/* ==========================================================
-   MODO IMPRESIÓN
-==========================================================*/
 
-@media print{
+/*=========================================================
+PANTALLAS MENORES A 420 PX
+=========================================================*/
 
-    body{
+@media (max-width:420px){
 
-        background:white;
+    /*
+    -------------------------------------
+    SIDEBAR
+    -------------------------------------
+    */
 
-        color:black;
+    .sidebar{
+
+        padding:18px;
 
     }
 
-    header,
+    .sidebar-menu{
 
-    footer,
+        grid-template-columns:1fr;
 
-    .acciones,
+    }
 
-    .btn,
+    /*
+    -------------------------------------
+    BOTONES DEL MENÚ
+    -------------------------------------
+    */
 
-    .modal{
+    .menu-button{
+
+        width:100%;
+
+        font-size:14px;
+
+    }
+
+    /*
+    -------------------------------------
+    QUICK ACTIONS
+    -------------------------------------
+    */
+
+    .quick-actions{
+
+        grid-template-columns:1fr;
+
+    }
+
+    /*
+    -------------------------------------
+    SESSION INFO
+    -------------------------------------
+    */
+
+    .session-grid{
+
+        grid-template-columns:1fr;
+
+    }
+
+    /*
+    -------------------------------------
+    SYSTEM STATUS
+    -------------------------------------
+    */
+
+    .status-item{
+
+        flex-direction:column;
+
+        gap:10px;
+
+        text-align:center;
+
+    }
+
+}
+
+
+/*=========================================================
+UTILIDADES RESPONSIVE
+=========================================================*/
+
+.hide-mobile{
+
+    display:block;
+
+}
+
+.show-mobile{
+
+    display:none;
+
+}
+
+
+@media(max-width:768px){
+
+    .hide-mobile{
 
         display:none !important;
 
     }
 
-    main{
+    .show-mobile{
 
-        width:100%;
-
-        margin:0;
-
-    }
-
-    .panel,
-
-    .card{
-
-        border:none;
-
-        box-shadow:none;
-
-        page-break-inside:avoid;
+        display:block !important;
 
     }
 
 }
 
-/* ==========================================================
-   PREFERENCIAS DE MOVIMIENTO REDUCIDO
-==========================================================*/
 
-@media (prefers-reduced-motion: reduce){
+/*=========================================================
+ANIMACIONES RESPONSIVE
+=========================================================*/
+
+@media(prefers-reduced-motion:reduce){
 
     *{
 
@@ -379,18 +579,35 @@
 
 }
 
-/* ==========================================================
-   MODO OSCURO (Preparado para futuras versiones)
-==========================================================*/
 
-@media (prefers-color-scheme: dark){
+/*=========================================================
+IMPRESIÓN
+=========================================================*/
 
-    /*
+@media print{
 
-    En Release 1.0 se habilitará el tema oscuro.
-    Se deja preparada la estructura para evitar
-    refactorizaciones posteriores.
+    .sidebar,
+    .topbar,
+    .app-footer,
+    .btn,
+    .spae-notifications,
+    .spae-overlay,
+    .modal{
 
-    */
+        display:none !important;
+
+    }
+
+    .main-content{
+
+        padding:0;
+
+    }
+
+    body{
+
+        background:white;
+
+    }
 
 }
