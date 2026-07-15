@@ -1,1031 +1,661 @@
-/*==========================================================
+/*********************************************************
  SPAE
+
  Sistema Profesional de Autoría de Evaluaciones
 
+ Archivo:
  js/question-bank.js
- Release 1.0
 
- Banco central de preguntas
-==========================================================*/
+ Versión:
+ 2.0 Professional Edition
 
-const SPAEQuestionBank = (() => {
+*********************************************************/
 
-"use strict";
 
-/*==========================================================
- CONFIGURACIÓN
-==========================================================*/
+const QuestionBank = {
 
-const STORAGE_KEY = "spae.question.bank";
 
-const CONFIG = {
-
-    autosave: true,
-
-    version: "1.0.0"
-
-};
-
-/*==========================================================
- ESTADO
-==========================================================*/
-
-const state = {
+    //--------------------------------------------------
+    // ESTADO
+    //--------------------------------------------------
 
     questions: [],
 
-    filteredQuestions: [],
-
     currentQuestion: null,
 
-    filters: {
 
-        courseId: "",
 
-        bloom: "",
+    //--------------------------------------------------
+    // INICIALIZACIÓN
+    //--------------------------------------------------
 
-        learningOutcomeId: "",
+    init() {
 
-        difficulty: "",
+        this.loadQuestions();
 
-        keyword: ""
+        console.log(
+            "QuestionBank inicializado."
+        );
 
-    }
+    },
 
-};
 
-/*==========================================================
- INICIALIZACIÓN
-==========================================================*/
 
-function init() {
+    //--------------------------------------------------
+    // CREAR PREGUNTA
+    //--------------------------------------------------
 
-    load();
+    createQuestion(data = {}) {
 
-}
+        const question = {
 
-/*==========================================================
- PERSISTENCIA
-==========================================================*/
+            //--------------------------------------------------
+            // IDENTIFICACIÓN
+            //--------------------------------------------------
 
-function load() {
+            id: Date.now(),
 
-    try {
+            code:
+                this.generateCode(),
 
-        const data =
 
-            localStorage.getItem(STORAGE_KEY);
+            //--------------------------------------------------
+            // CURSO
+            //--------------------------------------------------
 
-        state.questions =
+            courseID:
+                data.courseID || "",
 
-            data
+            unitID:
+                data.unitID || "",
 
-                ? JSON.parse(data)
+            author:
+                data.author || "",
 
-                : [];
 
-        state.filteredQuestions =
+            //--------------------------------------------------
+            // PEDAGÓGICO
+            //--------------------------------------------------
 
-            [...state.questions];
+            learningOutcome:
+                data.learningOutcome || "",
 
-    }
+            competency:
+                data.competency || "",
 
-    catch (error) {
+            bloomLevel:
+                data.bloomLevel || "",
 
-        console.error(error);
+            difficulty:
+                data.difficulty || "Medium",
 
-        state.questions = [];
+            estimatedTime:
+                data.estimatedTime || 90,
 
-        state.filteredQuestions = [];
+            type:
+                data.type || "MCQ",
 
-    }
 
-}
+            //--------------------------------------------------
+            // CONTENIDO
+            //--------------------------------------------------
 
-function save() {
+            stem:
+                data.stem || "",
 
-    if (!CONFIG.autosave) {
+            options:
+                data.options || [],
 
-        return;
+            correctAnswer:
+                data.correctAnswer || "",
 
-    }
+            justification:
+                data.justification || "",
 
-    localStorage.setItem(
+            feedback:
+                data.feedback || "",
 
-        STORAGE_KEY,
 
-        JSON.stringify(state.questions)
+            //--------------------------------------------------
+            // ETIQUETAS
+            //--------------------------------------------------
 
-    );
+            tags:
+                data.tags || [],
 
-}
 
-/*==========================================================
- CRUD
-==========================================================*/
+            //--------------------------------------------------
+            // CALIDAD
+            //--------------------------------------------------
 
-function add(question) {
+            quality: {
 
-    const item = structuredClone(question);
+                qualityScore: 0,
 
-    item.id = item.id || crypto.randomUUID();
+                distractorScore: 0,
 
-    item.createdAt =
+                bloomValidation: false,
 
-        new Date().toISOString();
+                pedagogicalValidation: false
 
-    item.updatedAt =
+            },
 
-        new Date().toISOString();
 
-    state.questions.push(item);
+            //--------------------------------------------------
+            // HISTÓRICO
+            //--------------------------------------------------
 
-    save();
+            usage: {
 
-    return item;
+                timesUsed: 0,
 
-}
+                exams: [],
 
-function update(id, data = {}) {
+                lastUsed: null
 
-    const question = find(id);
+            },
 
-    if (!question) {
 
-        return null;
+            //--------------------------------------------------
+            // METADATA
+            //--------------------------------------------------
 
-    }
+            metadata: {
 
-    Object.assign(question, data);
+                createdAt:
 
-    question.updatedAt =
+                    new Date(),
 
-        new Date().toISOString();
+                updatedAt:
 
-    save();
+                    new Date()
 
-    return question;
+            }
 
-}
+        };
 
-function remove(id) {
 
-    const index =
+        StorageManager.saveQuestion(
+            question
+        );
 
-        state.questions.findIndex(
 
-            q => q.id === id
+        this.questions.push(
+            question
+        );
+
+
+        return question;
+
+    },
+
+
+
+    //--------------------------------------------------
+    // CARGAR PREGUNTAS
+    //--------------------------------------------------
+
+    loadQuestions() {
+
+        this.questions =
+
+            StorageManager.getQuestions()
+
+            || [];
+
+    },
+
+
+
+    //--------------------------------------------------
+    // OBTENER TODAS
+    //--------------------------------------------------
+
+    getQuestions() {
+
+        return this.questions;
+
+    },
+
+
+
+    //--------------------------------------------------
+    // BUSCAR
+    //--------------------------------------------------
+
+    findQuestion(id) {
+
+        return this.questions.find(
+
+            question =>
+
+            question.id === id
 
         );
 
-    if (index < 0) {
+    },
 
-        return false;
 
-    }
 
-    state.questions.splice(index, 1);
+    //--------------------------------------------------
+    // ELIMINAR
+    //--------------------------------------------------
 
-    save();
+    deleteQuestion(id) {
 
-    return true;
+        StorageManager.deleteQuestion(
+            id
+        );
 
-}
 
-function duplicate(id) {
+        this.questions =
 
-    const question = find(id);
+            this.questions.filter(
 
-    if (!question) {
+                question =>
 
-        return null;
+                question.id !== id
 
-    }
+            );
 
-    const copy =
+    },
 
-        structuredClone(question);
 
-    copy.id = crypto.randomUUID();
 
-    copy.code =
+    //--------------------------------------------------
+    // DUPLICAR
+    //--------------------------------------------------
 
-        `${copy.code}-COPIA`;
+    duplicateQuestion(id) {
 
-    copy.createdAt =
+        const question =
 
-        new Date().toISOString();
+            this.findQuestion(id);
 
-    copy.updatedAt =
 
-        new Date().toISOString();
+        if(!question) return;
 
-    state.questions.push(copy);
 
-    save();
+        const copy = {
 
-    return copy;
+            ...question,
 
-}
+            id: Date.now(),
 
-/*==========================================================
- CONSULTAS
-==========================================================*/
+            code:
+                this.generateCode()
 
-function all() {
+        };
 
-    return structuredClone(
 
-        state.questions
+        this.createQuestion(copy);
 
-    );
+    },
 
-}
 
-function find(id) {
 
-    return state.questions.find(
+    //--------------------------------------------------
+    // FILTROS
+    //--------------------------------------------------
 
-        q => q.id === id
+    filterByBloom(level){
 
-    );
+        return this.questions.filter(
 
-}
+            q => q.bloomLevel === level
 
-function current() {
+        );
 
-    return state.currentQuestion;
+    },
 
-}
 
-function select(id) {
+    filterByDifficulty(level){
 
-    state.currentQuestion =
+        return this.questions.filter(
 
-        find(id);
+            q => q.difficulty === level
 
-}
+        );
 
-/*==========================================================
- FILTROS
-==========================================================*/
+    },
 
-function filter(options = {}) {
 
-    state.filters = {
+    filterByCourse(id){
 
-        ...state.filters,
+        return this.questions.filter(
 
-        ...options
+            q => q.courseID === id
 
-    };
+        );
 
-    state.filteredQuestions =
+    },
 
-        state.questions.filter(question => {
 
-            if (
+    filterByType(type){
 
-                state.filters.courseId &&
+        return this.questions.filter(
 
-                question.courseId !==
+            q => q.type === type
 
-                state.filters.courseId
+        );
 
-            ) {
+    },
 
-                return false;
 
-            }
+    filterByOutcome(outcome){
 
-            if (
+        return this.questions.filter(
 
-                state.filters.bloom &&
+            q =>
 
-                question.bloom !==
+            q.learningOutcome === outcome
 
-                state.filters.bloom
+        );
 
-            ) {
+    },
 
-                return false;
 
-            }
+    //--------------------------------------------------
+    // ANALÍTICAS
+    //--------------------------------------------------
 
-            if (
+    getBloomDistribution(){
 
-                state.filters.learningOutcomeId &&
+        const report = {};
 
-                question.learningOutcomeId !==
 
-                state.filters.learningOutcomeId
+        this.questions.forEach(question=>{
 
-            ) {
+            const level =
 
-                return false;
+                question.bloomLevel;
 
-            }
+            report[level] =
 
-            if (
-
-                state.filters.difficulty &&
-
-                question.metadata
-                    ?.estimatedDifficulty !==
-
-                state.filters.difficulty
-
-            ) {
-
-                return false;
-
-            }
-
-            if (
-
-                state.filters.keyword
-
-            ) {
-
-                const text =
-
-                    JSON.stringify(question)
-
-                        .toLowerCase();
-
-                if (
-
-                    !text.includes(
-
-                        state.filters.keyword
-                            .toLowerCase()
-
-                    )
-
-                ) {
-
-                    return false;
-
-                }
-
-            }
-
-            return true;
+                (report[level] || 0) + 1;
 
         });
 
-    return structuredClone(
+        return report;
 
-        state.filteredQuestions
+    },
 
-    );
 
-}
-/*==========================================================
- ORDENAMIENTO
-==========================================================*/
 
-function sortBy(field = "code", direction = "asc") {
+    getDifficultyDistribution(){
 
-    const factor = direction === "desc" ? -1 : 1;
+        const report = {};
 
-    state.filteredQuestions.sort((a, b) => {
 
-        const valueA = (a[field] || "")
-            .toString()
-            .toLowerCase();
+        this.questions.forEach(question=>{
 
-        const valueB = (b[field] || "")
-            .toString()
-            .toLowerCase();
+            const level =
 
-        return valueA.localeCompare(valueB) * factor;
+                question.difficulty;
 
-    });
+            report[level] =
 
-    return structuredClone(state.filteredQuestions);
+                (report[level] || 0) +1;
 
-}
+        });
 
-/*==========================================================
- ETIQUETAS
-==========================================================*/
+        return report;
 
-function addTag(questionId, tag) {
+    },
 
-    const question = find(questionId);
 
-    if (!question) {
 
-        return false;
+    getStatistics(){
 
-    }
+        return {
 
-    if (!question.tags) {
+            totalQuestions:
 
-        question.tags = [];
+                this.questions.length,
 
-    }
+            MCQ:
 
-    tag = tag.trim();
+                this.filterByType("MCQ").length,
 
-    if (!tag) {
+            Essay:
 
-        return false;
+                this.filterByType("Essay").length,
 
-    }
+            Cases:
 
-    if (!question.tags.includes(tag)) {
+                this.filterByType("Case").length
 
-        question.tags.push(tag);
+        };
 
-        question.updatedAt = new Date().toISOString();
+    },
 
-        save();
 
-    }
 
-    return true;
+    //--------------------------------------------------
+    // VALIDACIÓN PEDAGÓGICA
+    //--------------------------------------------------
 
-}
+    validateQuestion(question){
 
-function removeTag(questionId, tag) {
+        if(!question.stem){
 
-    const question = find(questionId);
-
-    if (!question || !question.tags) {
-
-        return false;
-
-    }
-
-    question.tags = question.tags.filter(
-
-        item => item !== tag
-
-    );
-
-    question.updatedAt = new Date().toISOString();
-
-    save();
-
-    return true;
-
-}
-
-function tags(questionId) {
-
-    const question = find(questionId);
-
-    if (!question) {
-
-        return [];
-
-    }
-
-    return [...(question.tags || [])];
-
-}
-
-/*==========================================================
- VERSIONAMIENTO
-==========================================================*/
-
-function createVersion(questionId) {
-
-    const question = find(questionId);
-
-    if (!question) {
-
-        return null;
-
-    }
-
-    if (!question.versions) {
-
-        question.versions = [];
-
-    }
-
-    question.versions.push({
-
-        version:
-
-            question.versions.length + 1,
-
-        createdAt:
-
-            new Date().toISOString(),
-
-        snapshot:
-
-            structuredClone(question)
-
-    });
-
-    save();
-
-    return question.versions.at(-1);
-
-}
-
-function versions(questionId) {
-
-    const question = find(questionId);
-
-    if (!question) {
-
-        return [];
-
-    }
-
-    return structuredClone(
-
-        question.versions || []
-
-    );
-
-}
-
-/*==========================================================
- ARCHIVADO
-==========================================================*/
-
-function archive(questionId) {
-
-    const question = find(questionId);
-
-    if (!question) {
-
-        return false;
-
-    }
-
-    question.archived = true;
-
-    question.updatedAt = new Date().toISOString();
-
-    save();
-
-    return true;
-
-}
-
-function restore(questionId) {
-
-    const question = find(questionId);
-
-    if (!question) {
-
-        return false;
-
-    }
-
-    question.archived = false;
-
-    question.updatedAt = new Date().toISOString();
-
-    save();
-
-    return true;
-
-}
-
-function archived() {
-
-    return state.questions.filter(
-
-        question => question.archived
-
-    );
-
-}
-
-/*==========================================================
- IMPORTACIÓN
-==========================================================*/
-
-function importQuestions(list = []) {
-
-    let imported = 0;
-
-    list.forEach(question => {
-
-        const copy = structuredClone(question);
-
-        copy.id = crypto.randomUUID();
-
-        copy.createdAt = new Date().toISOString();
-
-        copy.updatedAt = new Date().toISOString();
-
-        state.questions.push(copy);
-
-        imported++;
-
-    });
-
-    save();
-
-    return imported;
-
-}
-
-/*==========================================================
- EXPORTACIÓN
-==========================================================*/
-
-function exportQuestions() {
-
-    return JSON.stringify(
-
-        state.questions,
-
-        null,
-
-        2
-
-    );
-
-}
-/*==========================================================
- ESTADÍSTICAS
-==========================================================*/
-
-function statistics() {
-
-    const stats = {
-
-        total: state.questions.length,
-
-        filtered: state.filteredQuestions.length,
-
-        archived: 0,
-
-        active: 0,
-
-        byBloom: {},
-
-        byDifficulty: {},
-
-        byCourse: {},
-
-        byType: {}
-
-    };
-
-    state.questions.forEach(question => {
-
-        if (question.archived) {
-
-            stats.archived++;
-
-        } else {
-
-            stats.active++;
+            return false;
 
         }
 
-        const bloom = question.bloom || "Sin definir";
 
-        stats.byBloom[bloom] =
+        if(!question.learningOutcome){
 
-            (stats.byBloom[bloom] || 0) + 1;
+            return false;
 
-        const difficulty =
+        }
 
-            question.metadata?.estimatedDifficulty ||
 
-            "Sin definir";
+        if(!question.bloomLevel){
 
-        stats.byDifficulty[difficulty] =
+            return false;
 
-            (stats.byDifficulty[difficulty] || 0) + 1;
+        }
 
-        const course =
 
-            question.courseId || "Sin curso";
+        return true;
 
-        stats.byCourse[course] =
+    },
 
-            (stats.byCourse[course] || 0) + 1;
 
-        const type =
 
-            question.type || "Sin tipo";
+    //--------------------------------------------------
+    // QUALITY SCORE
+    //--------------------------------------------------
 
-        stats.byType[type] =
+    calculateQualityScore(question){
 
-            (stats.byType[type] || 0) + 1;
+        let score = 0;
 
-    });
 
-    return stats;
+        if(question.stem.length > 50)
+            score += 25;
 
-}
+        if(question.justification)
+            score += 25;
 
-/*==========================================================
- VALIDACIÓN
-==========================================================*/
+        if(question.feedback)
+            score += 25;
 
-function validate(question) {
+        if(question.learningOutcome)
+            score += 25;
 
-    const errors = [];
 
-    if (!question.code?.trim()) {
+        return score;
 
-        errors.push("La pregunta no posee código.");
+    },
 
-    }
 
-    if (!question.stem?.trim()) {
 
-        errors.push("La pregunta no posee enunciado.");
+    //--------------------------------------------------
+    // HISTÓRICO
+    //--------------------------------------------------
 
-    }
+    registerUsage(id,examID){
 
-    if (!question.bloom) {
+        const question =
 
-        errors.push("No se ha definido el nivel de Bloom.");
+            this.findQuestion(id);
 
-    }
 
-    if (!question.learningOutcomeId) {
-
-        errors.push(
-            "No existe un resultado de aprendizaje asociado."
-        );
-
-    }
-
-    if (!question.alternatives?.length) {
-
-        errors.push(
-            "La pregunta no contiene alternativas."
-        );
-
-    }
-
-    const correct =
-
-        question.alternatives?.filter(
-
-            alternative => alternative.correct
-
-        ) || [];
-
-    if (correct.length !== 1) {
-
-        errors.push(
-            "Debe existir una única respuesta correcta."
-        );
-
-    }
-
-    return {
-
-        valid: errors.length === 0,
-
-        errors
-
-    };
-
-}
-
-/*==========================================================
- RENDER
-==========================================================*/
-
-function render(containerSelector = "#question-bank") {
-
-    const container = SPAEUI.$(containerSelector);
-
-    if (!container) {
-
-        return;
-
-    }
-
-    SPAEUI.clear(container);
-
-    if (state.filteredQuestions.length === 0) {
-
-        container.appendChild(
-
-            SPAEUI.emptyState({
-
-                icon: "📝",
-
-                title: "No existen preguntas",
-
-                description:
-
-                    "No se encontraron preguntas para mostrar."
-
-            })
-
-        );
-
-        return;
-
-    }
-
-    state.filteredQuestions.forEach(question => {
-
-        const card = SPAEUI.create("article", {
-
-            className: "question-card"
-
-        });
-
-        card.innerHTML = `
-
-            <header class="question-card__header">
-
-                <strong>${question.code}</strong>
-
-                <span>${question.bloom || "-"}</span>
-
-            </header>
-
-            <section class="question-card__body">
-
-                <p>${question.stem}</p>
-
-            </section>
-
-            <footer class="question-card__footer">
-
-                <button class="btn btn-primary"
-                    data-action="open"
-                    data-id="${question.id}">
-
-                    Abrir
-
-                </button>
-
-                <button class="btn btn-secondary"
-                    data-action="duplicate"
-                    data-id="${question.id}">
-
-                    Duplicar
-
-                </button>
-
-                <button class="btn btn-danger"
-                    data-action="delete"
-                    data-id="${question.id}">
-
-                    Eliminar
-
-                </button>
-
-            </footer>
-
-        `;
-
-        container.appendChild(card);
-
-    });
-
-}
-
-/*==========================================================
- EVENTOS
-==========================================================*/
-
-function bindEvents(containerSelector = "#question-bank") {
-
-    const container = SPAEUI.$(containerSelector);
-
-    if (!container) {
-
-        return;
-
-    }
-
-    container.addEventListener("click", event => {
-
-        const button = event.target.closest("button");
-
-        if (!button) {
+        if(!question){
 
             return;
 
         }
 
-        const id = button.dataset.id;
 
-        const action = button.dataset.action;
+        question.usage.timesUsed++;
 
-        switch (action) {
+        question.usage.exams.push(
+            examID
+        );
 
-            case "open":
+        question.usage.lastUsed =
+            new Date();
 
-                select(id);
+    },
 
-                SPAEUI.emit(
 
-                    "question:selected",
 
-                    current()
+    //--------------------------------------------------
+    // EXPORTACIÓN
+    //--------------------------------------------------
 
-                );
+    exportQuestion(id){
 
-                break;
+        const question =
 
-            case "duplicate":
+            this.findQuestion(id);
 
-                duplicate(id);
 
-                render(containerSelector);
+        if(!question){
 
-                break;
-
-            case "delete":
-
-                remove(id);
-
-                render(containerSelector);
-
-                break;
+            return;
 
         }
 
-    });
 
-}
+        Exporter.exportCustom(
 
-/*==========================================================
- API PÚBLICA
-==========================================================*/
+            question.code,
 
-return {
+            question
 
-    init,
+        );
 
-    load,
+    },
 
-    save,
 
-    add,
 
-    update,
+    //--------------------------------------------------
+    // IMPORTACIÓN
+    //--------------------------------------------------
 
-    remove,
+    importQuestion(question){
 
-    duplicate,
+        this.createQuestion(
+            question
+        );
 
-    all,
+    },
 
-    find,
 
-    current,
 
-    select,
+    //--------------------------------------------------
+    // CÓDIGO AUTOMÁTICO
+    //--------------------------------------------------
 
-    filter,
+    generateCode(){
 
-    sortBy,
+        return (
 
-    addTag,
+            "Q-"
 
-    removeTag,
+            +
 
-    tags,
+            Math.floor(
 
-    createVersion,
+                Math.random()*100000
 
-    versions,
+            )
 
-    archive,
+        );
 
-    restore,
+    },
 
-    archived,
 
-    importQuestions,
 
-    exportQuestions,
+    //--------------------------------------------------
+    // RESUMEN
+    //--------------------------------------------------
 
-    statistics,
+    getSummary(){
 
-    validate,
+        return {
 
-    render,
+            total:
 
-    bindEvents
+                this.questions.length,
+
+            bloom:
+
+                this.getBloomDistribution(),
+
+            difficulty:
+
+                this.getDifficultyDistribution()
+
+        };
+
+    },
+
+
+
+    //--------------------------------------------------
+    // DEBUG
+    //--------------------------------------------------
+
+    debug(){
+
+        console.table(
+
+            this.questions
+
+        );
+
+    }
+
 
 };
 
-})();
 
-/*==========================================================
- INICIALIZACIÓN
-==========================================================*/
 
-document.addEventListener("DOMContentLoaded", () => {
+/*********************************************************
+EXPORTACIÓN GLOBAL
+*********************************************************/
 
-    SPAEQuestionBank.init();
+window.QuestionBank = QuestionBank;
 
-}); 
+
+
+/*********************************************************
+INICIALIZACIÓN AUTOMÁTICA
+*********************************************************/
+
+document.addEventListener(
+
+    "DOMContentLoaded",
+
+    ()=>{
+
+        QuestionBank.init();
+
+    }
+
+);
