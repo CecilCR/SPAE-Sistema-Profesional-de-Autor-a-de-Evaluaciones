@@ -3,9 +3,9 @@
  Sistema Profesional de Autoría de Evaluaciones
 
  Archivo : js/course-manager.js
- Versión : 1.0
+ Versión : 2.0 Professional Edition
 
- Administrador pedagógico de cursos.
+ Núcleo curricular y pedagógico del sistema.
 
 *********************************************************/
 
@@ -14,10 +14,48 @@ const CourseManager = {
 
 
     //--------------------------------------------------
-    // ESTADO ACTUAL
+    // ESTADO DEL SISTEMA
     //--------------------------------------------------
 
     currentCourse: null,
+
+
+
+    //--------------------------------------------------
+    // CONFIGURACIÓN POR DEFECTO
+    //--------------------------------------------------
+
+    DEFAULT_BLOOM = {
+
+        remember: 0,
+        understand: 0,
+        apply: 0,
+        analyze: 0,
+        evaluate: 0,
+        create: 0
+
+    },
+
+
+    DEFAULT_DIFFICULTY = {
+
+        easy: 30,
+        medium: 50,
+        hard: 20
+
+    },
+
+
+    DEFAULT_QUESTION_TYPES = [
+
+        "MCQ",
+        "Case",
+        "Essay",
+        "Short Answer",
+        "Matching",
+        "True/False"
+
+    ],
 
 
 
@@ -28,7 +66,9 @@ const CourseManager = {
     init() {
 
         console.log(
-            "CourseManager inicializado."
+
+            "CourseManager v2.0 inicializado."
+
         );
 
     },
@@ -39,47 +79,109 @@ const CourseManager = {
     // CREAR CURSO
     //--------------------------------------------------
 
-    createCourse(data) {
+    createCourse(data = {}) {
 
         const course = {
 
             id: Date.now(),
 
-            name:
-                data.name || "",
+            //--------------------------------------------------
+            // INFORMACIÓN GENERAL
+            //--------------------------------------------------
 
-            code:
-                data.code || "",
+            name: data.name || "",
+            code: data.code || "",
+            program: data.program || "",
+            level: data.level || "",
+            semester: data.semester || "",
+            modality: data.modality || "",
+            credits: data.credits || 0,
+            hours: data.hours || 0,
+            period: data.period || "",
+            teacher: data.teacher || "",
+            description: data.description || "",
 
-            program:
-                data.program || "",
 
-            level:
-                data.level || "",
-
-            period:
-                data.period || "",
-
-            description:
-                data.description || "",
-
-            teacher:
-                data.teacher || "",
+            //--------------------------------------------------
+            // COMPONENTES CURRICULARES
+            //--------------------------------------------------
 
             units: [],
 
-            learningOutcomes: [],
-
             competencies: [],
 
-            bloomLevels: [],
+            learningOutcomes: [],
+
+            assessmentMatrix: [],
+
+
+            //--------------------------------------------------
+            // CONFIGURACIÓN PEDAGÓGICA
+            //--------------------------------------------------
+
+            pedagogicalConfiguration: {
+
+                bloomDistribution:
+
+                    structuredClone(
+                        this.DEFAULT_BLOOM
+                    ),
+
+                difficultyDistribution:
+
+                    structuredClone(
+                        this.DEFAULT_DIFFICULTY
+                    ),
+
+                questionTypes:
+
+                    [...this.DEFAULT_QUESTION_TYPES],
+
+                estimatedTime: 120,
+
+                minimumQuestions: 10,
+
+                maximumQuestions: 60
+
+            },
+
+
+            //--------------------------------------------------
+            // INTEGRACIONES
+            //--------------------------------------------------
+
+            questionBank: [],
+
+            exams: [],
+
+
+            //--------------------------------------------------
+            // ANALÍTICAS
+            //--------------------------------------------------
+
+            statistics: {
+
+                totalUnits: 0,
+                totalOutcomes: 0,
+                totalCompetencies: 0,
+                totalQuestions: 0,
+                totalExams: 0
+
+            },
+
+
+            //--------------------------------------------------
+            // METADATA
+            //--------------------------------------------------
 
             metadata: {
 
                 createdAt:
+
                     new Date(),
 
                 updatedAt:
+
                     new Date()
 
             }
@@ -87,15 +189,13 @@ const CourseManager = {
         };
 
 
-        StorageManager.saveCourse(
-            course
-        );
-
+        StorageManager.saveCourse(course);
 
         Notifications.success(
-            "Curso creado correctamente."
-        );
 
+            "Curso creado correctamente."
+
+        );
 
         return course;
 
@@ -104,89 +204,26 @@ const CourseManager = {
 
 
     //--------------------------------------------------
-    // SELECCIONAR CURSO
+    // CURSO ACTUAL
     //--------------------------------------------------
 
-    setCurrentCourse(course) {
+    setCurrentCourse(course){
 
         this.currentCourse = course;
-
-
-        if (
-
-            window.SPAE
-
-        ) {
-
-            SPAE.setCurrentCourse(
-                course
-            );
-
-        }
-
-
-        DashboardModule.setCourseInformation(
-            course
-        );
 
     },
 
 
-
-    //--------------------------------------------------
-    // OBTENER CURSO ACTUAL
-    //--------------------------------------------------
-
-    getCurrentCourse() {
+    getCurrentCourse(){
 
         return this.currentCourse;
 
     },
 
 
+    clearCurrentCourse(){
 
-    //--------------------------------------------------
-    // LISTAR CURSOS
-    //--------------------------------------------------
-
-    getCourses() {
-
-        return StorageManager.getCourses();
-
-    },
-
-
-
-    //--------------------------------------------------
-    // BUSCAR CURSO
-    //--------------------------------------------------
-
-    findCourse(id) {
-
-        return this.getCourses().find(
-
-            course => course.id === id
-
-        );
-
-    },
-
-
-
-    //--------------------------------------------------
-    // ELIMINAR CURSO
-    //--------------------------------------------------
-
-    deleteCourse(id) {
-
-        StorageManager.deleteCourse(
-            id
-        );
-
-
-        Notifications.warning(
-            "Curso eliminado."
-        );
+        this.currentCourse = null;
 
     },
 
@@ -196,39 +233,33 @@ const CourseManager = {
     // UNIDADES DE APRENDIZAJE
     //--------------------------------------------------
 
-    addUnit(unit) {
+    addUnit(data){
 
-        if (!this.currentCourse) {
-
-            return;
-
-        }
+        if(!this.currentCourse) return;
 
         this.currentCourse.units.push({
 
             id: Date.now(),
 
             title:
-                unit.title,
+                data.title || "",
 
             description:
-                unit.description
+                data.description || "",
+
+            topics:
+                data.topics || []
 
         });
+
+        this.updateStatistics();
 
     },
 
 
+    getUnits(){
 
-    getUnits() {
-
-        if (!this.currentCourse) {
-
-            return [];
-
-        }
-
-        return this.currentCourse.units;
+        return this.currentCourse?.units || [];
 
     },
 
@@ -238,39 +269,37 @@ const CourseManager = {
     // RESULTADOS DE APRENDIZAJE
     //--------------------------------------------------
 
-    addLearningOutcome(outcome) {
+    addLearningOutcome(data){
 
-        if (!this.currentCourse) {
+        if(!this.currentCourse) return;
 
-            return;
-
-        }
 
         this.currentCourse.learningOutcomes.push({
 
             id: Date.now(),
 
-            description:
-                outcome.description,
+            code:
+                data.code || "",
 
-            bloom:
-                outcome.bloom
+            description:
+                data.description || "",
+
+            bloomLevel:
+                data.bloomLevel || "",
+
+            weight:
+                data.weight || 0
 
         });
+
+        this.updateStatistics();
 
     },
 
 
+    getLearningOutcomes(){
 
-    getLearningOutcomes() {
-
-        if (!this.currentCourse) {
-
-            return [];
-
-        }
-
-        return this.currentCourse.learningOutcomes;
+        return this.currentCourse?.learningOutcomes || [];
 
     },
 
@@ -280,69 +309,69 @@ const CourseManager = {
     // COMPETENCIAS
     //--------------------------------------------------
 
-    addCompetency(competency) {
+    addCompetency(data){
 
-        if (!this.currentCourse) {
+        if(!this.currentCourse) return;
 
-            return;
-
-        }
 
         this.currentCourse.competencies.push({
 
             id: Date.now(),
 
-            title:
-                competency.title
+            type:
+                data.type || "General",
+
+            description:
+                data.description || ""
+
+        });
+
+        this.updateStatistics();
+
+    },
+
+
+    getCompetencies(){
+
+        return this.currentCourse?.competencies || [];
+
+    },
+
+
+
+    //--------------------------------------------------
+    // MATRIZ DE EVALUACIÓN
+    //--------------------------------------------------
+
+    addAssessment(data){
+
+        if(!this.currentCourse) return;
+
+
+        this.currentCourse.assessmentMatrix.push({
+
+            id: Date.now(),
+
+            type:
+                data.type,
+
+            outcomes:
+                data.outcomes || [],
+
+            competencies:
+                data.competencies || [],
+
+            percentage:
+                data.percentage || 0
 
         });
 
     },
 
 
+    getAssessmentMatrix(){
 
-    getCompetencies() {
-
-        if (!this.currentCourse) {
-
-            return [];
-
-        }
-
-        return this.currentCourse.competencies;
-
-    },
-
-
-
-    //--------------------------------------------------
-    // BLOOM
-    //--------------------------------------------------
-
-    setBloomDistribution(levels) {
-
-        if (!this.currentCourse) {
-
-            return;
-
-        }
-
-        this.currentCourse.bloomLevels =
-            levels;
-
-    },
-
-
-
-    getBloomDistribution() {
-
-        if (!this.currentCourse) {
-
-            return [];
-
-        }
-
-        return this.currentCourse.bloomLevels;
+        return this.currentCourse?.assessmentMatrix || [];
 
     },
 
@@ -352,101 +381,206 @@ const CourseManager = {
     // CONFIGURACIÓN PEDAGÓGICA
     //--------------------------------------------------
 
-    getPedagogicalProfile() {
+    setBloomDistribution(data){
 
-        if (!this.currentCourse) {
+        if(!this.currentCourse) return;
 
-            return null;
+        this.currentCourse
+            .pedagogicalConfiguration
+            .bloomDistribution = data;
 
-        }
+    },
 
-        return {
 
-            outcomes:
-                this.currentCourse.learningOutcomes.length,
+    setDifficultyDistribution(data){
 
-            competencies:
-                this.currentCourse.competencies.length,
+        if(!this.currentCourse) return;
 
-            units:
-                this.currentCourse.units.length,
+        this.currentCourse
+            .pedagogicalConfiguration
+            .difficultyDistribution = data;
 
-            bloom:
-                this.currentCourse.bloomLevels
+    },
 
-        };
+
+    setEstimatedTime(minutes){
+
+        if(!this.currentCourse) return;
+
+        this.currentCourse
+            .pedagogicalConfiguration
+            .estimatedTime = minutes;
+
+    },
+
+
+    addQuestionType(type){
+
+        if(!this.currentCourse) return;
+
+        this.currentCourse
+            .pedagogicalConfiguration
+            .questionTypes.push(type);
 
     },
 
 
 
     //--------------------------------------------------
-    // VALIDACIONES
+    // BANCO DE PREGUNTAS
     //--------------------------------------------------
 
-    validateCourse(course) {
+    linkQuestion(questionID){
 
-        if (!course.name) {
+        if(!this.currentCourse) return;
 
-            return false;
-
-        }
-
-        if (!course.code) {
-
-            return false;
-
-        }
-
-        return true;
+        this.currentCourse.questionBank.push(
+            questionID
+        );
 
     },
 
 
 
     //--------------------------------------------------
-    // ESTADÍSTICAS
+    // EXÁMENES
     //--------------------------------------------------
 
-    getStatistics() {
+    linkExam(examID){
 
-        const courses =
-            this.getCourses();
+        if(!this.currentCourse) return;
+
+        this.currentCourse.exams.push(
+            examID
+        );
+
+    },
 
 
-        return {
 
-            totalCourses:
+    //--------------------------------------------------
+    // ANALÍTICAS
+    //--------------------------------------------------
 
-                courses.length,
+    updateStatistics(){
 
-            totalOutcomes:
+        if(!this.currentCourse) return;
 
-                courses.reduce(
 
-                    (sum, course) =>
-
-                    sum +
-
-                    course.learningOutcomes.length,
-
-                    0
-
-                ),
+        this.currentCourse.statistics = {
 
             totalUnits:
 
-                courses.reduce(
+                this.currentCourse.units.length,
 
-                    (sum, course) =>
+            totalOutcomes:
 
-                    sum +
+                this.currentCourse.learningOutcomes.length,
 
-                    course.units.length,
+            totalCompetencies:
 
-                    0
+                this.currentCourse.competencies.length,
 
-                )
+            totalQuestions:
+
+                this.currentCourse.questionBank.length,
+
+            totalExams:
+
+                this.currentCourse.exams.length
+
+        };
+
+    },
+
+
+    getStatistics(){
+
+        return this.currentCourse?.statistics;
+
+    },
+
+
+
+    //--------------------------------------------------
+    // COBERTURA BLOOM
+    //--------------------------------------------------
+
+    getBloomCoverage(){
+
+        if(!this.currentCourse) return null;
+
+
+        const coverage = {
+
+            remember:0,
+            understand:0,
+            apply:0,
+            analyze:0,
+            evaluate:0,
+            create:0
+
+        };
+
+
+        this.currentCourse.learningOutcomes
+        .forEach(item=>{
+
+            const level =
+                item.bloomLevel.toLowerCase();
+
+            if(coverage[level] !== undefined){
+
+                coverage[level]++;
+
+            }
+
+        });
+
+
+        return coverage;
+
+    },
+
+
+
+    //--------------------------------------------------
+    // PERFIL PEDAGÓGICO
+    //--------------------------------------------------
+
+    getPedagogicalProfile(){
+
+        if(!this.currentCourse) return null;
+
+
+        return {
+
+            bloom:
+
+                this.currentCourse
+                .pedagogicalConfiguration
+                .bloomDistribution,
+
+            difficulty:
+
+                this.currentCourse
+                .pedagogicalConfiguration
+                .difficultyDistribution,
+
+            outcomes:
+
+                this.currentCourse
+                .learningOutcomes.length,
+
+            competencies:
+
+                this.currentCourse
+                .competencies.length,
+
+            units:
+
+                this.currentCourse
+                .units.length
 
         };
 
@@ -455,16 +589,12 @@ const CourseManager = {
 
 
     //--------------------------------------------------
-    // EXPORTAR PERFIL DEL CURSO
+    // EXPORTACIÓN
     //--------------------------------------------------
 
-    exportCurrentCourse() {
+    exportCurrentCourse(){
 
-        if (!this.currentCourse) {
-
-            return;
-
-        }
+        if(!this.currentCourse) return;
 
         Exporter.exportCustom(
 
@@ -479,17 +609,23 @@ const CourseManager = {
 
 
     //--------------------------------------------------
-    // IMPORTAR CURSO
+    // VALIDACIONES PEDAGÓGICAS
     //--------------------------------------------------
 
-    importCourse(course) {
+    validateCourse(){
 
-        StorageManager.saveCourse(
-            course
-        );
+        if(!this.currentCourse){
 
-        Notifications.success(
-            "Curso importado."
+            return false;
+
+        }
+
+        return (
+
+            this.currentCourse.name !== "" &&
+            this.currentCourse.code !== "" &&
+            this.currentCourse.learningOutcomes.length > 0
+
         );
 
     },
@@ -497,87 +633,45 @@ const CourseManager = {
 
 
     //--------------------------------------------------
-    // DUPLICAR CURSO
+    // RESUMEN CURRICULAR
     //--------------------------------------------------
 
-    duplicateCourse(id) {
+    getCurricularSummary(){
 
-        const course =
-            this.findCourse(id);
+        if(!this.currentCourse) return null;
 
-        if (!course) {
-
-            return;
-
-        }
-
-        const copy = {
-
-            ...course,
-
-            id: Date.now(),
-
-            name:
-                course.name +
-
-                " (Copia)"
-
-        };
-
-        StorageManager.saveCourse(
-            copy
-        );
-
-        Notifications.success(
-            "Curso duplicado."
-        );
-
-    },
-
-
-
-    //--------------------------------------------------
-    // RESUMEN DEL CURSO
-    //--------------------------------------------------
-
-    getSummary() {
-
-        if (!this.currentCourse) {
-
-            return null;
-
-        }
 
         return {
 
             name:
+
                 this.currentCourse.name,
 
-            code:
-                this.currentCourse.code,
+            program:
 
-            units:
-                this.currentCourse.units.length,
+                this.currentCourse.program,
+
+            credits:
+
+                this.currentCourse.credits,
 
             outcomes:
+
                 this.currentCourse.learningOutcomes.length,
 
             competencies:
-                this.currentCourse.competencies.length
+
+                this.currentCourse.competencies.length,
+
+            units:
+
+                this.currentCourse.units.length,
+
+            exams:
+
+                this.currentCourse.exams.length
 
         };
-
-    },
-
-
-
-    //--------------------------------------------------
-    // LIMPIAR CURSO ACTUAL
-    //--------------------------------------------------
-
-    clearCurrentCourse() {
-
-        this.currentCourse = null;
 
     },
 
@@ -587,17 +681,18 @@ const CourseManager = {
     // DEBUG
     //--------------------------------------------------
 
-    debug() {
+    debug(){
 
-        console.log(
+        console.table(
+
             this.currentCourse
+
         );
 
     }
 
 
 };
-
 
 
 /*********************************************************
@@ -616,7 +711,7 @@ document.addEventListener(
 
     "DOMContentLoaded",
 
-    () => {
+    ()=>{
 
         CourseManager.init();
 
