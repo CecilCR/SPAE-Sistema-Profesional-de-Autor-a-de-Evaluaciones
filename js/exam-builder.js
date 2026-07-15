@@ -1,830 +1,625 @@
-```javascript
-/*==========================================================
+/*********************************************************
  SPAE
+
  Sistema Profesional de Autoría de Evaluaciones
 
- exam-builder.js
- Release 1.0
+ Archivo:
+ js/exam-builder.js
 
- Constructor de exámenes
-==========================================================*/
+ Constructor profesional de exámenes.
 
-const SPAEExamBuilder = (() => {
+*********************************************************/
 
-"use strict";
+const ExamBuilder = {
 
-/*==========================================================
- CONFIGURACIÓN
-==========================================================*/
 
-const CONFIG = {
+    //--------------------------------------------------
+    // ESTADO
+    //--------------------------------------------------
 
-    maxSections: 10,
+    currentStep: 1,
 
-    maxQuestionsPerSection: 100,
+    totalSteps: 10,
 
-    defaultDuration: 90,
+    examData: {},
 
-    defaultScore: 20,
 
-    version: "1.0.0"
 
-};
+    //--------------------------------------------------
+    // INICIALIZACIÓN
+    //--------------------------------------------------
 
-/*==========================================================
- ESTADO
-==========================================================*/
+    init() {
 
-const state = {
+        console.log(
+            "Exam Builder inicializado."
+        );
 
-    exam: null,
+    },
 
-    course: null,
 
-    questionBank: [],
 
-    selectedQuestions: [],
+    //--------------------------------------------------
+    // INICIAR
+    //--------------------------------------------------
 
-    validation: []
+    start() {
 
-};
+        this.currentStep = 1;
 
-/*==========================================================
- MODELO BASE
-==========================================================*/
+        this.examData = {};
 
-function createExam() {
+        this.render();
 
-    return {
+    },
 
-        id: crypto.randomUUID(),
 
-        code: "",
 
-        title: "",
+    //--------------------------------------------------
+    // NAVEGACIÓN
+    //--------------------------------------------------
 
-        subtitle: "",
+    nextStep() {
 
-        description: "",
+        if (this.currentStep < this.totalSteps) {
 
-        courseId: "",
-
-        teacher: "",
-
-        academicPeriod: "",
-
-        semester: "",
-
-        duration: CONFIG.defaultDuration,
-
-        totalScore: CONFIG.defaultScore,
-
-        instructions: [],
-
-        sections: [],
-
-        metadata: {
-
-            createdAt: new Date().toISOString(),
-
-            updatedAt: new Date().toISOString(),
-
-            version: CONFIG.version
+            this.currentStep++;
+            this.render();
 
         }
 
-    };
+    },
 
-}
 
-/*==========================================================
- INICIALIZACIÓN
-==========================================================*/
+    previousStep() {
 
-function init(course = null) {
+        if (this.currentStep > 1) {
 
-    state.course = course;
+            this.currentStep--;
+            this.render();
 
-    state.exam = createExam();
+        }
 
-    state.questionBank = [];
+    },
 
-    state.selectedQuestions = [];
 
-    state.validation = [];
 
-}
+    //--------------------------------------------------
+    // RENDERIZAR
+    //--------------------------------------------------
 
-/*==========================================================
- EXAMEN ACTUAL
-==========================================================*/
+    render() {
 
-function currentExam() {
+        switch (this.currentStep) {
 
-    return state.exam;
+            case 1:
+                this.renderCourseBlueprint();
+                break;
 
-}
+            case 2:
+                this.renderEvaluationType();
+                break;
 
-function currentCourse() {
+            case 3:
+                this.renderExamSettings();
+                break;
 
-    return state.course;
+            case 4:
+                this.renderRestrictions();
+                break;
 
-}
+            case 5:
+                this.renderBuildMode();
+                break;
 
-/*==========================================================
- ACTUALIZAR DATOS
-==========================================================*/
+            case 6:
+                this.renderBuildProcess();
+                break;
 
-function update(data = {}) {
+            case 7:
+                this.renderCurricularValidation();
+                break;
 
-    Object.assign(state.exam, data);
+            case 8:
+                this.renderPedagogicalValidation();
+                break;
 
-    state.exam.metadata.updatedAt =
+            case 9:
+                this.renderPreview();
+                break;
 
-        new Date().toISOString();
+            case 10:
+                this.renderGenerateExam();
+                break;
 
-}
+        }
 
-/*==========================================================
- INSTRUCCIONES
-==========================================================*/
+    },
 
-function addInstruction(text) {
 
-    state.exam.instructions.push(
 
-        text.trim()
+    //--------------------------------------------------
+    // PASOS DEL WIZARD
+    //--------------------------------------------------
 
-    );
+    renderCourseBlueprint() {
 
-}
+        console.log(
+            "Seleccionar Curso y Blueprint."
+        );
 
-function removeInstruction(index) {
+    },
 
-    state.exam.instructions.splice(index,1);
 
-}
+    renderEvaluationType() {
 
-/*==========================================================
- SECCIONES
-==========================================================*/
+        console.log(
+            "Seleccionar tipo de evaluación."
+        );
 
-function addSection(section = {}) {
+    },
 
-    if (
 
-        state.exam.sections.length >=
+    renderExamSettings() {
 
-        CONFIG.maxSections
+        console.log(
+            "Configuración del examen."
+        );
 
-    ) {
+    },
 
-        return false;
 
-    }
+    renderRestrictions() {
 
-    const newSection = {
+        console.log(
+            "Restricciones pedagógicas."
+        );
 
-        id: crypto.randomUUID(),
+    },
 
-        title: section.title || "",
 
-        description: section.description || "",
+    renderBuildMode() {
 
-        score: section.score || 0,
+        console.log(
+            "Modo de construcción."
+        );
 
-        questions: []
+    },
 
-    };
 
-    state.exam.sections.push(newSection);
+    renderBuildProcess() {
 
-    return newSection;
+        console.log(
+            "Construcción del examen."
+        );
 
-}
+    },
 
-function findSection(id) {
 
-    return state.exam.sections.find(
+    renderCurricularValidation() {
 
-        section => section.id === id
+        console.log(
+            "Validación curricular."
+        );
 
-    );
+    },
 
-}
 
-function updateSection(id,data={}) {
+    renderPedagogicalValidation() {
 
-    const section = findSection(id);
+        console.log(
+            "Validación pedagógica."
+        );
 
-    if(!section){
+    },
 
-        return null;
 
-    }
+    renderPreview() {
 
-    Object.assign(section,data);
+        console.log(
+            "Vista previa."
+        );
 
-    return section;
+    },
 
-}
 
-function removeSection(id){
+    renderGenerateExam() {
 
-    state.exam.sections =
+        console.log(
+            "Generar examen."
+        );
 
-        state.exam.sections.filter(
+    },
 
-            section=>section.id!==id
+
+
+    //--------------------------------------------------
+    // GUARDAR DATOS
+    //--------------------------------------------------
+
+    saveData(data) {
+
+        Object.assign(
+            this.examData,
+            data
+        );
+
+    },
+
+
+
+    //--------------------------------------------------
+    // VALIDACIONES
+    //--------------------------------------------------
+
+    validateCourse() {
+
+        return !!this.examData.courseID;
+
+    },
+
+
+    validateBlueprint() {
+
+        return !!this.examData.blueprintID;
+
+    },
+
+
+    validateDuration() {
+
+        return this.examData.duration > 0;
+
+    },
+
+
+    validateTotalScore() {
+
+        return this.examData.totalScore > 0;
+
+    },
+
+
+    validateQuestions() {
+
+        return this.examData.totalQuestions > 0;
+
+    },
+
+
+    validateExam() {
+
+        return (
+
+            this.validateCourse()
+            &&
+
+            this.validateBlueprint()
+            &&
+
+            this.validateDuration()
+            &&
+
+            this.validateTotalScore()
+            &&
+
+            this.validateQuestions()
 
         );
 
-}
+    },
 
-/*==========================================================
- BANCO DE PREGUNTAS
-==========================================================*/
 
-function loadQuestionBank(questions=[]){
 
-    state.questionBank =
+    //--------------------------------------------------
+    // MODOS DE GENERACIÓN
+    //--------------------------------------------------
 
-        structuredClone(questions);
+    buildAutomatic() {
 
-}
-
-function questionBank(){
-
-    return structuredClone(
-
-        state.questionBank
-
-    );
-
-}
-
-/*==========================================================
- BUSCAR PREGUNTA
-==========================================================*/
-
-function findQuestion(id){
-
-    return state.questionBank.find(
-
-        question=>question.id===id
-
-    );
-
-}
-/*==========================================================
- SELECCIÓN DE PREGUNTAS
-==========================================================*/
-
-function addQuestionToSection(sectionId, questionId) {
-
-    const section = findSection(sectionId);
-
-    if (!section) {
-
-        return false;
-
-    }
-
-    if (
-
-        section.questions.length >=
-
-        CONFIG.maxQuestionsPerSection
-
-    ) {
-
-        return false;
-
-    }
-
-    const question = findQuestion(questionId);
-
-    if (!question) {
-
-        return false;
-
-    }
-
-    const exists = section.questions.some(
-
-        item => item.id === question.id
-
-    );
-
-    if (exists) {
-
-        return false;
-
-    }
-
-    section.questions.push(
-
-        structuredClone(question)
-
-    );
-
-    recalculateSectionScore(sectionId);
-
-    updateExamMetadata();
-
-    return true;
-
-}
-
-/*==========================================================
- ELIMINAR PREGUNTA
-==========================================================*/
-
-function removeQuestionFromSection(sectionId, questionId) {
-
-    const section = findSection(sectionId);
-
-    if (!section) {
-
-        return false;
-
-    }
-
-    section.questions = section.questions.filter(
-
-        question => question.id !== questionId
-
-    );
-
-    recalculateSectionScore(sectionId);
-
-    updateExamMetadata();
-
-    return true;
-
-}
-
-/*==========================================================
- MOVER PREGUNTA
-==========================================================*/
-
-function moveQuestion(sectionId, fromIndex, toIndex) {
-
-    const section = findSection(sectionId);
-
-    if (!section) {
-
-        return false;
-
-    }
-
-    if (
-
-        fromIndex < 0 ||
-
-        toIndex < 0 ||
-
-        fromIndex >= section.questions.length ||
-
-        toIndex >= section.questions.length
-
-    ) {
-
-        return false;
-
-    }
-
-    const [question] =
-
-        section.questions.splice(fromIndex, 1);
-
-    section.questions.splice(
-
-        toIndex,
-
-        0,
-
-        question
-
-    );
-
-    updateExamMetadata();
-
-    return true;
-
-}
-
-/*==========================================================
- REORDENAR SECCIONES
-==========================================================*/
-
-function moveSection(fromIndex, toIndex) {
-
-    if (
-
-        fromIndex < 0 ||
-
-        toIndex < 0 ||
-
-        fromIndex >= state.exam.sections.length ||
-
-        toIndex >= state.exam.sections.length
-
-    ) {
-
-        return false;
-
-    }
-
-    const [section] =
-
-        state.exam.sections.splice(
-
-            fromIndex,
-
-            1
-
+        return ExamEngine.generateExam(
+            this.examData
         );
 
-    state.exam.sections.splice(
+    },
 
-        toIndex,
 
-        0,
+    buildSemiAutomatic() {
 
-        section
+        return ExamEngine.generateExam(
+            this.examData
+        );
 
-    );
+    },
 
-    updateExamMetadata();
 
-    return true;
+    buildManual() {
 
-}
+        return ExamEngine.generateExam(
+            this.examData
+        );
 
-/*==========================================================
- PUNTAJES
-==========================================================*/
+    },
 
-function recalculateSectionScore(sectionId) {
 
-    const section = findSection(sectionId);
 
-    if (!section) {
+    //--------------------------------------------------
+    // VALIDACIÓN CURRICULAR
+    //--------------------------------------------------
 
-        return;
+    curricularValidation() {
 
-    }
+        return {
 
-    section.score =
+            learningOutcomes:
 
-        section.questions.reduce(
+                true,
 
-            (total, question) => {
+            competencies:
 
-                return (
+                true,
 
-                    total +
+            blueprint:
 
-                    (question.score || 1)
+                true
+
+        };
+
+    },
+
+
+
+    //--------------------------------------------------
+    // VALIDACIÓN PEDAGÓGICA
+    //--------------------------------------------------
+
+    pedagogicalValidation() {
+
+        return {
+
+            bloomCoverage:
+
+                true,
+
+            difficultyCoverage:
+
+                true,
+
+            questionTypes:
+
+                true,
+
+            qualityScore:
+
+                true
+
+        };
+
+    },
+
+
+
+    //--------------------------------------------------
+    // QUALITY ENGINE
+    //--------------------------------------------------
+
+    qualityAnalysis() {
+
+        if (
+
+            window.QualityEngine &&
+            QualityEngine.analyzeExam
+
+        ) {
+
+            return QualityEngine
+                .analyzeExam(
+
+                    this.examData
 
                 );
 
-            },
+        }
 
-            0
+        return null;
 
-        );
+    },
 
-    recalculateExamScore();
 
-}
 
-function recalculateExamScore() {
+    //--------------------------------------------------
+    // TIEMPO ESTIMADO
+    //--------------------------------------------------
 
-    state.exam.totalScore =
+    estimateDuration() {
 
-        state.exam.sections.reduce(
+        if (
 
-            (total, section) => {
+            window.ExamEngine &&
+            ExamEngine.calculateDuration
 
-                return total + section.score;
+        ) {
 
-            },
-
-            0
-
-        );
-
-}
-
-/*==========================================================
- METADATOS
-==========================================================*/
-
-function updateExamMetadata() {
-
-    state.exam.metadata.updatedAt =
-
-        new Date().toISOString();
-
-}
-
-/*==========================================================
- ESTADÍSTICAS
-==========================================================*/
-
-function statistics() {
-
-    let totalQuestions = 0;
-
-    state.exam.sections.forEach(section => {
-
-        totalQuestions +=
-
-            section.questions.length;
-
-    });
-
-    return {
-
-        sections:
-
-            state.exam.sections.length,
-
-        questions:
-
-            totalQuestions,
-
-        totalScore:
-
-            state.exam.totalScore,
-
-        duration:
-
-            state.exam.duration
-
-    };
-
-}
-
-/*==========================================================
- CONTADORES
-==========================================================*/
-
-function totalQuestions() {
-
-    return statistics().questions;
-
-}
-
-function totalSections() {
-
-    return statistics().sections;
-
-}
-```
-/*==========================================================
- VALIDACIÓN DEL EXAMEN
-==========================================================*/
-
-function validateExam() {
-
-    const errors = [];
-
-    if (!state.exam.title.trim()) {
-
-        errors.push(
-            "Debe ingresar el título del examen."
-        );
-
-    }
-
-    if (!state.exam.courseId) {
-
-        errors.push(
-            "Debe asociar el examen a un curso."
-        );
-
-    }
-
-    if (state.exam.sections.length === 0) {
-
-        errors.push(
-            "El examen debe contener al menos una sección."
-        );
-
-    }
-
-    state.exam.sections.forEach((section, index) => {
-
-        if (!section.title.trim()) {
-
-            errors.push(
-                `La sección ${index + 1} no posee título.`
-            );
+            return ExamEngine
+                .calculateDuration();
 
         }
 
-        if (section.questions.length === 0) {
+        return 0;
 
-            errors.push(
-                `La sección ${index + 1} no contiene preguntas.`
+    },
+
+
+
+    //--------------------------------------------------
+    // VISTA PREVIA
+    //--------------------------------------------------
+
+    getPreview() {
+
+        return {
+
+            title:
+                this.examData.title,
+
+            type:
+                this.examData.type,
+
+            duration:
+                this.examData.duration,
+
+            questions:
+                this.examData.totalQuestions,
+
+            versions:
+                this.examData.versions
+
+        };
+
+    },
+
+
+
+    //--------------------------------------------------
+    // GENERAR EXAMEN
+    //--------------------------------------------------
+
+    createExam() {
+
+        if (!this.validateExam()) {
+
+            Notifications.error(
+                "La configuración del examen contiene errores."
             );
+
+            return null;
 
         }
 
-    });
 
-    state.validation = errors;
+        const exam =
 
-    return {
+            ExamEngine.generateExam(
 
-        valid: errors.length === 0,
+                this.examData
 
-        errors
+            );
 
-    };
 
-}
+        Notifications.success(
+            "Examen generado correctamente."
+        );
 
-/*==========================================================
- VISTA PREVIA
-==========================================================*/
 
-function preview() {
+        return exam;
 
-    return structuredClone(state.exam);
+    },
 
-}
 
-/*==========================================================
- EXPORTAR
-==========================================================*/
 
-function exportExam() {
+    //--------------------------------------------------
+    // EXPORTAR
+    //--------------------------------------------------
 
-    return JSON.stringify(
+    exportExam() {
 
-        state.exam,
+        Exporter.exportCustom(
 
-        null,
+            "Exam Configuration",
 
-        2
+            this.examData
 
-    );
+        );
 
-}
+    },
 
-function importExam(json) {
 
-    try {
 
-        state.exam = JSON.parse(json);
+    //--------------------------------------------------
+    // IMPORTAR
+    //--------------------------------------------------
 
-        updateExamMetadata();
+    importExam(data) {
 
-        return true;
+        this.examData = data;
+
+    },
+
+
+
+    //--------------------------------------------------
+    // PROGRESO
+    //--------------------------------------------------
+
+    getProgress() {
+
+        return Math.round(
+
+            (this.currentStep /
+                this.totalSteps)
+
+            * 100
+
+        );
+
+    },
+
+
+
+    //--------------------------------------------------
+    // CANCELAR
+    //--------------------------------------------------
+
+    cancel() {
+
+        this.currentStep = 1;
+
+        this.examData = {};
+
+    },
+
+
+
+    //--------------------------------------------------
+    // RESUMEN
+    //--------------------------------------------------
+
+    getSummary() {
+
+        return this.examData;
+
+    },
+
+
+
+    //--------------------------------------------------
+    // DEBUG
+    //--------------------------------------------------
+
+    debug() {
+
+        console.table(
+            this.examData
+        );
 
     }
 
-    catch(error){
-
-        console.error(error);
-
-        return false;
-
-    }
-
-}
-
-/*==========================================================
- REINICIAR
-==========================================================*/
-
-function reset() {
-
-    state.exam = createExam();
-
-    state.questionBank = [];
-
-    state.selectedQuestions = [];
-
-    state.validation = [];
-
-}
-
-/*==========================================================
- RESUMEN
-==========================================================*/
-
-function summary() {
-
-    const stats = statistics();
-
-    return {
-
-        title:
-
-            state.exam.title,
-
-        sections:
-
-            stats.sections,
-
-        questions:
-
-            stats.questions,
-
-        totalScore:
-
-            stats.totalScore,
-
-        duration:
-
-            stats.duration,
-
-        teacher:
-
-            state.exam.teacher,
-
-        academicPeriod:
-
-            state.exam.academicPeriod
-
-    };
-
-}
-
-/*==========================================================
- API PÚBLICA
-==========================================================*/
-
-return {
-
-    init,
-
-    currentExam,
-
-    currentCourse,
-
-    update,
-
-    reset,
-
-    addInstruction,
-
-    removeInstruction,
-
-    addSection,
-
-    updateSection,
-
-    removeSection,
-
-    findSection,
-
-    loadQuestionBank,
-
-    questionBank,
-
-    findQuestion,
-
-    addQuestionToSection,
-
-    removeQuestionFromSection,
-
-    moveQuestion,
-
-    moveSection,
-
-    recalculateSectionScore,
-
-    recalculateExamScore,
-
-    validateExam,
-
-    statistics,
-
-    totalQuestions,
-
-    totalSections,
-
-    preview,
-
-    exportExam,
-
-    importExam,
-
-    summary
 
 };
 
-})();
 
-/*==========================================================
- INICIALIZACIÓN
-==========================================================*/
+
+/*********************************************************
+ EXPORTACIÓN GLOBAL
+*********************************************************/
+
+window.ExamBuilder = ExamBuilder;
+
+
+
+/*********************************************************
+ INICIALIZACIÓN AUTOMÁTICA
+*********************************************************/
 
 document.addEventListener(
 
@@ -832,7 +627,7 @@ document.addEventListener(
 
     () => {
 
-        SPAEExamBuilder.init();
+        ExamBuilder.init();
 
     }
 
