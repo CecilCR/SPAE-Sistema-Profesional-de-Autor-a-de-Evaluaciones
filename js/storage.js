@@ -1,483 +1,597 @@
-/* ==========================================================
-   SPAE
-   Sistema Profesional de Autoría de Evaluaciones
-   storage.js
-   Release R0.1
+/*********************************************************
+ SPAE
+ Sistema Profesional de Autoría de Evaluaciones
 
-   Gestión centralizada del almacenamiento local.
+ Archivo : js/storage.js
+ Versión : 1.0
 
-   Filosofía:
-   - Todo acceso a LocalStorage pasa por este módulo.
-   - El resto del sistema nunca usa localStorage directamente.
-   - Facilita futuras migraciones a IndexedDB o API REST.
-==========================================================*/
+ Administrador de almacenamiento local.
 
-const SPAEStorage = (() => {
-
-    "use strict";
-
-    /*=========================================================
-        CLAVES DEL SISTEMA
-    =========================================================*/
-
-    const KEYS = {
-
-        CONFIGURACION : "spae.configuracion",
-
-        CURSOS : "spae.cursos",
-
-        PREGUNTAS : "spae.preguntas",
-
-        EXAMENES : "spae.examenes",
-
-        PERFIL_DOCENTE : "spae.perfilDocente",
-
-        VERSION : "spae.version"
-
-    };
+*********************************************************/
 
 
+const StorageManager = {
 
-    /*=========================================================
-        MÉTODOS PRIVADOS
-    =========================================================*/
 
-    function existeStorage(){
+    //--------------------------------------------------
+    // CONFIGURACIÓN
+    //--------------------------------------------------
 
-        try{
+    PREFIX: "SPAE_",
 
-            const test = "__spae__";
 
-            localStorage.setItem(test,test);
+    KEYS: {
 
-            localStorage.removeItem(test);
+        courses: "COURSES",
+        questions: "QUESTIONS",
+        exams: "EXAMS",
+        outcomes: "LEARNING_OUTCOMES",
+        reports: "REPORTS",
+        settings: "SETTINGS",
+        backups: "BACKUPS"
 
-            return true;
+    },
+
+
+    //--------------------------------------------------
+    // INICIALIZACIÓN
+    //--------------------------------------------------
+
+    init() {
+
+        this.initializeCollections();
+
+        console.log(
+            "StorageManager inicializado."
+        );
+
+    },
+
+
+    //--------------------------------------------------
+    // CREACIÓN DE ESTRUCTURAS
+    //--------------------------------------------------
+
+    initializeCollections() {
+
+        Object.values(this.KEYS).forEach(key => {
+
+            if (
+
+                localStorage.getItem(
+                    this.PREFIX + key
+                ) === null
+
+            ) {
+
+                localStorage.setItem(
+
+                    this.PREFIX + key,
+
+                    JSON.stringify([])
+
+                );
+
+            }
+
+        });
+
+    },
+
+
+    //--------------------------------------------------
+    // MÉTODOS GENÉRICOS
+    //--------------------------------------------------
+
+    save(key, data) {
+
+        localStorage.setItem(
+
+            this.PREFIX + key,
+
+            JSON.stringify(data)
+
+        );
+
+    },
+
+
+    load(key) {
+
+        const data = localStorage.getItem(
+
+            this.PREFIX + key
+
+        );
+
+        if (!data) {
+
+            return null;
 
         }
 
-        catch(e){
+        return JSON.parse(data);
 
-            console.error("LocalStorage no disponible.",e);
+    },
+
+
+    remove(key) {
+
+        localStorage.removeItem(
+
+            this.PREFIX + key
+
+        );
+
+    },
+
+
+    clearAll() {
+
+        Object.values(this.KEYS).forEach(key => {
+
+            this.remove(key);
+
+        });
+
+        this.initializeCollections();
+
+    },
+
+
+    //--------------------------------------------------
+    // CURSOS
+    //--------------------------------------------------
+
+    getCourses() {
+
+        return this.load(
+            this.KEYS.courses
+        );
+
+    },
+
+
+    saveCourse(course) {
+
+        const courses = this.getCourses();
+
+        course.id = Date.now();
+
+        courses.push(course);
+
+        this.save(
+
+            this.KEYS.courses,
+            courses
+
+        );
+
+        return course;
+
+    },
+
+
+    deleteCourse(id) {
+
+        const data = this.getCourses().filter(
+
+            course => course.id !== id
+
+        );
+
+        this.save(
+
+            this.KEYS.courses,
+            data
+
+        );
+
+    },
+
+
+    //--------------------------------------------------
+    // PREGUNTAS
+    //--------------------------------------------------
+
+    getQuestions() {
+
+        return this.load(
+            this.KEYS.questions
+        );
+
+    },
+
+
+    saveQuestion(question) {
+
+        const questions = this.getQuestions();
+
+        question.id = Date.now();
+
+        questions.push(question);
+
+        this.save(
+
+            this.KEYS.questions,
+            questions
+
+        );
+
+        return question;
+
+    },
+
+
+    deleteQuestion(id) {
+
+        const data = this.getQuestions().filter(
+
+            item => item.id !== id
+
+        );
+
+        this.save(
+
+            this.KEYS.questions,
+            data
+
+        );
+
+    },
+
+
+    //--------------------------------------------------
+    // EXÁMENES
+    //--------------------------------------------------
+
+    getExams() {
+
+        return this.load(
+            this.KEYS.exams
+        );
+
+    },
+
+
+    saveExam(exam) {
+
+        const exams = this.getExams();
+
+        exam.id = Date.now();
+
+        exams.push(exam);
+
+        this.save(
+
+            this.KEYS.exams,
+            exams
+
+        );
+
+        return exam;
+
+    },
+
+
+    deleteExam(id) {
+
+        const data = this.getExams().filter(
+
+            exam => exam.id !== id
+
+        );
+
+        this.save(
+
+            this.KEYS.exams,
+            data
+
+        );
+
+    },
+
+
+    //--------------------------------------------------
+    // RESULTADOS DE APRENDIZAJE
+    //--------------------------------------------------
+
+    getLearningOutcomes() {
+
+        return this.load(
+            this.KEYS.outcomes
+        );
+
+    },
+
+
+    saveLearningOutcome(outcome) {
+
+        const outcomes = this.getLearningOutcomes();
+
+        outcome.id = Date.now();
+
+        outcomes.push(outcome);
+
+        this.save(
+
+            this.KEYS.outcomes,
+            outcomes
+
+        );
+
+    },
+
+
+    //--------------------------------------------------
+    // CONFIGURACIÓN
+    //--------------------------------------------------
+
+    getSettings() {
+
+        const settings = this.load(
+
+            this.KEYS.settings
+
+        );
+
+        return Array.isArray(settings)
+            ? {}
+            : settings;
+
+    },
+
+
+    saveSettings(settings) {
+
+        this.save(
+
+            this.KEYS.settings,
+            settings
+
+        );
+
+    },
+
+
+    //--------------------------------------------------
+    // REPORTES
+    //--------------------------------------------------
+
+    saveReport(report) {
+
+        const reports = this.load(
+            this.KEYS.reports
+        );
+
+        report.id = Date.now();
+
+        reports.push(report);
+
+        this.save(
+
+            this.KEYS.reports,
+            reports
+
+        );
+
+    },
+
+
+    getReports() {
+
+        return this.load(
+            this.KEYS.reports
+        );
+
+    },
+
+
+    //--------------------------------------------------
+    // BACKUPS
+    //--------------------------------------------------
+
+    createBackup() {
+
+        const backup = {
+
+            date: new Date(),
+
+            courses:
+                this.getCourses(),
+
+            questions:
+                this.getQuestions(),
+
+            exams:
+                this.getExams(),
+
+            outcomes:
+                this.getLearningOutcomes(),
+
+            settings:
+                this.getSettings(),
+
+            reports:
+                this.getReports()
+
+        };
+
+        const backups = this.load(
+            this.KEYS.backups
+        );
+
+        backups.push(backup);
+
+        this.save(
+
+            this.KEYS.backups,
+            backups
+
+        );
+
+        return backup;
+
+    },
+
+
+    getBackups() {
+
+        return this.load(
+            this.KEYS.backups
+        );
+
+    },
+
+
+    //--------------------------------------------------
+    // EXPORTACIÓN COMPLETA
+    //--------------------------------------------------
+
+    exportDatabase() {
+
+        return {
+
+            courses:
+                this.getCourses(),
+
+            questions:
+                this.getQuestions(),
+
+            exams:
+                this.getExams(),
+
+            outcomes:
+                this.getLearningOutcomes(),
+
+            settings:
+                this.getSettings(),
+
+            reports:
+                this.getReports()
+
+        };
+
+    },
+
+
+    //--------------------------------------------------
+    // IMPORTACIÓN COMPLETA
+    //--------------------------------------------------
+
+    importDatabase(data) {
+
+        if (!data) {
 
             return false;
 
         }
 
-    }
+        Object.keys(data).forEach(key => {
 
+            const upperKey =
+                key.toUpperCase();
 
+            if (
 
-    function leer(clave,valorDefecto=null){
+                this.KEYS[key]
 
-        if(!existeStorage()) return valorDefecto;
+            ) {
 
-        const dato = localStorage.getItem(clave);
+                this.save(
 
-        if(dato===null) return valorDefecto;
+                    this.KEYS[key],
 
-        try{
+                    data[key]
 
-            return JSON.parse(dato);
+                );
 
-        }
+            }
 
-        catch{
-
-            return dato;
-
-        }
-
-    }
-
-
-
-    function guardar(clave,valor){
-
-        if(!existeStorage()) return false;
-
-        localStorage.setItem(
-
-            clave,
-
-            JSON.stringify(valor)
-
-        );
+        });
 
         return true;
 
-    }
+    },
 
 
+    //--------------------------------------------------
+    // UTILIDADES
+    //--------------------------------------------------
 
-    function eliminar(clave){
+    getDatabaseSize() {
 
-        if(!existeStorage()) return;
+        return JSON.stringify(
 
-        localStorage.removeItem(clave);
+            this.exportDatabase()
 
-    }
+        ).length;
 
-
-
-    /*=========================================================
-        CONFIGURACIÓN
-    =========================================================*/
-
-    function obtenerConfiguracion(){
-
-        return leer(KEYS.CONFIGURACION,{});
-
-    }
+    },
 
 
+    isStorageAvailable() {
 
-    function guardarConfiguracion(config){
+        try {
 
-        guardar(KEYS.CONFIGURACION,config);
+            localStorage.setItem(
+                "__test__",
+                "1"
+            );
 
-    }
+            localStorage.removeItem(
+                "__test__"
+            );
 
+            return true;
 
+        } catch {
 
-    /*=========================================================
-        CURSOS
-    =========================================================*/
-
-    function obtenerCursos(){
-
-        return leer(KEYS.CURSOS,[]);
-
-    }
-
-
-
-    function guardarCursos(lista){
-
-        guardar(KEYS.CURSOS,lista);
-
-    }
-
-
-
-    function agregarCurso(curso){
-
-        const cursos = obtenerCursos();
-
-        cursos.push(curso);
-
-        guardarCursos(cursos);
-
-    }
-
-
-
-    function eliminarCurso(id){
-
-        let cursos = obtenerCursos();
-
-        cursos = cursos.filter(c=>c.id!==id);
-
-        guardarCursos(cursos);
-
-    }
-
-
-
-    function actualizarCurso(curso){
-
-        const cursos = obtenerCursos();
-
-        const indice = cursos.findIndex(c=>c.id===curso.id);
-
-        if(indice>=0){
-
-            cursos[indice]=curso;
-
-            guardarCursos(cursos);
+            return false;
 
         }
 
-    }
+    },
 
 
+    //--------------------------------------------------
+    // DEBUG
+    //--------------------------------------------------
 
-    /*=========================================================
-        PREGUNTAS
-    =========================================================*/
+    debug() {
 
-    function obtenerPreguntas(){
+        console.log(
 
-        return leer(KEYS.PREGUNTAS,[]);
-
-    }
-
-
-
-    function guardarPreguntas(lista){
-
-        guardar(KEYS.PREGUNTAS,lista);
-
-    }
-
-
-
-    function agregarPregunta(pregunta){
-
-        const preguntas = obtenerPreguntas();
-
-        preguntas.push(pregunta);
-
-        guardarPreguntas(preguntas);
-
-    }
-
-
-
-    function actualizarPregunta(pregunta){
-
-        const preguntas = obtenerPreguntas();
-
-        const indice = preguntas.findIndex(
-
-            p=>p.id===pregunta.id
+            this.exportDatabase()
 
         );
 
-        if(indice>=0){
+    }
 
-            preguntas[indice]=pregunta;
+};
 
-            guardarPreguntas(preguntas);
 
-        }
+
+/*********************************************************
+EXPORTACIÓN GLOBAL
+*********************************************************/
+
+window.StorageManager = StorageManager;
+
+
+
+/*********************************************************
+INICIALIZACIÓN AUTOMÁTICA
+*********************************************************/
+
+document.addEventListener(
+
+    "DOMContentLoaded",
+
+    () => {
+
+        StorageManager.init();
 
     }
 
-
-
-    function eliminarPregunta(id){
-
-        let preguntas = obtenerPreguntas();
-
-        preguntas = preguntas.filter(
-
-            p=>p.id!==id
-
-        );
-
-        guardarPreguntas(preguntas);
-
-    }
-
-
-
-    /*=========================================================
-        EXÁMENES
-    =========================================================*/
-
-    function obtenerExamenes(){
-
-        return leer(KEYS.EXAMENES,[]);
-
-    }
-
-
-
-    function guardarExamenes(lista){
-
-        guardar(KEYS.EXAMENES,lista);
-
-    }
-
-
-
-    function agregarExamen(examen){
-
-        const examenes = obtenerExamenes();
-
-        examenes.push(examen);
-
-        guardarExamenes(examenes);
-
-    }
-
-
-
-    function actualizarExamen(examen){
-
-        const examenes = obtenerExamenes();
-
-        const indice = examenes.findIndex(
-
-            e=>e.id===examen.id
-
-        );
-
-        if(indice>=0){
-
-            examenes[indice]=examen;
-
-            guardarExamenes(examenes);
-
-        }
-
-    }
-
-
-
-    function eliminarExamen(id){
-
-        let examenes = obtenerExamenes();
-
-        examenes = examenes.filter(
-
-            e=>e.id!==id
-
-        );
-
-        guardarExamenes(examenes);
-
-    }
-
-
-
-    /*=========================================================
-        PERFIL DEL DOCENTE
-    =========================================================*/
-
-    function obtenerPerfil(){
-
-        return leer(KEYS.PERFIL_DOCENTE,{});
-
-    }
-
-
-
-    function guardarPerfil(perfil){
-
-        guardar(KEYS.PERFIL_DOCENTE,perfil);
-
-    }
-
-
-
-    /*=========================================================
-        UTILIDADES
-    =========================================================*/
-
-    function limpiarTodo(){
-
-        Object.values(KEYS).forEach(
-
-            clave=>eliminar(clave)
-
-        );
-
-    }
-
-
-
-    function exportarDatos(){
-
-        return {
-
-            configuracion : obtenerConfiguracion(),
-
-            cursos : obtenerCursos(),
-
-            preguntas : obtenerPreguntas(),
-
-            examenes : obtenerExamenes(),
-
-            perfil : obtenerPerfil(),
-
-            fechaExportacion : new Date().toISOString()
-
-        };
-
-    }
-
-
-
-    function importarDatos(datos){
-
-        if(datos.configuracion)
-
-            guardarConfiguracion(datos.configuracion);
-
-        if(datos.cursos)
-
-            guardarCursos(datos.cursos);
-
-        if(datos.preguntas)
-
-            guardarPreguntas(datos.preguntas);
-
-        if(datos.examenes)
-
-            guardarExamenes(datos.examenes);
-
-        if(datos.perfil)
-
-            guardarPerfil(datos.perfil);
-
-    }
-
-
-
-    /*=========================================================
-        API PÚBLICA
-    =========================================================*/
-
-    return{
-
-        KEYS,
-
-        obtenerConfiguracion,
-
-        guardarConfiguracion,
-
-        obtenerCursos,
-
-        guardarCursos,
-
-        agregarCurso,
-
-        actualizarCurso,
-
-        eliminarCurso,
-
-        obtenerPreguntas,
-
-        guardarPreguntas,
-
-        agregarPregunta,
-
-        actualizarPregunta,
-
-        eliminarPregunta,
-
-        obtenerExamenes,
-
-        guardarExamenes,
-
-        agregarExamen,
-
-        actualizarExamen,
-
-        eliminarExamen,
-
-        obtenerPerfil,
-
-        guardarPerfil,
-
-        exportarDatos,
-
-        importarDatos,
-
-        limpiarTodo
-
-    };
-
-})();
+);
