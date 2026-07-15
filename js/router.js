@@ -1,483 +1,330 @@
-/* ==========================================================
-   SPAE
-   Sistema Profesional de Autoría de Evaluaciones
-   storage.js
-   Release R0.1
+/*********************************************************
+ SPAE
+ Sistema Profesional de Autoría de Evaluaciones
 
-   Gestión centralizada del almacenamiento local.
+ Archivo : js/router.js
+ Versión : 1.0
 
-   Filosofía:
-   - Todo acceso a LocalStorage pasa por este módulo.
-   - El resto del sistema nunca usa localStorage directamente.
-   - Facilita futuras migraciones a IndexedDB o API REST.
-==========================================================*/
+ Administrador de navegación interna del sistema.
 
-const SPAEStorage = (() => {
-
-    "use strict";
-
-    /*=========================================================
-        CLAVES DEL SISTEMA
-    =========================================================*/
-
-    const KEYS = {
-
-        CONFIGURACION : "spae.configuracion",
-
-        CURSOS : "spae.cursos",
-
-        PREGUNTAS : "spae.preguntas",
-
-        EXAMENES : "spae.examenes",
-
-        PERFIL_DOCENTE : "spae.perfilDocente",
-
-        VERSION : "spae.version"
-
-    };
+*********************************************************/
 
 
+const Router = {
 
-    /*=========================================================
-        MÉTODOS PRIVADOS
-    =========================================================*/
+    //--------------------------------------------------
+    // CONFIGURACIÓN
+    //--------------------------------------------------
 
-    function existeStorage(){
+    currentView: "dashboard",
 
-        try{
+    routes: {
 
-            const test = "__spae__";
+        dashboard: "view-dashboard",
+        courses: "view-courses",
+        questionBank: "view-question-bank",
+        examBuilder: "view-exam-builder",
+        reports: "view-reports",
+        settings: "view-settings"
 
-            localStorage.setItem(test,test);
-
-            localStorage.removeItem(test);
-
-            return true;
-
-        }
-
-        catch(e){
-
-            console.error("LocalStorage no disponible.",e);
-
-            return false;
-
-        }
-
-    }
+    },
 
 
+    //--------------------------------------------------
+    // INICIALIZACIÓN
+    //--------------------------------------------------
 
-    function leer(clave,valorDefecto=null){
+    init() {
 
-        if(!existeStorage()) return valorDefecto;
+        this.bindNavigation();
 
-        const dato = localStorage.getItem(clave);
+        console.log(
+            "Router inicializado."
+        );
 
-        if(dato===null) return valorDefecto;
-
-        try{
-
-            return JSON.parse(dato);
-
-        }
-
-        catch{
-
-            return dato;
-
-        }
-
-    }
+    },
 
 
+    //--------------------------------------------------
+    // EVENTOS DE NAVEGACIÓN
+    //--------------------------------------------------
 
-    function guardar(clave,valor){
+    bindNavigation() {
 
-        if(!existeStorage()) return false;
+        const elements = document.querySelectorAll(
 
-        localStorage.setItem(
-
-            clave,
-
-            JSON.stringify(valor)
+            "[data-route]"
 
         );
 
-        return true;
+        elements.forEach(element => {
 
-    }
+            element.addEventListener(
 
+                "click",
 
+                () => {
 
-    function eliminar(clave){
+                    const route = element.dataset.route;
 
-        if(!existeStorage()) return;
+                    this.navigate(route);
 
-        localStorage.removeItem(clave);
+                }
 
-    }
+            );
 
+        });
 
-
-    /*=========================================================
-        CONFIGURACIÓN
-    =========================================================*/
-
-    function obtenerConfiguracion(){
-
-        return leer(KEYS.CONFIGURACION,{});
-
-    }
+    },
 
 
+    //--------------------------------------------------
+    // NAVEGAR
+    //--------------------------------------------------
 
-    function guardarConfiguracion(config){
+    navigate(route) {
 
-        guardar(KEYS.CONFIGURACION,config);
+        if (!this.routeExists(route)) {
 
-    }
+            console.warn(
 
+                "Ruta no registrada:",
+                route
 
+            );
 
-    /*=========================================================
-        CURSOS
-    =========================================================*/
-
-    function obtenerCursos(){
-
-        return leer(KEYS.CURSOS,[]);
-
-    }
-
-
-
-    function guardarCursos(lista){
-
-        guardar(KEYS.CURSOS,lista);
-
-    }
-
-
-
-    function agregarCurso(curso){
-
-        const cursos = obtenerCursos();
-
-        cursos.push(curso);
-
-        guardarCursos(cursos);
-
-    }
-
-
-
-    function eliminarCurso(id){
-
-        let cursos = obtenerCursos();
-
-        cursos = cursos.filter(c=>c.id!==id);
-
-        guardarCursos(cursos);
-
-    }
-
-
-
-    function actualizarCurso(curso){
-
-        const cursos = obtenerCursos();
-
-        const indice = cursos.findIndex(c=>c.id===curso.id);
-
-        if(indice>=0){
-
-            cursos[indice]=curso;
-
-            guardarCursos(cursos);
+            return;
 
         }
 
-    }
+        this.currentView = route;
+
+        this.loadView(route);
+
+        this.updateMenu(route);
+
+        this.updateTitle(route);
+
+    },
 
 
+    //--------------------------------------------------
+    // CARGAR VISTA
+    //--------------------------------------------------
 
-    /*=========================================================
-        PREGUNTAS
-    =========================================================*/
+    loadView(route) {
 
-    function obtenerPreguntas(){
+        const viewID = this.routes[route];
 
-        return leer(KEYS.PREGUNTAS,[]);
+        if (
 
-    }
+            window.SPAEUI &&
+            SPAEUI.showView
 
+        ) {
 
-
-    function guardarPreguntas(lista){
-
-        guardar(KEYS.PREGUNTAS,lista);
-
-    }
-
-
-
-    function agregarPregunta(pregunta){
-
-        const preguntas = obtenerPreguntas();
-
-        preguntas.push(pregunta);
-
-        guardarPreguntas(preguntas);
-
-    }
-
-
-
-    function actualizarPregunta(pregunta){
-
-        const preguntas = obtenerPreguntas();
-
-        const indice = preguntas.findIndex(
-
-            p=>p.id===pregunta.id
-
-        );
-
-        if(indice>=0){
-
-            preguntas[indice]=pregunta;
-
-            guardarPreguntas(preguntas);
+            SPAEUI.showView(viewID);
 
         }
 
-    }
+    },
 
 
+    //--------------------------------------------------
+    // ACTUALIZAR MENÚ
+    //--------------------------------------------------
 
-    function eliminarPregunta(id){
+    updateMenu(route) {
 
-        let preguntas = obtenerPreguntas();
+        const buttons = document.querySelectorAll(
 
-        preguntas = preguntas.filter(
-
-            p=>p.id!==id
-
-        );
-
-        guardarPreguntas(preguntas);
-
-    }
-
-
-
-    /*=========================================================
-        EXÁMENES
-    =========================================================*/
-
-    function obtenerExamenes(){
-
-        return leer(KEYS.EXAMENES,[]);
-
-    }
-
-
-
-    function guardarExamenes(lista){
-
-        guardar(KEYS.EXAMENES,lista);
-
-    }
-
-
-
-    function agregarExamen(examen){
-
-        const examenes = obtenerExamenes();
-
-        examenes.push(examen);
-
-        guardarExamenes(examenes);
-
-    }
-
-
-
-    function actualizarExamen(examen){
-
-        const examenes = obtenerExamenes();
-
-        const indice = examenes.findIndex(
-
-            e=>e.id===examen.id
+            "[data-route]"
 
         );
 
-        if(indice>=0){
 
-            examenes[indice]=examen;
+        buttons.forEach(button => {
 
-            guardarExamenes(examenes);
+            button.classList.remove(
+                "active"
+            );
+
+        });
+
+
+        const activeButton = document.querySelector(
+
+            `[data-route="${route}"]`
+
+        );
+
+        if (activeButton) {
+
+            activeButton.classList.add(
+                "active"
+            );
 
         }
 
-    }
+    },
 
 
+    //--------------------------------------------------
+    // ACTUALIZAR TÍTULO DE LA PÁGINA
+    //--------------------------------------------------
 
-    function eliminarExamen(id){
+    updateTitle(route) {
 
-        let examenes = obtenerExamenes();
+        const titles = {
 
-        examenes = examenes.filter(
-
-            e=>e.id!==id
-
-        );
-
-        guardarExamenes(examenes);
-
-    }
-
-
-
-    /*=========================================================
-        PERFIL DEL DOCENTE
-    =========================================================*/
-
-    function obtenerPerfil(){
-
-        return leer(KEYS.PERFIL_DOCENTE,{});
-
-    }
-
-
-
-    function guardarPerfil(perfil){
-
-        guardar(KEYS.PERFIL_DOCENTE,perfil);
-
-    }
-
-
-
-    /*=========================================================
-        UTILIDADES
-    =========================================================*/
-
-    function limpiarTodo(){
-
-        Object.values(KEYS).forEach(
-
-            clave=>eliminar(clave)
-
-        );
-
-    }
-
-
-
-    function exportarDatos(){
-
-        return {
-
-            configuracion : obtenerConfiguracion(),
-
-            cursos : obtenerCursos(),
-
-            preguntas : obtenerPreguntas(),
-
-            examenes : obtenerExamenes(),
-
-            perfil : obtenerPerfil(),
-
-            fechaExportacion : new Date().toISOString()
+            dashboard: "Dashboard",
+            courses: "Cursos",
+            questionBank: "Banco de Preguntas",
+            examBuilder: "Constructor de Exámenes",
+            reports: "Reportes Pedagógicos",
+            settings: "Configuración"
 
         };
 
+
+        const pageTitle = document.getElementById(
+            "page-title"
+        );
+
+        if (pageTitle) {
+
+            pageTitle.textContent =
+                titles[route] || "SPAE";
+
+        }
+
+    },
+
+
+    //--------------------------------------------------
+    // VERIFICAR RUTA
+    //--------------------------------------------------
+
+    routeExists(route) {
+
+        return this.routes.hasOwnProperty(
+            route
+        );
+
+    },
+
+
+    //--------------------------------------------------
+    // REGISTRAR NUEVA RUTA
+    //--------------------------------------------------
+
+    registerRoute(route, viewID) {
+
+        this.routes[route] = viewID;
+
+    },
+
+
+    //--------------------------------------------------
+    // ELIMINAR RUTA
+    //--------------------------------------------------
+
+    removeRoute(route) {
+
+        delete this.routes[route];
+
+    },
+
+
+    //--------------------------------------------------
+    // OBTENER RUTA ACTUAL
+    //--------------------------------------------------
+
+    getCurrentRoute() {
+
+        return this.currentView;
+
+    },
+
+
+    //--------------------------------------------------
+    // RECARGAR VISTA ACTUAL
+    //--------------------------------------------------
+
+    refresh() {
+
+        this.navigate(
+            this.currentView
+        );
+
+    },
+
+
+    //--------------------------------------------------
+    // NAVEGAR AL DASHBOARD
+    //--------------------------------------------------
+
+    goHome() {
+
+        this.navigate(
+            "dashboard"
+        );
+
+    },
+
+
+    //--------------------------------------------------
+    // UTILIDADES
+    //--------------------------------------------------
+
+    listRoutes() {
+
+        return this.routes;
+
+    },
+
+
+    //--------------------------------------------------
+    // DEBUG
+    //--------------------------------------------------
+
+    debug() {
+
+        console.table(
+            this.routes
+        );
+
+        console.log(
+            "Vista actual:",
+            this.currentView
+        );
+
     }
 
+};
 
 
-    function importarDatos(datos){
 
-        if(datos.configuracion)
+/*********************************************************
+EXPORTACIÓN GLOBAL
+*********************************************************/
 
-            guardarConfiguracion(datos.configuracion);
+window.Router = Router;
 
-        if(datos.cursos)
 
-            guardarCursos(datos.cursos);
 
-        if(datos.preguntas)
+/*********************************************************
+INICIALIZACIÓN AUTOMÁTICA
+*********************************************************/
 
-            guardarPreguntas(datos.preguntas);
+document.addEventListener(
 
-        if(datos.examenes)
+    "DOMContentLoaded",
 
-            guardarExamenes(datos.examenes);
+    () => {
 
-        if(datos.perfil)
-
-            guardarPerfil(datos.perfil);
+        Router.init();
 
     }
 
-
-
-    /*=========================================================
-        API PÚBLICA
-    =========================================================*/
-
-    return{
-
-        KEYS,
-
-        obtenerConfiguracion,
-
-        guardarConfiguracion,
-
-        obtenerCursos,
-
-        guardarCursos,
-
-        agregarCurso,
-
-        actualizarCurso,
-
-        eliminarCurso,
-
-        obtenerPreguntas,
-
-        guardarPreguntas,
-
-        agregarPregunta,
-
-        actualizarPregunta,
-
-        eliminarPregunta,
-
-        obtenerExamenes,
-
-        guardarExamenes,
-
-        agregarExamen,
-
-        actualizarExamen,
-
-        eliminarExamen,
-
-        obtenerPerfil,
-
-        guardarPerfil,
-
-        exportarDatos,
-
-        importarDatos,
-
-        limpiarTodo
-
-    };
-
-})();
+);
