@@ -1,1 +1,1186 @@
+<!DOCTYPE html>
 
+<html lang="es">
+
+<head>
+
+    <!-- =====================================================
+         SPAE
+         Sistema Profesional de Autoría de Evaluaciones
+
+         Versión:
+         MVP Operativa 1.0
+
+         Esta versión tiene como objetivo proporcionar un
+         flujo completo de trabajo para:
+
+         - Crear cursos.
+         - Diseñar preguntas.
+         - Construir Blueprint.
+         - Generar exámenes.
+         - Gestionar reportes.
+         - Administrar configuraciones.
+
+         Los módulos especializados serán incorporados en
+         futuras iteraciones sin modificar la arquitectura.
+    ====================================================== -->
+
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+
+    <meta
+        name="description"
+        content="Sistema Profesional de Autoría de Evaluaciones - SPAE">
+
+
+    <meta
+        name="author"
+        content="SPAE Development Team">
+
+
+    <title>
+
+        SPAE | Sistema Profesional de Autoría de Evaluaciones
+
+    </title>
+
+
+
+    <!-- =====================================================
+         FUENTES
+    ====================================================== -->
+
+    <link rel="preconnect"
+          href="https://fonts.googleapis.com">
+
+    <link rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossorigin>
+
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+
+
+    <!-- =====================================================
+         CSS PRINCIPAL
+    ====================================================== -->
+
+    <link
+        rel="stylesheet"
+        href="css/app-layout.css">
+
+
+    <link
+        rel="stylesheet"
+        href="css/workspace.css">
+
+
+
+    <!-- =====================================================
+         COMPONENTES VISUALES
+    ====================================================== -->
+
+    <link
+        rel="stylesheet"
+        href="css/dashboard.css">
+
+
+    <link
+        rel="stylesheet"
+        href="css/cards.css">
+
+
+    <link
+        rel="stylesheet"
+        href="css/editor.css">
+
+
+    <link
+        rel="stylesheet"
+        href="css/tables.css">
+
+
+    <link
+        rel="stylesheet"
+        href="css/notifications.css">
+
+
+    <link
+        rel="stylesheet"
+        href="css/responsive.css">
+
+
+
+    <!-- =====================================================
+         WIZARDS
+    ====================================================== -->
+
+    <link
+        rel="stylesheet"
+        href="css/course-wizard.css">
+
+
+
+    <!-- =====================================================
+         CONFIGURACIÓN FUTURA
+
+         Reservado para:
+
+         - Dark Mode
+         - Temas institucionales
+         - Personalización
+         - Branding institucional
+
+    ====================================================== -->
+
+
+
+    <!-- =====================================================
+         ICONO DEL SISTEMA
+
+         Puede sustituirse posteriormente por:
+
+         /assets/logo-spae.png
+
+    ====================================================== -->
+
+    <!--
+
+    <link
+        rel="icon"
+        type="image/png"
+        href="assets/logo-spae.png">
+
+    -->
+
+
+    <!-- =====================================================
+         VARIABLES GLOBALES DEL SISTEMA
+
+         Estas variables permiten modificar fácilmente
+         la información general del sistema.
+
+    ====================================================== -->
+
+    <script>
+
+        window.SPAE_CONFIG = {
+
+            version: "1.0 MVP",
+
+            release: "Operativa",
+
+            autoSave: true,
+
+            darkMode: false,
+
+            developmentMode: true,
+
+            institution: "",
+
+            activeCourse: null,
+
+            language: "es"
+
+        };
+
+    </script>
+
+
+</head>
+<body>
+
+
+<!-- =====================================================
+     CONTENEDOR PRINCIPAL DEL SPAE
+===================================================== -->
+
+<div class="app-container">
+
+
+
+<!-- =====================================================
+     HEADER PRINCIPAL
+===================================================== -->
+
+<header class="app-header">
+
+
+    <!-- ---------------------------------------------
+         IDENTIDAD DEL SISTEMA
+    ---------------------------------------------- -->
+
+    <div class="header-left">
+
+        <h1 class="app-title">
+
+            SPAE
+
+        </h1>
+
+
+        <p class="app-subtitle">
+
+            Sistema Profesional de Autoría de Evaluaciones
+
+        </p>
+
+    </div>
+
+
+
+    <!-- ---------------------------------------------
+         ESTADO DEL SISTEMA
+    ---------------------------------------------- -->
+
+    <div class="header-right">
+
+        <div class="system-status">
+
+            <strong>Versión:</strong>
+
+            MVP Operativa 1.0
+
+        </div>
+
+
+        <div class="system-status">
+
+            <strong>Modo:</strong>
+
+            Desarrollo
+
+        </div>
+
+
+    </div>
+
+
+</header>
+
+
+
+<!-- =====================================================
+     ÁREA CENTRAL DE LA APLICACIÓN
+===================================================== -->
+
+<main class="app-main">
+
+
+
+<!-- =====================================================
+     SIDEBAR DE NAVEGACIÓN
+===================================================== -->
+
+<aside class="sidebar">
+
+
+    <!-- ---------------------------------------------
+         TÍTULO DEL MENÚ
+    ---------------------------------------------- -->
+
+    <div class="sidebar-title">
+
+        Flujo de Trabajo
+
+    </div>
+
+
+    <div class="sidebar-divider"></div>
+
+
+
+    <!-- ---------------------------------------------
+         DASHBOARD
+    ---------------------------------------------- -->
+
+    <button
+
+        id="btn-dashboard"
+
+        class="nav-button active"
+
+        onclick="Navigation.open('dashboard')">
+
+        Dashboard
+
+    </button>
+
+
+
+    <!-- ---------------------------------------------
+         CURSO
+    ---------------------------------------------- -->
+
+    <button
+
+        id="btn-course"
+
+        class="nav-button"
+
+        onclick="Navigation.open('course')">
+
+        Crear Curso
+
+    </button>
+
+
+
+    <!-- ---------------------------------------------
+         BANCO DE PREGUNTAS
+    ---------------------------------------------- -->
+
+    <button
+
+        id="btn-question"
+
+        class="nav-button"
+
+        onclick="Navigation.open('question')">
+
+        Banco de Preguntas
+
+    </button>
+
+
+
+    <!-- ---------------------------------------------
+         BLUEPRINT
+    ---------------------------------------------- -->
+
+    <button
+
+        id="btn-blueprint"
+
+        class="nav-button"
+
+        onclick="Navigation.open('blueprint')">
+
+        Blueprint
+
+    </button>
+
+
+
+    <!-- ---------------------------------------------
+         EXAM BUILDER
+    ---------------------------------------------- -->
+
+    <button
+
+        id="btn-exam"
+
+        class="nav-button"
+
+        onclick="Navigation.open('exam')">
+
+        Construir Examen
+
+    </button>
+
+
+
+    <!-- ---------------------------------------------
+         REPORTES
+    ---------------------------------------------- -->
+
+    <button
+
+        id="btn-reports"
+
+        class="nav-button"
+
+        onclick="Navigation.open('reports')">
+
+        Reportes
+
+    </button>
+
+
+
+    <!-- ---------------------------------------------
+         CONFIGURACIÓN
+    ---------------------------------------------- -->
+
+    <button
+
+        id="btn-settings"
+
+        class="nav-button"
+
+        onclick="Navigation.open('settings')">
+
+        Configuración
+
+    </button>
+
+
+
+    <!-- ---------------------------------------------
+         SEPARADOR
+    ---------------------------------------------- -->
+
+    <div class="sidebar-divider"></div>
+
+
+
+    <!-- ---------------------------------------------
+         PANEL DEL PROYECTO ACTIVO
+    ---------------------------------------------- -->
+
+    <div class="workspace-card">
+
+        <h3>
+
+            Proyecto Activo
+
+        </h3>
+
+
+        <p>
+
+            <strong>Curso:</strong>
+
+        </p>
+
+        <p id="active-course-name">
+
+            Ningún curso seleccionado.
+
+        </p>
+
+
+        <br>
+
+
+        <p>
+
+            <strong>Estado:</strong>
+
+        </p>
+
+        <p id="active-project-status">
+
+            Pendiente de creación.
+
+        </p>
+
+
+    </div>
+
+
+
+    <!-- ---------------------------------------------
+         PANEL DE AUTOGUARDADO
+    ---------------------------------------------- -->
+
+    <div class="workspace-card">
+
+        <h3>
+
+            Sistema
+
+        </h3>
+
+
+        <p>
+
+            Autoguardado:
+            <strong>Activo</strong>
+
+        </p>
+
+
+        <p>
+
+            Idioma:
+            <strong>Español</strong>
+
+        </p>
+
+
+        <p>
+
+            Modo:
+            <strong>MVP Operativa</strong>
+
+        </p>
+
+    </div>
+
+
+</aside> 
+  <!-- =====================================================
+     CONTENEDOR PRINCIPAL DEL WORKSPACE
+===================================================== -->
+
+<section class="workspace-wrapper">
+
+
+    <!-- -------------------------------------------------
+         LAYOUT DEL WORKSPACE
+    -------------------------------------------------- -->
+
+    <div class="workspace-layout">
+
+
+        <!-- ---------------------------------------------
+             HEADER DEL WORKSPACE
+        ---------------------------------------------- -->
+
+        <div class="workspace-top">
+
+            <h2 id="workspace-title">
+
+                Dashboard
+
+            </h2>
+
+
+            <p id="workspace-subtitle">
+
+                Bienvenido al Sistema Profesional de
+                Autoría de Evaluaciones.
+
+            </p>
+
+        </div>
+
+
+
+        <!-- ---------------------------------------------
+             BARRA DE ACCIONES RÁPIDAS
+        ---------------------------------------------- -->
+
+        <div class="workspace-actions">
+
+
+            <button
+                class="workspace-button button-primary"
+                onclick="console.log('Guardar')">
+
+                Guardar
+
+            </button>
+
+
+
+            <button
+                class="workspace-button button-secondary"
+                onclick="location.reload()">
+
+                Actualizar
+
+            </button>
+
+
+
+            <button
+                class="workspace-button button-success"
+                onclick="console.log('Exportar')">
+
+                Exportar
+
+            </button>
+
+
+
+            <button
+                class="workspace-button button-secondary"
+                onclick="Navigation.open('dashboard')">
+
+                Dashboard
+
+            </button>
+
+
+        </div>
+
+
+
+        <!-- ---------------------------------------------
+             MENSAJES DEL SISTEMA
+        ---------------------------------------------- -->
+
+        <div class="system-banner">
+
+            El SPAE se encuentra listo para iniciar
+            el diseño de instrumentos de evaluación.
+
+        </div>
+
+
+
+        <!-- ---------------------------------------------
+             CONTENEDOR PRINCIPAL DE TRABAJO
+
+             IMPORTANTE:
+             Todos los módulos del sistema se
+             renderizarán dinámicamente aquí.
+
+        ---------------------------------------------- -->
+
+        <div id="workspace">
+
+            <!-- =========================================
+
+                 CONTENIDO INICIAL DEL DASHBOARD
+
+                 El ModuleRenderer reemplazará este
+                 contenido automáticamente.
+
+            ========================================== -->
+
+
+            <div class="empty-state">
+
+
+                <h2>
+
+                    Bienvenido al SPAE
+
+                </h2>
+
+
+                <p>
+
+                    El sistema está preparado para
+                    acompañar el proceso completo de
+                    diseño evaluativo:
+
+                </p>
+
+
+                <br>
+
+
+                <ul>
+
+                    <li>Crear cursos.</li>
+
+                    <li>Diseñar preguntas.</li>
+
+                    <li>Construir Blueprints.</li>
+
+                    <li>Generar exámenes.</li>
+
+                    <li>Crear reportes pedagógicos.</li>
+
+                    <li>Exportar instrumentos.</li>
+
+                </ul>
+
+
+                <br>
+
+
+                <p>
+
+                    Utilice el menú lateral para
+                    comenzar su proyecto de evaluación.
+
+                </p>
+
+
+            </div>
+
+
+        </div>
+
+
+
+        <!-- ---------------------------------------------
+             NOTIFICACIONES DEL WORKSPACE
+
+             Preparado para futuras versiones.
+
+        ---------------------------------------------- -->
+
+        <div id="workspace-notifications">
+
+            <!-- Las notificaciones serán generadas
+                 dinámicamente por el sistema. -->
+
+        </div>
+
+
+    </div>
+
+</section>
+ <!-- =====================================================
+     PANEL DE ESTADO DEL PROYECTO
+
+     Este componente permitirá visualizar el progreso
+     del instrumento de evaluación que está siendo
+     construido por el docente.
+
+===================================================== -->
+
+<section class="summary-grid">
+
+
+    <!-- ---------------------------------------------
+         CURSO ACTIVO
+    ---------------------------------------------- -->
+
+    <div class="summary-card">
+
+        <h3>
+
+            Curso Activo
+
+        </h3>
+
+
+        <p id="summary-course">
+
+            Ningún curso seleccionado.
+
+        </p>
+
+    </div>
+
+
+
+    <!-- ---------------------------------------------
+         BANCO DE PREGUNTAS
+    ---------------------------------------------- -->
+
+    <div class="summary-card">
+
+        <h3>
+
+            Preguntas Registradas
+
+        </h3>
+
+
+        <div
+            class="summary-number"
+            id="summary-questions">
+
+            0
+
+        </div>
+
+    </div>
+
+
+
+    <!-- ---------------------------------------------
+         BLUEPRINT
+    ---------------------------------------------- -->
+
+    <div class="summary-card">
+
+        <h3>
+
+            Blueprint
+
+        </h3>
+
+
+        <p id="summary-blueprint">
+
+            Pendiente.
+
+        </p>
+
+    </div>
+
+
+
+    <!-- ---------------------------------------------
+         EXAMEN
+    ---------------------------------------------- -->
+
+    <div class="summary-card">
+
+        <h3>
+
+            Examen
+
+        </h3>
+
+
+        <p id="summary-exam">
+
+            No generado.
+
+        </p>
+
+    </div>
+
+
+</section>
+
+
+
+<!-- =====================================================
+     ALERTAS DEL SISTEMA
+
+     Este espacio será utilizado posteriormente por:
+
+     - Validation Engine
+     - Analytics
+     - Exam Engine
+     - Persistence Manager
+
+===================================================== -->
+
+<section class="alert-card">
+
+    <h3>
+
+        Estado del Proyecto
+
+    </h3>
+
+
+    <p id="project-alerts">
+
+        El proyecto está listo para comenzar.
+        Cree un curso para iniciar el diseño del
+        instrumento de evaluación.
+
+    </p>
+
+</section>
+
+
+
+<!-- =====================================================
+     NOTIFICACIONES DEL SISTEMA
+
+     Reservado para futuras versiones.
+
+===================================================== -->
+
+<section
+    id="system-notifications"
+    class="workspace-container">
+
+
+    <!-- Las notificaciones se generarán
+         dinámicamente desde notifications.js -->
+
+
+</section>
+
+
+
+</main>
+
+
+
+<!-- =====================================================
+     FOOTER DEL SPAE
+
+===================================================== -->
+
+<footer class="app-footer">
+
+
+    <p>
+
+        SPAE | Sistema Profesional de Autoría de
+        Evaluaciones
+
+    </p>
+
+
+    <br>
+
+
+    <p>
+
+        Versión:
+
+        <strong>
+
+            MVP Operativa 1.0
+
+        </strong>
+
+    </p>
+
+
+    <p>
+
+        Estado del sistema:
+
+        <strong>
+
+            Operativo
+
+        </strong>
+
+    </p>
+
+
+    <p>
+
+        Guardado automático:
+
+        <strong>
+
+            Activo
+
+        </strong>
+
+    </p>
+
+
+    <p>
+
+        Última sincronización:
+
+        <span id="last-save-time">
+
+            Pendiente.
+
+        </span>
+
+    </p>
+
+
+</footer> 
+<!-- =====================================================
+     JAVASCRIPT DEL SISTEMA
+
+     CAPA DE INFRAESTRUCTURA
+
+===================================================== -->
+
+<script src="js/storage.js"></script>
+
+<script src="js/navigation.js"></script>
+
+<script src="js/workspace-manager.js"></script>
+
+<script src="js/module-renderer.js"></script>
+
+
+
+<!-- =====================================================
+     CAPA DE UTILIDADES
+
+===================================================== -->
+
+<script src="js/ui.js"></script>
+
+<script src="js/dialogs.js"></script>
+
+<script src="js/app.js"></script>
+
+
+
+<!-- =====================================================
+     GESTIÓN DE CURSOS
+
+===================================================== -->
+
+<script src="js/course-manager.js"></script>
+
+<script src="js/course-wizard.js"></script>
+
+
+
+<!-- =====================================================
+     BANCO DE PREGUNTAS
+
+===================================================== -->
+
+<script src="js/question-bank.js"></script>
+
+<script src="js/question-builder.js"></script>
+
+
+
+<!-- =====================================================
+     BLUEPRINT
+
+===================================================== -->
+
+<script src="js/blueprint-engine.js"></script>
+
+<script src="js/blueprint-wizard.js"></script>
+
+
+
+<!-- =====================================================
+     CONSTRUCCIÓN DE EXÁMENES
+
+===================================================== -->
+
+<script src="js/exam-engine.js"></script>
+
+<script src="js/exam-builder.js"></script>
+
+
+
+<!-- =====================================================
+     REPORTES Y ANALÍTICAS
+
+===================================================== -->
+
+<script src="js/analytics.js"></script>
+
+<script src="js/report-center.js"></script>
+
+<script src="js/dashboard-view.js"></script>
+
+
+
+<!-- =====================================================
+     CONFIGURACIÓN Y EXPORTACIÓN
+
+===================================================== -->
+
+<script src="js/settings.js"></script>
+
+<script src="js/exporter.js"></script>
+
+
+
+<!-- =====================================================
+     BOOTSTRAP DEL SPAE
+
+===================================================== -->
+
+<script>
+
+/*********************************************************
+
+SPAE Bootstrap
+
+Esta es la única parte del sistema que se ejecuta
+automáticamente al abrir la aplicación.
+
+*********************************************************/
+
+document.addEventListener(
+
+    "DOMContentLoaded",
+
+    () => {
+
+        console.log(
+            "====================================="
+        );
+
+        console.log(
+            "SPAE MVP OPERATIVA 1.0"
+        );
+
+        console.log(
+            "Inicializando sistema..."
+        );
+
+        console.log(
+            "====================================="
+        );
+
+
+        /*
+        ----------------------------------------------
+        Validación mínima del sistema.
+        ----------------------------------------------
+        */
+
+        if (!window.Navigation) {
+
+            console.error(
+                "Navigation.js no encontrado."
+            );
+
+            return;
+
+        }
+
+
+        if (!window.WorkspaceManager) {
+
+            console.error(
+                "WorkspaceManager.js no encontrado."
+            );
+
+            return;
+
+        }
+
+
+        if (!window.ModuleRenderer) {
+
+            console.error(
+                "ModuleRenderer.js no encontrado."
+            );
+
+            return;
+
+        }
+
+
+
+        /*
+        ----------------------------------------------
+        Inicialización de componentes principales.
+        ----------------------------------------------
+        */
+
+        Navigation.init();
+
+        WorkspaceManager.init();
+
+        ModuleRenderer.init();
+
+
+
+        /*
+        ----------------------------------------------
+        Dashboard inicial.
+        ----------------------------------------------
+        */
+
+        ModuleRenderer.render(
+            "dashboard"
+        );
+
+
+
+        /*
+        ----------------------------------------------
+        Información del sistema.
+        ----------------------------------------------
+        */
+
+        console.log(
+            "SPAE iniciado correctamente."
+        );
+
+    }
+
+);
+
+</script>
+
+
+
+<!-- =====================================================
+     FIN DEL SISTEMA
+
+===================================================== -->
+
+</div>
+
+</body>
+
+</html>
