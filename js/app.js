@@ -1,533 +1,212 @@
 /*********************************************************
  SPAE
+
  Sistema Profesional de Autoría de Evaluaciones
 
- Archivo : js/app.js
- Versión : 1.0
+ Archivo:
+ js/app.js
 
- Núcleo principal del sistema.
+ VERSIÓN MVP 2.0
+
+ RESPONSABILIDAD:
+
+ - Inicializar el sistema.
+ - Inicializar los componentes del núcleo.
+ - Abrir el Dashboard.
+ - Gestionar el arranque del SPAE.
 
 *********************************************************/
 
 
-const SPAE = {
+const App = {
 
 
-    //--------------------------------------------------
-    // CONFIGURACIÓN GENERAL
-    //--------------------------------------------------
+    /*****************************************************
+     CONFIGURACIÓN DEL MVP
+    *****************************************************/
 
-    VERSION: "1.0.0",
-
-    NAME: "SPAE",
-
-    COURSE_LOADED: null,
-
-    MODULES: {
-
-        ui: false,
-        dashboard: false,
-        notifications: false,
-        dialogs: false,
-        courses: false,
-        questionBank: false,
-        examBuilder: false
-
-    },
+    version: "MVP Operativa 2.0",
 
 
-    //--------------------------------------------------
-    // INICIALIZACIÓN DEL SISTEMA
-    //--------------------------------------------------
+
+    /*****************************************************
+     INICIALIZAR SISTEMA
+    *****************************************************/
 
     init() {
 
-        console.group(
-            "SPAE - Inicialización"
-        );
-
-        this.showWelcome();
-
-        this.initializeModules();
-
-        this.bindGlobalEvents();
-
-        this.checkSystemStatus();
-
-        this.loadDashboard();
-
-        console.groupEnd();
-
-    },
+        console.log("======================================");
+        console.log("SPAE - Sistema Profesional de Autoría");
+        console.log("Versión:", this.version);
+        console.log("======================================");
 
 
-    //--------------------------------------------------
-    // MENSAJE DE INICIO
-    //--------------------------------------------------
-
-    showWelcome() {
-
-        console.log(
-            "Sistema SPAE iniciado."
-        );
-
-        console.log(
-            "Versión:",
-            this.VERSION
-        );
-
-    },
-
-
-    //--------------------------------------------------
-    // INICIALIZAR MÓDULOS
-    //--------------------------------------------------
-
-    initializeModules() {
-
-        this.initializeUI();
+        this.initializeCore();
 
         this.initializeDashboard();
 
-        this.initializeNotifications();
+        this.updateSystemStatus();
 
-        this.initializeDialogs();
 
-        this.initializeCourses();
-
-        this.initializeQuestionBank();
-
-        this.initializeExamBuilder();
+        console.log(
+            "SPAE iniciado correctamente."
+        );
 
     },
 
 
-    //--------------------------------------------------
-    // UI
-    //--------------------------------------------------
 
-    initializeUI() {
+    /*****************************************************
+     INICIALIZAR NÚCLEO DEL SISTEMA
+    *****************************************************/
 
-        if (window.SPAEUI) {
+    initializeCore() {
 
-            this.MODULES.ui = true;
+
+        if (window.Navigation) {
+
+            Navigation.init();
 
         }
 
+
+        if (window.ModuleRenderer) {
+
+            ModuleRenderer.init();
+
+        }
+
+
+        if (window.WorkspaceManager) {
+
+            WorkspaceManager.init();
+
+        }
+
+
     },
 
 
-    //--------------------------------------------------
-    // DASHBOARD
-    //--------------------------------------------------
+
+    /*****************************************************
+     CARGAR DASHBOARD
+    *****************************************************/
 
     initializeDashboard() {
 
-        if (window.DashboardModule) {
-
-            this.MODULES.dashboard = true;
-
-        }
+        Navigation.open("dashboard");
 
     },
 
 
-    //--------------------------------------------------
-    // NOTIFICACIONES
-    //--------------------------------------------------
 
-    initializeNotifications() {
+    /*****************************************************
+     ACTUALIZAR ESTADO DEL SISTEMA
+    *****************************************************/
 
-        if (window.Notifications) {
+    updateSystemStatus() {
 
-            this.MODULES.notifications = true;
+        WorkspaceManager.updateProjectStatus(
 
-        }
+            "Proyecto listo para comenzar."
 
-    },
-
-
-    //--------------------------------------------------
-    // DIALOGS
-    //--------------------------------------------------
-
-    initializeDialogs() {
-
-        if (window.Dialogs) {
-
-            this.MODULES.dialogs = true;
-
-        }
-
-    },
-
-
-    //--------------------------------------------------
-    // CURSOS
-    //--------------------------------------------------
-
-    initializeCourses() {
-
-        if (window.CourseManager) {
-
-            this.MODULES.courses = true;
-
-        }
-
-    },
-
-
-    //--------------------------------------------------
-    // BANCO DE PREGUNTAS
-    //--------------------------------------------------
-
-    initializeQuestionBank() {
-
-        if (window.QuestionBank) {
-
-            this.MODULES.questionBank = true;
-
-        }
-
-    },
-
-
-    //--------------------------------------------------
-    // EXAM BUILDER
-    //--------------------------------------------------
-
-    initializeExamBuilder() {
-
-        if (window.ExamBuilder) {
-
-            this.MODULES.examBuilder = true;
-
-        }
-
-    },
-
-
-    //--------------------------------------------------
-    // DASHBOARD INICIAL
-    //--------------------------------------------------
-
-    loadDashboard() {
-
-        if (
-
-            window.SPAEUI &&
-            SPAEUI.showView
-
-        ) {
-
-            SPAEUI.showView(
-                "view-dashboard"
-            );
-
-        }
-
-    },
-
-
-    //--------------------------------------------------
-    // CURSO ACTUAL
-    //--------------------------------------------------
-
-    setCurrentCourse(course) {
-
-        this.COURSE_LOADED = course;
-
-        if (
-
-            window.SPAEUI &&
-            SPAEUI.updateCourseStatus
-
-        ) {
-
-            SPAEUI.updateCourseStatus(
-                course.name
-            );
-
-        }
-
-    },
-
-
-    getCurrentCourse() {
-
-        return this.COURSE_LOADED;
-
-    },
-
-
-    //--------------------------------------------------
-    // EVENTOS GLOBALES
-    //--------------------------------------------------
-
-    bindGlobalEvents() {
-
-        this.bindMenuEvents();
-
-        this.bindKeyboardShortcuts();
-
-    },
-
-
-    //--------------------------------------------------
-    // MENÚ PRINCIPAL
-    //--------------------------------------------------
-
-    bindMenuEvents() {
-
-        const buttons = document.querySelectorAll(
-            "[data-view]"
         );
 
-        buttons.forEach(button => {
 
-            button.addEventListener(
+        WorkspaceManager.updateCourseName(
 
-                "click",
+            "Ningún curso creado."
 
-                () => {
-
-                    const viewID = button.dataset.view;
-
-                    if (
-
-                        window.SPAEUI &&
-                        SPAEUI.showView
-
-                    ) {
-
-                        SPAEUI.showView(
-                            viewID
-                        );
-
-                    }
-
-                }
-
-            );
-
-        });
-
-    },
+        );
 
 
-    //--------------------------------------------------
-    // ATAJOS DE TECLADO
-    //--------------------------------------------------
+        WorkspaceManager.updateQuestionCounter(
 
-    bindKeyboardShortcuts() {
+            0
 
-        document.addEventListener(
-
-            "keydown",
-
-            (event) => {
-
-                if (
-
-                    event.ctrlKey &&
-                    event.key === "s"
-
-                ) {
-
-                    event.preventDefault();
-
-                    this.saveProject();
-
-                }
+        );
 
 
-                if (
+        WorkspaceManager.updateBlueprintStatus(
 
-                    event.ctrlKey &&
-                    event.key === "e"
+            "Pendiente."
 
-                ) {
+        );
 
-                    event.preventDefault();
 
-                    this.exportProject();
+        WorkspaceManager.updateExamStatus(
 
-                }
-
-            }
+            "No generado."
 
         );
 
     },
 
 
-    //--------------------------------------------------
-    // GUARDAR PROYECTO
-    //--------------------------------------------------
 
-    saveProject() {
+    /*****************************************************
+     REINICIAR SISTEMA
+    *****************************************************/
 
-        console.log(
-            "Guardar proyecto."
-        );
+    reset() {
 
-        this.notify(
+        Navigation.reset();
 
-            "success",
-
-            "Proyecto guardado correctamente."
-
-        );
+        this.updateSystemStatus();
 
     },
 
 
-    //--------------------------------------------------
-    // EXPORTAR
-    //--------------------------------------------------
 
-    exportProject() {
+    /*****************************************************
+     INFORMACIÓN DEL SISTEMA
+    *****************************************************/
 
-        console.log(
-            "Exportar proyecto."
-        );
+    getVersion() {
 
-        this.notify(
-
-            "info",
-
-            "Preparando exportación."
-
-        );
+        return this.version;
 
     },
 
 
-    //--------------------------------------------------
-    // NOTIFICACIONES
-    //--------------------------------------------------
 
-    notify(type, message) {
-
-        if (
-
-            window.Notifications &&
-            Notifications.show
-
-        ) {
-
-            Notifications.show(
-
-                type,
-                message
-
-            );
-
-        }
-
-    },
-
-
-    //--------------------------------------------------
-    // ESTADO DEL SISTEMA
-    //--------------------------------------------------
-
-    checkSystemStatus() {
-
-        const loadedModules = Object.values(
-            this.MODULES
-        ).filter(Boolean).length;
-
-
-        console.log(
-
-            "Módulos activos:",
-            loadedModules
-
-        );
-
-    },
-
-
-    //--------------------------------------------------
-    // VALIDACIONES
-    //--------------------------------------------------
-
-    isModuleLoaded(moduleName) {
-
-        return this.MODULES[moduleName] || false;
-
-    },
-
-
-    //--------------------------------------------------
-    // RESET
-    //--------------------------------------------------
-
-    resetApplication() {
-
-        this.COURSE_LOADED = null;
-
-        if (
-
-            window.SPAEUI &&
-            SPAEUI.clearWorkspace
-
-        ) {
-
-            SPAEUI.clearWorkspace();
-
-        }
-
-    },
-
-
-    //--------------------------------------------------
-    // DEBUG
-    //--------------------------------------------------
+    /*****************************************************
+     DEBUG
+    *****************************************************/
 
     debug() {
 
-        console.table(
+        console.table({
 
-            this.MODULES
+            version: this.version,
 
-        );
+            currentModule:
 
-    },
+                Navigation.getCurrentModule(),
 
+            availableModules:
 
-    //--------------------------------------------------
-    // INFORMACIÓN DEL SISTEMA
-    //--------------------------------------------------
+                Navigation.getModules().length
 
-    getSystemInformation() {
-
-        return {
-
-            name: this.NAME,
-            version: this.VERSION,
-            course: this.COURSE_LOADED,
-            modules: this.MODULES
-
-        };
+        });
 
     }
+
 
 };
 
 
 
 /*********************************************************
-EXPORTACIÓN GLOBAL
+ EXPORTACIÓN GLOBAL
 *********************************************************/
 
-window.SPAE = SPAE;
+window.App = App;
 
 
 
 /*********************************************************
-INICIALIZACIÓN DEL SISTEMA
+ PUNTO ÚNICO DE INICIALIZACIÓN DEL SISTEMA
 *********************************************************/
 
 document.addEventListener(
@@ -536,7 +215,7 @@ document.addEventListener(
 
     () => {
 
-        SPAE.init();
+        App.init();
 
     }
 
