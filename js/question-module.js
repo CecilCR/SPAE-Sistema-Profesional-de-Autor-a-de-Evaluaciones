@@ -6,668 +6,398 @@
  Archivo:
  js/question-module.js
 
- Constructor guiado del instrumento de evaluación.
+ VERSIÓN MVP 2.0
+
+ RESPONSABILIDAD:
+
+ - Crear preguntas.
+ - Registrar preguntas del instrumento.
+ - Mantener el banco de preguntas del proyecto.
 
 *********************************************************/
 
-const QuestionModule = {
 
-    questionPlan: [],
-    questions: [],
-    currentQuestionIndex: 0,
+const QuestionModule = {
 
 
     /*****************************************************
-     RENDER PRINCIPAL
+     RENDERIZAR MÓDULO
     *****************************************************/
 
     render() {
 
-        this.generateQuestionPlan();
+        WorkspaceManager.render(
 
-        const workspace =
-            document.getElementById("workspace");
+            `
 
-        if (!workspace) return;
+            <div class="workspace-container">
 
-        workspace.innerHTML = `
+                <h2>Banco de Preguntas</h2>
 
-        <div class="spae-module">
+                <p>
+                    Registre las preguntas del instrumento
+                    de evaluación.
+                </p>
 
-            <h2>
-                Construcción del instrumento
-            </h2>
-
-            <div id="questionProgress"></div>
-
-            <hr>
-
-            <div id="questionContainer"></div>
-
-        </div>
-
-        `;
-
-        this.renderQuestion();
-
-    },
+                <br>
 
 
-    /*****************************************************
-     GENERAR PLAN DE PREGUNTAS
-    *****************************************************/
+                <label>Tipo de pregunta</label>
 
-    generateQuestionPlan() {
+                <select
+                    id="question-type"
+                    class="form-input">
 
-        if (this.questionPlan.length > 0) {
-            return;
-        }
+                    <option>Opción múltiple</option>
+                    <option>Caso de aplicación</option>
+                    <option>Pregunta abierta</option>
+                    <option>Pregunta reflexiva</option>
+                    <option>Pregunta situacional</option>
 
-        if (!window.PersistenceManager) {
-            return;
-        }
-
-        const project =
-            PersistenceManager.loadProject();
-
-        const assessment =
-            project.assessment;
-
-        if (!assessment) {
-            return;
-        }
-
-        let counter = 1;
-
-        assessment.sections.forEach(section => {
-
-            for (let i = 0; i < section.quantity; i++) {
-
-                this.questionPlan.push({
-
-                    number: counter,
-                    type: section.type
-
-                });
-
-                counter++;
-
-            }
-
-        });
-
-    },
+                </select>
 
 
-    /*****************************************************
-     MOSTRAR PREGUNTA ACTUAL
-    *****************************************************/
+                <br><br>
 
-    renderQuestion() {
 
-        const progress =
-            document.getElementById(
-                "questionProgress"
-            );
+                <label>Enunciado</label>
 
-        const container =
-            document.getElementById(
-                "questionContainer"
-            );
+                <textarea
+                    id="question-statement"
+                    class="form-input"
+                    rows="5"
+                    placeholder="Ingrese el enunciado de la pregunta."></textarea>
 
-        const question =
-            this.questionPlan[
-                this.currentQuestionIndex
-            ];
 
-        if (!question) {
+                <br><br>
 
-            container.innerHTML = `
 
-                <h3>
-                    Instrumento completado.
-                </h3>
+                <label>Alternativa A</label>
+
+                <input
+                    type="text"
+                    id="alternative-a"
+                    class="form-input">
+
+
+                <br><br>
+
+
+                <label>Alternativa B</label>
+
+                <input
+                    type="text"
+                    id="alternative-b"
+                    class="form-input">
+
+
+                <br><br>
+
+
+                <label>Alternativa C</label>
+
+                <input
+                    type="text"
+                    id="alternative-c"
+                    class="form-input">
+
+
+                <br><br>
+
+
+                <label>Alternativa D</label>
+
+                <input
+                    type="text"
+                    id="alternative-d"
+                    class="form-input">
+
+
+                <br><br>
+
+
+                <label>Respuesta correcta</label>
+
+                <select
+                    id="correct-answer"
+                    class="form-input">
+
+                    <option>A</option>
+                    <option>B</option>
+                    <option>C</option>
+                    <option>D</option>
+
+                </select>
+
+
+                <br><br>
+
+
+                <label>Competencia asociada</label>
+
+                <input
+                    type="text"
+                    id="question-competency"
+                    class="form-input">
+
+
+                <br><br>
+
+
+                <label>Resultado de aprendizaje</label>
+
+                <input
+                    type="text"
+                    id="question-learning-result"
+                    class="form-input">
+
+
+                <br><br>
+
+
+                <label>Retroalimentación</label>
+
+                <textarea
+                    id="question-feedback"
+                    class="form-input"
+                    rows="3"></textarea>
+
+
+                <br><br>
+
 
                 <button
-                    onclick="EvaluationWorkspace.next()">
+                    class="workspace-button button-success"
+                    onclick="QuestionModule.saveQuestion()">
 
-                    Continuar
+                    Guardar Pregunta
 
                 </button>
 
-            `;
 
-            return;
-        }
+                <br><br>
 
 
-        progress.innerHTML = `
+                <button
+                    class="workspace-button button-secondary"
+                    onclick="QuestionModule.showQuestionCounter()">
 
-            <p>
+                    Actualizar Contador
 
-                Pregunta
-                ${this.currentQuestionIndex + 1}
-
-                de
-
-                ${this.questionPlan.length}
-
-            </p>
-
-            <p>
-
-                Tipo:
-                <strong>
-                    ${question.type}
-                </strong>
-
-            </p>
-
-        `;
+                </button>
 
 
-        switch (question.type) {
+                <br><br>
 
-            case "Opción múltiple":
-                container.innerHTML =
-                    this.renderMCQ();
-                break;
 
-            case "Caso de aplicación":
-                container.innerHTML =
-                    this.renderCaseStudy();
-                break;
+                <div id="question-total">
 
-            case "Pregunta abierta":
-                container.innerHTML =
-                    this.renderOpenQuestion();
-                break;
+                </div>
 
-            case "Verdadero/Falso":
-                container.innerHTML =
-                    this.renderTrueFalse();
-                break;
 
-            case "Emparejamiento":
-                container.innerHTML =
-                    this.renderMatching();
-                break;
+            </div>
 
-            default:
-                container.innerHTML =
-                    this.renderShortAnswer();
+            `
 
-        }
+        );
 
     },
 
 
-    /*****************************************************
-     OPCIÓN MÚLTIPLE
-    *****************************************************/
-
-    renderMCQ() {
-
-        return `
-
-        <label>Enunciado</label>
-        <textarea id="statement"></textarea>
-
-        <label>Alternativa A</label>
-        <input id="optionA">
-
-        <label>Alternativa B</label>
-        <input id="optionB">
-
-        <label>Alternativa C</label>
-        <input id="optionC">
-
-        <label>Alternativa D</label>
-        <input id="optionD">
-
-        <label>Respuesta correcta</label>
-
-        <select id="correctAnswer">
-
-            <option>A</option>
-            <option>B</option>
-            <option>C</option>
-            <option>D</option>
-
-        </select>
-
-        ${this.renderCommonFields()}
-
-        ${this.renderNavigationButtons()}
-
-        `;
-
-    },
-
 
     /*****************************************************
-     CASO DE APLICACIÓN
-    *****************************************************/
-
-    renderCaseStudy() {
-
-        return `
-
-        <label>Caso</label>
-        <textarea id="caseText"></textarea>
-
-        <label>Pregunta asociada</label>
-        <textarea id="caseQuestion"></textarea>
-
-        <label>Respuesta modelo</label>
-        <textarea id="modelAnswer"></textarea>
-
-        <label>Rúbrica</label>
-        <textarea id="rubric"></textarea>
-
-        ${this.renderCommonFields()}
-
-        ${this.renderNavigationButtons()}
-
-        `;
-
-    },
-
-
-    /*****************************************************
-     PREGUNTA ABIERTA
-    *****************************************************/
-
-    renderOpenQuestion() {
-
-        return `
-
-        <label>Pregunta</label>
-        <textarea id="openQuestion"></textarea>
-
-        <label>Respuesta modelo</label>
-        <textarea id="modelAnswer"></textarea>
-
-        <label>Rúbrica</label>
-        <textarea id="rubric"></textarea>
-
-        <label>Longitud sugerida</label>
-        <input
-            id="expectedLength"
-            value="80-120 palabras">
-
-        ${this.renderCommonFields()}
-
-        ${this.renderNavigationButtons()}
-
-        `;
-
-    },
-
-
-    /*****************************************************
-     VERDADERO / FALSO
-    *****************************************************/
-
-    renderTrueFalse() {
-
-        return `
-
-        <label>Enunciado</label>
-        <textarea id="statement"></textarea>
-
-        <label>Respuesta correcta</label>
-
-        <select id="tfAnswer">
-
-            <option>Verdadero</option>
-            <option>Falso</option>
-
-        </select>
-
-        ${this.renderCommonFields()}
-
-        ${this.renderNavigationButtons()}
-
-        `;
-
-    },
-
-
-    /*****************************************************
-     EMPAREJAMIENTO
-    *****************************************************/
-
-    renderMatching() {
-
-        return `
-
-        <label>
-            Instrucciones
-        </label>
-
-        <textarea id="matchingText"></textarea>
-
-        ${this.renderCommonFields()}
-
-        ${this.renderNavigationButtons()}
-
-        `;
-
-    },
-
-
-    /*****************************************************
-     RESPUESTA BREVE
-    *****************************************************/
-
-    renderShortAnswer() {
-
-        return `
-
-        <label>Pregunta</label>
-
-        <textarea id="question"></textarea>
-
-        ${this.renderCommonFields()}
-
-        ${this.renderNavigationButtons()}
-
-        `;
-
-    },
-
-
-    /*****************************************************
-     CAMPOS COMUNES
-    *****************************************************/
-
-    renderCommonFields() {
-
-        return `
-
-        <hr>
-
-        <label>Puntaje</label>
-
-        <input
-            type="number"
-            id="score"
-            value="10">
-
-
-        <label>Dificultad</label>
-
-        <select id="difficulty">
-
-            <option>Baja</option>
-            <option>Media</option>
-            <option>Alta</option>
-
-        </select>
-
-
-        <label>
-            Resultado de aprendizaje
-        </label>
-
-        <input id="learningOutcome">
-
-        `;
-
-    },
-
-
-    /*****************************************************
-     BOTONES
-    *****************************************************/
-
-    renderNavigationButtons() {
-
-        return `
-
-        <br><br>
-
-        <button
-            onclick="QuestionModule.previousQuestion()">
-
-            Anterior
-
-        </button>
-
-
-        <button
-            onclick="QuestionModule.saveQuestion()">
-
-            Guardar
-
-        </button>
-
-
-        <button
-            onclick="QuestionModule.nextQuestion()">
-
-            Guardar y continuar
-
-        </button>
-
-        `;
-
-    },
-
-
-    /*****************************************************
-     GUARDAR
+     GUARDAR PREGUNTA
     *****************************************************/
 
     saveQuestion() {
 
+        const questions = this.getQuestions();
+
+
         const question = {
 
-            number:
-                this.currentQuestionIndex + 1,
-
             type:
-                this.questionPlan[
-                    this.currentQuestionIndex
-                ].type,
 
-            data:
-                this.collectFormData()
+                document.getElementById(
+                    "question-type"
+                ).value,
+
+            statement:
+
+                document.getElementById(
+                    "question-statement"
+                ).value,
+
+            alternativeA:
+
+                document.getElementById(
+                    "alternative-a"
+                ).value,
+
+            alternativeB:
+
+                document.getElementById(
+                    "alternative-b"
+                ).value,
+
+            alternativeC:
+
+                document.getElementById(
+                    "alternative-c"
+                ).value,
+
+            alternativeD:
+
+                document.getElementById(
+                    "alternative-d"
+                ).value,
+
+            correctAnswer:
+
+                document.getElementById(
+                    "correct-answer"
+                ).value,
+
+            competency:
+
+                document.getElementById(
+                    "question-competency"
+                ).value,
+
+            learningResult:
+
+                document.getElementById(
+                    "question-learning-result"
+                ).value,
+
+            feedback:
+
+                document.getElementById(
+                    "question-feedback"
+                ).value
 
         };
 
 
-        this.questions[
-            this.currentQuestionIndex
-
-        ] = question;
+        questions.push(question);
 
 
-        this.persist();
+        localStorage.setItem(
+
+            "SPAE_QUESTIONS",
+
+            JSON.stringify(
+                questions
+            )
+
+        );
+
+
+        WorkspaceManager.updateQuestionCounter(
+
+            questions.length
+
+        );
+
 
         alert(
-            "Pregunta guardada."
+
+            "Pregunta registrada correctamente."
+
         );
 
     },
 
 
+
     /*****************************************************
-     SIGUIENTE
+     OBTENER PREGUNTAS
     *****************************************************/
 
-    nextQuestion() {
+    getQuestions() {
 
-        this.saveQuestion();
+        const data = localStorage.getItem(
 
-        this.currentQuestionIndex++;
+            "SPAE_QUESTIONS"
 
-        this.renderQuestion();
+        );
+
+
+        return data
+
+            ? JSON.parse(data)
+
+            : [];
 
     },
 
 
+
     /*****************************************************
-     ANTERIOR
+     MOSTRAR TOTAL DE PREGUNTAS
     *****************************************************/
 
-    previousQuestion() {
+    showQuestionCounter() {
 
-        if (
+        const total = this.getQuestions().length;
 
-            this.currentQuestionIndex > 0
 
-        ) {
+        WorkspaceManager.updateQuestionCounter(
 
-            this.currentQuestionIndex--;
+            total
 
-            this.renderQuestion();
+        );
+
+
+        const container = document.getElementById(
+
+            "question-total"
+
+        );
+
+
+        if (container) {
+
+            container.innerHTML =
+
+                `<strong>Total de preguntas registradas: ${total}</strong>`;
 
         }
 
     },
 
 
-    /*****************************************************
-     RECOGER DATOS
-    *****************************************************/
-
-    collectFormData() {
-
-        const fields =
-
-            document.querySelectorAll(
-
-                "#questionContainer input, #questionContainer textarea, #questionContainer select"
-
-            );
-
-
-        const data = {};
-
-        fields.forEach(field => {
-
-            data[field.id] =
-                field.value;
-
-        });
-
-
-        return data;
-
-    },
-
 
     /*****************************************************
-     PERSISTENCIA
+     ELIMINAR BANCO DE PREGUNTAS
     *****************************************************/
 
-    persist() {
+    deleteQuestions() {
 
-        if (!window.PersistenceManager) {
+        localStorage.removeItem(
 
-            return;
-
-        }
-
-        const project =
-            PersistenceManager.loadProject();
-
-
-        project.examDraft = {
-
-            questionPlan:
-                this.questionPlan,
-
-            questions:
-                this.questions,
-
-            progress:
-                this.calculateProgress()
-
-        };
-
-
-        PersistenceManager.saveProject(
-            project
-        );
-
-    },
-
-
-    /*****************************************************
-     PROGRESO
-    *****************************************************/
-
-    calculateProgress() {
-
-        return Math.round(
-
-            (this.questions.length /
-                this.questionPlan.length)
-
-            * 100
+            "SPAE_QUESTIONS"
 
         );
 
     },
 
 
+
     /*****************************************************
-     VALIDACIÓN
+     VERIFICAR EXISTENCIA
     *****************************************************/
 
-    validate() {
+    exists() {
 
         return (
 
-            this.questions.length ===
-            this.questionPlan.length
+            this.getQuestions().length > 0
 
         );
 
     },
 
-
-    /*****************************************************
-     FINALIZACIÓN
-    *****************************************************/
-
-    finish() {
-
-        if (!this.validate()) {
-
-            alert(
-                "Aún existen preguntas pendientes."
-            );
-
-            return false;
-
-        }
-
-        return true;
-
-    },
-
-
-    /*****************************************************
-     DATOS
-    *****************************************************/
-
-    getData() {
-
-        return {
-
-            questionPlan:
-                this.questionPlan,
-
-            questions:
-                this.questions
-
-        };
-
-    },
 
 
     /*****************************************************
@@ -677,10 +407,13 @@ const QuestionModule = {
     debug() {
 
         console.table(
-            this.questions
+
+            this.getQuestions()
+
         );
 
     }
+
 
 };
 
@@ -690,5 +423,4 @@ const QuestionModule = {
  EXPORTACIÓN GLOBAL
 *********************************************************/
 
-window.QuestionModule =
-    QuestionModule;
+window.QuestionModule = QuestionModule;
