@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
+
+<meta name="description"
+      content="SPAE MVP - Sistema Profesional de Autoría de Evaluaciones">
+
+<title>
+    SPAE MVP | Sistema Profesional de Autoría de Evaluaciones
+</title>
+
+
+<!-- =====================================================
+     GOOGLE FONTS
+===================================================== -->
+
+<link rel="preconnect"
+      href="https://fonts.googleapis.com">
+
+<link rel="preconnect"
+      href="https://fonts.gstatic.com"
+      crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet">
+
+
+
+<!-- =====================================================
+     ESTILOS DEL SISTEMA
+===================================================== -->
+
+<link rel="stylesheet" href="css/app-layout.css">
+<link rel="stylesheet" href="css/workspace.css">
+<link rel="stylesheet" href="css/dashboard.css">
+<link rel="stylesheet" href="css/cards.css">
+<link rel="stylesheet" href="css/editor.css">
+<link rel="stylesheet" href="css/tables.css">
+<link rel="stylesheet" href="css/notifications.css">
+<link rel="stylesheet" href="css/responsive.css">
+<link rel="stylesheet" href="css/course-wizard.css">
+
+
+
+<!-- =====================================================
+     CONFIGURACIÓN GLOBAL DEL MVP
+===================================================== -->
+
+<script>
+
+window.SPAE_CONFIG = {
+
+    version : "1.1 MVP",
+
+    release : "Operativa",
+
+    autoSave : true,
+
+    language : "es",
+
+    developmentMode : true
+
+};
+
+</script>
+
+</head>
+
+
+<body>
+
+
+<!-- =====================================================
+     CONTENEDOR PRINCIPAL
+===================================================== -->
+
+<div class="app-container">
+
+
+<!-- =====================================================
+     HEADER
+===================================================== -->
+
+<header class="app-header">
+
+    <div class="header-left">
+
+        <h1 class="app-title">
+
+            SPAE MVP
+
+        </h1>
+
+
+        <p class="app-subtitle">
+
+            Sistema Profesional de Autoría de Evaluaciones
+
+        </p>
+
+    </div>
+
+
+    <div class="header-right">
+
+        <div class="system-status">
+
+            MVP Operativo
+
+        </div>
+
+    </div>
+
+</header>
+
+
+
+<!-- =====================================================
+     CONTENIDO PRINCIPAL
+===================================================== -->
+
+<main class="app-main">
+
+
+
+<!-- =====================================================
+     SIDEBAR
+===================================================== -->
+
+<aside class="sidebar">
+
+    <div class="sidebar-title">
+
+        Flujo del Docente
+
+    </div>
+
+
+    <div class="sidebar-divider"></div>
+
+
+
+    <button class="nav-button"
+            onclick="Navigation.open('dashboard')">
+
+        Dashboard
+
+    </button>
+
+
+    <button class="nav-button"
+            onclick="Navigation.open('course')">
+
+        Crear Curso
+
+    </button>
+
+
+    <button class="nav-button"
+            onclick="Navigation.open('assessment')">
+
+        Configurar Evaluación
+
+    </button>
+
+
+    <button class="nav-button"
+            onclick="Navigation.open('question')">
+
+        Preguntas
+
+    </button>
+
+
+    <button class="nav-button"
+            onclick="Navigation.open('blueprint')">
+
+        Blueprint
+
+    </button>
+
+
+    <button class="nav-button"
+            onclick="Navigation.open('exam')">
+
+        Generar Examen
+
+    </button>
+
+
+    <button class="nav-button"
+            onclick="Navigation.open('export')">
+
+        Exportar
+
+    </button>
+
+
+</aside>
+
+
+
+<!-- =====================================================
+     WORKSPACE
+===================================================== -->
+
+<section class="workspace-wrapper">
+
+
+    <div class="workspace-layout">
+
+
+        <div class="workspace-top">
+
+            <h2 id="workspace-title">
+
+                Dashboard
+
+            </h2>
+
+
+            <p id="workspace-subtitle">
+
+                El sistema está listo para comenzar.
+
+            </p>
+
+        </div>
+
+
+
+        <div class="workspace-actions">
+
+
+            <button class="workspace-button button-primary">
+
+                Guardar
+
+            </button>
+
+
+            <button class="workspace-button button-secondary"
+                    onclick="location.reload()">
+
+                Actualizar
+
+            </button>
+
+
+            <button class="workspace-button button-success">
+
+                Exportar
+
+            </button>
+
+        </div>
+
+
+
+        <div class="system-banner">
+
+            MVP operativo preparado para pruebas funcionales.
+
+        </div>
+
+
+
+        <!-- ==============================================
+             CONTENEDOR DINÁMICO DE LOS MÓDULOS
+        =============================================== -->
+
+        <div id="workspace">
+
+
+            <div class="empty-state">
+
+                <h2>
+
+                    Bienvenido al SPAE MVP
+
+                </h2>
+
+
+                <p>
+
+                    Utilice el menú lateral para comenzar
+                    el diseño de su evaluación.
+
+                </p>
+
+            </div>
+
+
+        </div>
+
+
+
+        <div id="workspace-notifications">
+
+        </div>
+
+
+    </div>
+
+
+</section>
+
+
+</main>
+
+
+
+<!-- =====================================================
+     FOOTER
+===================================================== -->
+
+<footer class="app-footer">
+
+
+    <p>
+
+        SPAE MVP - Versión Operativa 1.1
+
+    </p>
+
+
+</footer>
+
+
+
+</div>
+
+
+
+<!-- =====================================================
+     JAVASCRIPT - NÚCLEO DEL SISTEMA
+===================================================== -->
+
+<script src="js/storage.js"></script>
+<script src="js/navigation.js"></script>
+<script src="js/workspace-manager.js"></script>
+<script src="js/module-renderer.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/dialogs.js"></script>
+<script src="js/app.js"></script>
+
+
+
+<!-- =====================================================
+     MÓDULOS DEL MVP
+===================================================== -->
+
+<script src="js/course-module.js"></script>
+
+<script src="js/assessment-module.js"></script>
+
+<script src="js/question-module.js"></script>
+
+<script src="js/blueprint-module.js"></script>
+
+<script src="js/exam-module.js"></script>
+
+<script src="js/export-module.js"></script>
+
+
+
+<!-- =====================================================
+     COMPONENTES DE SOPORTE
+===================================================== -->
+
+<script src="js/form-engine.js"></script>
+
+<script src="js/persistence-manager.js"></script>
+
+<script src="js/workflow-manager.js"></script>
+
+<script src="js/project-manager.js"></script>
+
+<script src="js/validation-engine.js"></script>
+
+
+
+<!-- =====================================================
+     BOOTSTRAP DEL MVP
+===================================================== -->
+
+<script>
+
+document.addEventListener(
+
+    "DOMContentLoaded",
+
+    () => {
+
+        console.clear();
+
+
+        console.log(
+            "====================================="
+        );
+
+        console.log(
+            "SPAE MVP OPERATIVO"
+        );
+
+        console.log(
+            "Versión 1.1"
+        );
+
+        console.log(
+            "====================================="
+        );
+
+
+        if (window.StorageManager) {
+
+            StorageManager.init();
+
+        }
+
+
+        if (window.Navigation) {
+
+            Navigation.init();
+
+        }
+
+
+        if (window.WorkspaceManager) {
+
+            WorkspaceManager.init();
+
+        }
+
+
+        if (window.ModuleRenderer) {
+
+            ModuleRenderer.init();
+
+        }
+
+
+        /*
+        ----------------------------------------------
+        DASHBOARD INICIAL
+        ----------------------------------------------
+        */
+
+        if (window.Navigation) {
+
+            Navigation.open(
+                "dashboard"
+            );
+
+        }
+
+
+        console.log(
+            "SPAE MVP listo para pruebas funcionales."
+        );
+
+
+    }
+
+);
+
+</script>
+
+
+
+</body>
+</html>
