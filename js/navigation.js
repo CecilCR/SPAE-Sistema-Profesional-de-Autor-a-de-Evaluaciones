@@ -6,27 +6,53 @@
  Archivo:
  js/navigation.js
 
- Sistema de navegación principal del SPAE.
+ VERSIÓN MVP 2.0
+
+ RESPONSABILIDAD ÚNICA:
+
+ - Gestionar la navegación del sistema.
+ - Mantener el estado del módulo activo.
+ - Actualizar la navegación visual.
+ - Solicitar al ModuleRenderer renderizar el módulo.
+
+ NO HACE:
+
+ - Inicialización automática.
+ - Renderizado de módulos.
+ - Gestión del workspace.
+ - Gestión de vistas.
+ - Ejecución de módulos.
+ - Manipulación directa del DOM del workspace.
 
 *********************************************************/
 
+
 const Navigation = {
 
-    //--------------------------------------------------
-    // ESTADO
-    //--------------------------------------------------
+
+    /*****************************************************
+     ESTADO DEL SISTEMA
+    *****************************************************/
 
     currentModule: "dashboard",
 
     previousModule: null,
 
+
+
+    /*****************************************************
+     MÓDULOS DISPONIBLES DEL MVP
+    *****************************************************/
+
     modules: [
 
         "dashboard",
         "course",
+        "assessment",
         "question",
         "blueprint",
         "exam",
+        "export",
         "reports",
         "settings"
 
@@ -34,327 +60,103 @@ const Navigation = {
 
 
 
-    //--------------------------------------------------
-    // INICIALIZACIÓN
-    //--------------------------------------------------
+    /*****************************************************
+     INICIALIZACIÓN
+    *****************************************************/
 
     init() {
 
         console.log(
-            "Navigation inicializado."
-        );
 
-        this.open("dashboard");
+            "Navigation MVP inicializado."
+
+        );
 
     },
 
 
 
-    //--------------------------------------------------
-    // ABRIR MÓDULO
-    //--------------------------------------------------
+    /*****************************************************
+     ABRIR MÓDULO
+    *****************************************************/
 
     open(moduleName) {
 
         if (!this.modules.includes(moduleName)) {
 
             console.error(
-                "Módulo no reconocido:",
-                moduleName
+
+                `Módulo no registrado: ${moduleName}`
+
             );
 
             return;
+
         }
+
 
         this.previousModule = this.currentModule;
+
         this.currentModule = moduleName;
 
-        this.hideAllModules();
-        this.showModule(moduleName);
-        this.executeModule(moduleName);
+
+
+        console.log(
+
+            `Abriendo módulo: ${moduleName}`
+
+        );
+
+
+
+        /*
+        ----------------------------------------------
+        Actualizar menú visual.
+        ----------------------------------------------
+        */
 
         this.updateNavigation();
-    },
 
 
 
-    //--------------------------------------------------
-    // MOSTRAR MÓDULO
-    //--------------------------------------------------
+        /*
+        ----------------------------------------------
+        Delegar renderizado.
+        ----------------------------------------------
+        */
 
-    showModule(moduleName) {
+        if (
 
-        const element = document.getElementById(
+            window.ModuleRenderer &&
+            typeof ModuleRenderer.render === "function"
 
-            `${moduleName}-module`
+        ) {
 
-        );
+            ModuleRenderer.render(
 
-        if (element) {
+                moduleName
 
-            element.style.display = "block";
+            );
 
         }
 
-    },
-
-
-
-    //--------------------------------------------------
-    // OCULTAR TODOS LOS MÓDULOS
-    //--------------------------------------------------
-
-    hideAllModules() {
-
-        this.modules.forEach(module => {
-
-            const element = document.getElementById(
-                `${module}-module`
-            );
-
-            if (element) {
-
-                element.style.display = "none";
-
-            }
-
-        });
 
     },
 
 
 
-    //--------------------------------------------------
-// EJECUTAR MÓDULO
-//--------------------------------------------------
-
-executeModule(moduleName) {
-
-    const execute = (module) => {
-
-        if (!module) {
-
-            console.error(
-                "El módulo no está disponible."
-            );
-
-            return;
-        }
-
-
-        // Prioridad 1
-
-        if (typeof module.init === "function") {
-
-            module.init();
-            return;
-
-        }
-
-
-        // Prioridad 2
-
-        if (typeof module.render === "function") {
-
-            module.render();
-            return;
-
-        }
-
-
-        // Prioridad 3
-
-        if (typeof module.start === "function") {
-
-            module.start();
-            return;
-
-        }
-
-
-        console.error(
-
-            "El módulo no posee métodos compatibles."
-
-        );
-
-    };
-
-
-    switch (moduleName) {
-
-
-        //--------------------------------------------------
-        // DASHBOARD
-        //--------------------------------------------------
-
-        case "dashboard":
-
-            execute(
-
-                window.DashboardModule ||
-                window.DashboardView ||
-                window.Dashboard
-
-            );
-
-            break;
-
-
-        //--------------------------------------------------
-        // CURSO
-        //--------------------------------------------------
-
-        case "course":
-
-            execute(
-
-                window.CourseModule ||
-                window.CourseWizard
-
-            );
-
-            break;
-
-
-        //--------------------------------------------------
-        // EVALUACIÓN
-        //--------------------------------------------------
-
-        case "assessment":
-
-            execute(
-
-                window.AssessmentModule
-
-            );
-
-            break;
-
-
-        //--------------------------------------------------
-        // PREGUNTAS
-        //--------------------------------------------------
-
-        case "question":
-
-        case "questions":
-
-            execute(
-
-                window.QuestionModule ||
-                window.QuestionBuilder
-
-            );
-
-            break;
-
-
-        //--------------------------------------------------
-        // BLUEPRINT
-        //--------------------------------------------------
-
-        case "blueprint":
-
-            execute(
-
-                window.BlueprintModule ||
-                window.BlueprintWizard
-
-            );
-
-            break;
-
-
-        //--------------------------------------------------
-        // EXAMEN
-        //--------------------------------------------------
-
-        case "exam":
-
-            execute(
-
-                window.ExamModule ||
-                window.ExamBuilder
-
-            );
-
-            break;
-
-
-        //--------------------------------------------------
-        // EXPORTACIÓN
-        //--------------------------------------------------
-
-        case "export":
-
-            execute(
-
-                window.ExportModule ||
-                window.Exporter
-
-            );
-
-            break;
-
-
-        //--------------------------------------------------
-        // REPORTES
-        //--------------------------------------------------
-
-        case "reports":
-
-            execute(
-
-                window.ReportCenter
-
-            );
-
-            break;
-
-
-        //--------------------------------------------------
-        // CONFIGURACIÓN
-        //--------------------------------------------------
-
-        case "settings":
-
-            execute(
-
-                window.Settings
-
-            );
-
-            break;
-
-
-        //--------------------------------------------------
-        // DEFAULT
-        //--------------------------------------------------
-
-        default:
-
-            console.warn(
-
-                `No existe un manejador para el módulo: ${moduleName}`
-
-            );
-
-            break;
-
-    }
-
-},
-    //--------------------------------------------------
-    // VOLVER AL MÓDULO ANTERIOR
-    //--------------------------------------------------
+    /*****************************************************
+     VOLVER AL MÓDULO ANTERIOR
+    *****************************************************/
 
     back() {
 
         if (this.previousModule) {
 
             this.open(
+
                 this.previousModule
+
             );
 
         }
@@ -363,129 +165,30 @@ executeModule(moduleName) {
 
 
 
-    //--------------------------------------------------
-    // DASHBOARD
-    //--------------------------------------------------
-
-    openDashboard() {
-
-        this.open("dashboard");
-
-    },
-
-
-
-    //--------------------------------------------------
-    // COURSE WIZARD
-    //--------------------------------------------------
-
-    openCourseWizard() {
-
-        this.open("course");
-
-    },
-
-
-
-    //--------------------------------------------------
-    // QUESTION BUILDER
-    //--------------------------------------------------
-
-    openQuestionBuilder() {
-
-        this.open("question");
-
-    },
-
-
-
-    //--------------------------------------------------
-    // BLUEPRINT
-    //--------------------------------------------------
-
-    openBlueprintWizard() {
-
-        this.open("blueprint");
-
-    },
-
-
-
-    //--------------------------------------------------
-    // EXAM BUILDER
-    //--------------------------------------------------
-
-    openExamBuilder() {
-
-        this.open("exam");
-
-    },
-
-
-
-    //--------------------------------------------------
-    // REPORTES
-    //--------------------------------------------------
-
-    openReports() {
-
-        this.open("reports");
-
-    },
-
-
-
-    //--------------------------------------------------
-    // SETTINGS
-    //--------------------------------------------------
-
-    openSettings() {
-
-        this.open("settings");
-
-    },
-
-
-
-    //--------------------------------------------------
-    // REFRESCAR DASHBOARD
-    //--------------------------------------------------
-
-    refreshDashboard() {
-
-        if (
-
-            window.DashboardView &&
-            DashboardView.refresh
-
-        ) {
-
-            DashboardView.refresh();
-
-        }
-
-    },
-
-
-
-    //--------------------------------------------------
-    // ACTUALIZAR NAVEGACIÓN VISUAL
-    //--------------------------------------------------
+    /*****************************************************
+     ACTUALIZAR MENÚ VISUAL
+    *****************************************************/
 
     updateNavigation() {
 
+
         const buttons = document.querySelectorAll(
+
             ".nav-button"
+
         );
 
 
         buttons.forEach(button => {
 
             button.classList.remove(
+
                 "active"
+
             );
 
         });
+
 
 
         const activeButton = document.getElementById(
@@ -498,18 +201,21 @@ executeModule(moduleName) {
         if (activeButton) {
 
             activeButton.classList.add(
+
                 "active"
+
             );
 
         }
+
 
     },
 
 
 
-    //--------------------------------------------------
-    // MÓDULO ACTIVO
-    //--------------------------------------------------
+    /*****************************************************
+     OBTENER MÓDULO ACTUAL
+    *****************************************************/
 
     getCurrentModule() {
 
@@ -519,26 +225,21 @@ executeModule(moduleName) {
 
 
 
-    //--------------------------------------------------
-    // VERIFICAR MÓDULO
-    //--------------------------------------------------
+    /*****************************************************
+     OBTENER MÓDULO ANTERIOR
+    *****************************************************/
 
-    isActive(moduleName) {
+    getPreviousModule() {
 
-        return (
-
-            this.currentModule ===
-            moduleName
-
-        );
+        return this.previousModule;
 
     },
 
 
 
-    //--------------------------------------------------
-    // LISTAR MÓDULOS
-    //--------------------------------------------------
+    /*****************************************************
+     LISTAR MÓDULOS DISPONIBLES
+    *****************************************************/
 
     getModules() {
 
@@ -548,34 +249,65 @@ executeModule(moduleName) {
 
 
 
-    //--------------------------------------------------
-    // RESET
-    //--------------------------------------------------
+    /*****************************************************
+     VERIFICAR SI EL MÓDULO ESTÁ ACTIVO
+    *****************************************************/
 
-    reset() {
+    isActive(moduleName) {
 
-        this.currentModule = "dashboard";
-        this.previousModule = null;
+        return (
 
-        this.open("dashboard");
+            this.currentModule === moduleName
+
+        );
 
     },
 
 
 
-    //--------------------------------------------------
-    // DEBUG
-    //--------------------------------------------------
+    /*****************************************************
+     REINICIAR NAVEGACIÓN
+    *****************************************************/
+
+    reset() {
+
+        this.currentModule = "dashboard";
+
+        this.previousModule = null;
+
+
+        this.updateNavigation();
+
+
+        console.log(
+
+            "Navigation reiniciado."
+
+        );
+
+    },
+
+
+
+    /*****************************************************
+     DEPURACIÓN
+    *****************************************************/
 
     debug() {
 
         console.table({
 
-            currentModule:
+            moduloActual:
+
                 this.currentModule,
 
-            previousModule:
-                this.previousModule
+            moduloAnterior:
+
+                this.previousModule,
+
+            totalModulos:
+
+                this.modules.length
 
         });
 
@@ -591,21 +323,3 @@ executeModule(moduleName) {
 *********************************************************/
 
 window.Navigation = Navigation;
-
-
-
-/*********************************************************
- INICIALIZACIÓN AUTOMÁTICA
-*********************************************************/
-
-document.addEventListener(
-
-    "DOMContentLoaded",
-
-    () => {
-
-        Navigation.init();
-
-    }
-
-);
