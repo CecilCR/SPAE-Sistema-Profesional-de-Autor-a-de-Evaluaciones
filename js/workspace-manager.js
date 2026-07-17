@@ -6,73 +6,38 @@
  Archivo:
  js/workspace-manager.js
 
- Administrador del área principal de trabajo.
+ VERSIÓN MVP 2.0
 
 *********************************************************/
 
+
 const WorkspaceManager = {
 
-    //--------------------------------------------------
-    // ESTADO
-    //--------------------------------------------------
 
-    workspaceID: "workspace",
+    workspaceId: "workspace",
 
-    titleID: "workspace-title",
-
-    subtitleID: "workspace-subtitle",
-
-    currentModule: null,
-
-
-
-    //--------------------------------------------------
-    // INICIALIZACIÓN
-    //--------------------------------------------------
 
     init() {
 
         console.log(
-            "Workspace Manager inicializado."
+            "WorkspaceManager MVP inicializado."
         );
-
-        this.createWorkspace();
 
     },
 
 
+    getWorkspace() {
 
-    //--------------------------------------------------
-    // CREAR WORKSPACE
-    //--------------------------------------------------
-
-    createWorkspace() {
-
-        const workspace = document.getElementById(
-            this.workspaceID
+        return document.getElementById(
+            this.workspaceId
         );
-
-        if (!workspace) {
-
-            console.warn(
-                "No existe el contenedor #workspace."
-            );
-
-        }
 
     },
 
-
-
-    //--------------------------------------------------
-    // LIMPIAR WORKSPACE
-    //--------------------------------------------------
 
     clear() {
 
-        const workspace = document.getElementById(
-            this.workspaceID
-        );
+        const workspace = this.getWorkspace();
 
         if (workspace) {
 
@@ -83,16 +48,28 @@ const WorkspaceManager = {
     },
 
 
+    render(htmlContent) {
 
-    //--------------------------------------------------
-    // RENDERIZAR HTML
-    //--------------------------------------------------
+        const workspace = this.getWorkspace();
 
-    render(html) {
+        if (!workspace) {
 
-        const workspace = document.getElementById(
-            this.workspaceID
-        );
+            console.error(
+                "Workspace no encontrado."
+            );
+
+            return;
+
+        }
+
+        workspace.innerHTML = htmlContent;
+
+    },
+
+
+    append(htmlContent) {
+
+        const workspace = this.getWorkspace();
 
         if (!workspace) {
 
@@ -100,420 +77,177 @@ const WorkspaceManager = {
 
         }
 
-        workspace.innerHTML = html;
+        workspace.innerHTML += htmlContent;
 
     },
 
-
-
-    //--------------------------------------------------
-    // AGREGAR HTML
-    //--------------------------------------------------
-
-    append(html) {
-
-        const workspace = document.getElementById(
-            this.workspaceID
-        );
-
-        if (!workspace) {
-
-            return;
-
-        }
-
-        workspace.innerHTML += html;
-
-    },
-
-
-
-    //--------------------------------------------------
-    // DEFINIR TÍTULO
-    //--------------------------------------------------
-
-    setTitle(title) {
-
-        const element = document.getElementById(
-            this.titleID
-        );
-
-        if (element) {
-
-            element.textContent = title;
-
-        }
-
-    },
-
-
-
-    //--------------------------------------------------
-    // DEFINIR SUBTÍTULO
-    //--------------------------------------------------
-
-    setSubtitle(subtitle) {
-
-        const element = document.getElementById(
-            this.subtitleID
-        );
-
-        if (element) {
-
-            element.textContent = subtitle;
-
-        }
-
-    },
-
-
-
-    //--------------------------------------------------
-    // DEFINIR MÓDULO ACTIVO
-    //--------------------------------------------------
-
-    setCurrentModule(moduleName) {
-
-        this.currentModule = moduleName;
-
-    },
-
-
-
-    //--------------------------------------------------
-    // OBTENER MÓDULO ACTIVO
-    //--------------------------------------------------
-
-    getCurrentModule() {
-
-        return this.currentModule;
-
-    },
-
-
-
-    //--------------------------------------------------
-    // MENSAJE DEL SISTEMA
-    //--------------------------------------------------
 
     showMessage(message) {
 
-        this.render(`
+        this.render(
 
-            <div class="system-message">
+            `
+            <div class="empty-state">
 
-                <h3>${message}</h3>
+                <h2>${message}</h2>
 
             </div>
+            `
 
-        `);
+        );
 
     },
 
-
-
-    //--------------------------------------------------
-    // CARGANDO
-    //--------------------------------------------------
-
-    showLoading(message = "Cargando módulo...") {
-
-        this.render(`
-
-            <div class="loading-screen">
-
-                <h3>${message}</h3>
-
-            </div>
-
-        `);
-
-    },
-
-
-
-    //--------------------------------------------------
-    // ERROR
-    //--------------------------------------------------
 
     showError(message) {
 
-        this.render(`
+        this.render(
 
-            <div class="error-screen">
+            `
+            <div class="empty-state">
 
-                <h3>Error</h3>
+                <h2>Error</h2>
 
                 <p>${message}</p>
 
             </div>
+            `
 
-        `);
+        );
 
     },
 
 
+    showLoading() {
 
-    //--------------------------------------------------
-    // PANTALLA VACÍA
-    //--------------------------------------------------
+        this.render(
 
-    showEmptyState(title, description) {
-
-        this.render(`
-
+            `
             <div class="empty-state">
 
-                <h2>${title}</h2>
-
-                <p>${description}</p>
+                <h2>Cargando módulo...</h2>
 
             </div>
+            `
 
-        `);
-
-    },
-
-
-
-    //--------------------------------------------------
-    // DASHBOARD
-    //--------------------------------------------------
-
-    showDashboard() {
-
-        this.setTitle(
-            "Dashboard"
-        );
-
-        this.setSubtitle(
-            "Centro de control académico."
-        );
-
-        this.setCurrentModule(
-            "dashboard"
         );
 
     },
 
 
+    updateProjectStatus(status) {
 
-    //--------------------------------------------------
-    // CURSOS
-    //--------------------------------------------------
+        const element = document.getElementById(
 
-    showCourseWizard() {
+            "active-project-status"
 
-        this.setTitle(
-            "Crear Curso"
         );
 
-        this.setSubtitle(
-            "Diseño curricular del curso."
-        );
+        if (element) {
 
-        this.setCurrentModule(
-            "course"
-        );
+            element.textContent = status;
+
+        }
 
     },
 
 
+    updateCourseName(courseName) {
 
-    //--------------------------------------------------
-    // PREGUNTAS
-    //--------------------------------------------------
+        const sidebar = document.getElementById(
 
-    showQuestionBuilder() {
+            "active-course-name"
 
-        this.setTitle(
-            "Banco de Preguntas"
         );
 
-        this.setSubtitle(
-            "Constructor profesional de ítems."
+        const summary = document.getElementById(
+
+            "summary-course"
+
         );
 
-        this.setCurrentModule(
-            "question"
-        );
+
+        if (sidebar) {
+
+            sidebar.textContent = courseName;
+
+        }
+
+
+        if (summary) {
+
+            summary.textContent = courseName;
+
+        }
 
     },
 
 
+    updateQuestionCounter(total) {
 
-    //--------------------------------------------------
-    // BLUEPRINT
-    //--------------------------------------------------
+        const element = document.getElementById(
 
-    showBlueprintWizard() {
+            "summary-questions"
 
-        this.setTitle(
-            "Blueprint"
         );
 
-        this.setSubtitle(
-            "Diseño pedagógico del examen."
-        );
+        if (element) {
 
-        this.setCurrentModule(
-            "blueprint"
-        );
+            element.textContent = total;
+
+        }
 
     },
 
 
+    updateBlueprintStatus(status) {
 
-    //--------------------------------------------------
-    // EXÁMENES
-    //--------------------------------------------------
+        const element = document.getElementById(
 
-    showExamBuilder() {
+            "summary-blueprint"
 
-        this.setTitle(
-            "Construcción del Examen"
         );
 
-        this.setSubtitle(
-            "Generación automática del instrumento."
-        );
+        if (element) {
 
-        this.setCurrentModule(
-            "exam"
-        );
+            element.textContent = status;
+
+        }
 
     },
 
 
+    updateExamStatus(status) {
 
-    //--------------------------------------------------
-    // REPORTES
-    //--------------------------------------------------
+        const element = document.getElementById(
 
-    showReports() {
+            "summary-exam"
 
-        this.setTitle(
-            "Reportes"
         );
 
-        this.setSubtitle(
-            "Analítica pedagógica y curricular."
-        );
+        if (element) {
 
-        this.setCurrentModule(
-            "reports"
-        );
+            element.textContent = status;
+
+        }
 
     },
 
-
-
-    //--------------------------------------------------
-    // CONFIGURACIÓN
-    //--------------------------------------------------
-
-    showSettings() {
-
-        this.setTitle(
-            "Configuración"
-        );
-
-        this.setSubtitle(
-            "Parámetros institucionales."
-        );
-
-        this.setCurrentModule(
-            "settings"
-        );
-
-    },
-
-
-
-    //--------------------------------------------------
-    // MODALES (FUTURO)
-    //--------------------------------------------------
-
-    openModal() {
-
-        console.log(
-            "Modal disponible para futuras versiones."
-        );
-
-    },
-
-
-
-    //--------------------------------------------------
-    // REFRESCAR
-    //--------------------------------------------------
-
-    refresh() {
-
-        console.log(
-            "Workspace actualizado."
-        );
-
-    },
-
-
-
-    //--------------------------------------------------
-    // RESET
-    //--------------------------------------------------
-
-    reset() {
-
-        this.clear();
-
-        this.currentModule = null;
-
-    },
-
-
-
-    //--------------------------------------------------
-    // DEBUG
-    //--------------------------------------------------
 
     debug() {
 
-        console.table({
+        console.log(
 
-            currentModule:
-                this.currentModule,
+            "Workspace disponible:",
+            this.getWorkspace()
 
-            workspace:
-                this.workspaceID
-
-        });
+        );
 
     }
+
 
 };
 
 
 
-/*********************************************************
- EXPORTACIÓN GLOBAL
-*********************************************************/
-
 window.WorkspaceManager = WorkspaceManager;
-
-
-
-/*********************************************************
- INICIALIZACIÓN AUTOMÁTICA
-*********************************************************/
-
-document.addEventListener(
-
-    "DOMContentLoaded",
-
-    () => {
-
-        WorkspaceManager.init();
-
-    }
-
-);
