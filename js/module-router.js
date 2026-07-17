@@ -16,25 +16,17 @@ const ModuleRouter = {
      REGISTRO DE MÓDULOS
     *****************************************************/
 
-    modules: {
+   modules: {
 
-        dashboard: "DashboardView",
+    dashboard: "Dashboard",
+    course: "CourseModule",
+    assessment: "AssessmentModule",
+    questions: "QuestionModule",
+    blueprint: "BlueprintModule",
+    exam: "ExamModule",
+    export: "Export"
 
-        course: "CourseModule",
-
-        assessment: "AssessmentModule",
-
-        questions: "QuestionModule",
-
-        blueprint: "BlueprintModule",
-
-        exam: "ExamModule",
-
-        export: "ExportModule",
-
-        settings: "SettingsModule",
-
-        reports: "ReportCenter"
+}
 
     },
 
