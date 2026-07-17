@@ -23,20 +23,22 @@ const AppController = {
         "MVP Operativa 1.0",
 
 
-    requiredModules: [
+    requiredModules = [
 
-        "PersistenceManager",
-        "ModuleRouter",
-        "WorkflowController",
+    "PersistenceManager",
+    "ModuleRouter",
+    "WorkflowController",
 
-        "CourseModule",
-        "AssessmentModule",
-        "QuestionModule",
-        "BlueprintModule",
-        "ExamModule",
-        "ExportModule"
+    "Dashboard",
 
-    ],
+    "CourseModule",
+    "AssessmentModule",
+    "QuestionModule",
+    "BlueprintModule",
+    "ExamModule",
+    "Export"
+
+];
 
 
     initialized: false,
