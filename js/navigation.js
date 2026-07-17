@@ -125,60 +125,226 @@ const Navigation = {
 
 
     //--------------------------------------------------
-    // EJECUTAR MÓDULO
-    //--------------------------------------------------
+// EJECUTAR MÓDULO
+//--------------------------------------------------
 
-    executeModule(moduleName) {
+executeModule(moduleName) {
 
-        switch (moduleName) {
+    const execute = (module) => {
 
-            case "dashboard":
+        if (!module) {
 
-                DashboardView.refresh();
-                break;
+            console.error(
+                "El módulo no está disponible."
+            );
 
-
-            case "course":
-
-                CourseWizard.start();
-                break;
+            return;
+        }
 
 
-            case "question":
+        // Prioridad 1
 
-                QuestionBuilder.start();
-                break;
+        if (typeof module.init === "function") {
 
-
-            case "blueprint":
-
-                BlueprintWizard.start();
-                break;
-
-
-            case "exam":
-
-                ExamBuilder.start();
-                break;
-
-
-            case "reports":
-
-                ReportCenter.generateCompleteReport();
-                break;
-
-
-            case "settings":
-
-                Settings.getAll();
-                break;
+            module.init();
+            return;
 
         }
 
-    },
+
+        // Prioridad 2
+
+        if (typeof module.render === "function") {
+
+            module.render();
+            return;
+
+        }
 
 
+        // Prioridad 3
 
+        if (typeof module.start === "function") {
+
+            module.start();
+            return;
+
+        }
+
+
+        console.error(
+
+            "El módulo no posee métodos compatibles."
+
+        );
+
+    };
+
+
+    switch (moduleName) {
+
+
+        //--------------------------------------------------
+        // DASHBOARD
+        //--------------------------------------------------
+
+        case "dashboard":
+
+            execute(
+
+                window.DashboardModule ||
+                window.DashboardView ||
+                window.Dashboard
+
+            );
+
+            break;
+
+
+        //--------------------------------------------------
+        // CURSO
+        //--------------------------------------------------
+
+        case "course":
+
+            execute(
+
+                window.CourseModule ||
+                window.CourseWizard
+
+            );
+
+            break;
+
+
+        //--------------------------------------------------
+        // EVALUACIÓN
+        //--------------------------------------------------
+
+        case "assessment":
+
+            execute(
+
+                window.AssessmentModule
+
+            );
+
+            break;
+
+
+        //--------------------------------------------------
+        // PREGUNTAS
+        //--------------------------------------------------
+
+        case "question":
+
+        case "questions":
+
+            execute(
+
+                window.QuestionModule ||
+                window.QuestionBuilder
+
+            );
+
+            break;
+
+
+        //--------------------------------------------------
+        // BLUEPRINT
+        //--------------------------------------------------
+
+        case "blueprint":
+
+            execute(
+
+                window.BlueprintModule ||
+                window.BlueprintWizard
+
+            );
+
+            break;
+
+
+        //--------------------------------------------------
+        // EXAMEN
+        //--------------------------------------------------
+
+        case "exam":
+
+            execute(
+
+                window.ExamModule ||
+                window.ExamBuilder
+
+            );
+
+            break;
+
+
+        //--------------------------------------------------
+        // EXPORTACIÓN
+        //--------------------------------------------------
+
+        case "export":
+
+            execute(
+
+                window.ExportModule ||
+                window.Exporter
+
+            );
+
+            break;
+
+
+        //--------------------------------------------------
+        // REPORTES
+        //--------------------------------------------------
+
+        case "reports":
+
+            execute(
+
+                window.ReportCenter
+
+            );
+
+            break;
+
+
+        //--------------------------------------------------
+        // CONFIGURACIÓN
+        //--------------------------------------------------
+
+        case "settings":
+
+            execute(
+
+                window.Settings
+
+            );
+
+            break;
+
+
+        //--------------------------------------------------
+        // DEFAULT
+        //--------------------------------------------------
+
+        default:
+
+            console.warn(
+
+                `No existe un manejador para el módulo: ${moduleName}`
+
+            );
+
+            break;
+
+    }
+
+},
     //--------------------------------------------------
     // VOLVER AL MÓDULO ANTERIOR
     //--------------------------------------------------
