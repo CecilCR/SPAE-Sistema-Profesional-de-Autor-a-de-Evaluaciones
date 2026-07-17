@@ -1,124 +1,202 @@
 /*********************************************************
  SPAE
+
  Sistema Profesional de Autoría de Evaluaciones
 
- Archivo : js/exporter.js
- Versión : 1.0
+ Archivo:
+ js/exam-module.js
 
- Administrador de exportaciones del sistema.
+ VERSIÓN MVP 2.0
+
+ RESPONSABILIDAD:
+
+ - Construir automáticamente el examen.
+ - Consolidar toda la información del proyecto.
+ - Generar una vista previa del instrumento.
+ - Dejar el examen listo para exportación.
 
 *********************************************************/
 
 
-const Exporter = {
+const ExamModule = {
 
 
-    //--------------------------------------------------
-    // CONFIGURACIÓN
-    //--------------------------------------------------
+    /*****************************************************
+     RENDERIZAR MÓDULO
+    *****************************************************/
 
-    VERSION: "1.0.0",
+    render() {
 
-    FILE_PREFIX: "SPAE_",
+        const course = this.getCourse();
+        const assessment = this.getAssessment();
+        const questions = this.getQuestions();
 
 
+        WorkspaceManager.render(
 
-    //--------------------------------------------------
-    // INICIALIZACIÓN
-    //--------------------------------------------------
+            `
 
-    init() {
+            <div class="workspace-container">
 
-        console.log(
-            "Exporter inicializado."
+                <h2>
+
+                    Generador del Examen
+
+                </h2>
+
+                <p>
+
+                    Vista previa del instrumento de evaluación.
+
+                </p>
+
+                <br>
+
+
+                <h3>
+
+                    Información General
+
+                </h3>
+
+                <p>
+
+                    <strong>Curso:</strong>
+                    ${course.name || "No registrado"}
+
+                </p>
+
+                <p>
+
+                    <strong>Evaluación:</strong>
+                    ${assessment.name || "No registrada"}
+
+                </p>
+
+                <p>
+
+                    <strong>Tipo:</strong>
+                    ${assessment.type || "No registrado"}
+
+                </p>
+
+                <p>
+
+                    <strong>Tiempo:</strong>
+                    ${assessment.time || "No registrado"} minutos
+
+                </p>
+
+
+                <br>
+
+
+                <h3>
+
+                    Instrucciones Generales
+
+                </h3>
+
+                <p>
+
+                    Lea atentamente cada pregunta antes de responder.
+
+                </p>
+
+                <p>
+
+                    Utilice argumentos claros y precisos cuando corresponda.
+
+                </p>
+
+
+                <br>
+
+
+                <h3>
+
+                    Preguntas del Instrumento
+
+                </h3>
+
+
+                ${this.generateQuestionsHTML(questions)}
+
+
+                <br>
+
+
+                <button
+
+                    class="workspace-button button-success"
+
+                    onclick="ExamModule.generateExam()">
+
+                    Generar Examen
+
+                </button>
+
+            </div>
+
+            `
+
         );
 
     },
 
 
 
-    //--------------------------------------------------
-    // EXPORTACIÓN COMPLETA
-    //--------------------------------------------------
+    /*****************************************************
+     GENERAR EXAMEN
+    *****************************************************/
 
-    exportProject() {
+    generateExam() {
 
-        const data = {
+        const exam = {
 
-            version: this.VERSION,
+            course:
 
-            exportedAt: new Date(),
+                this.getCourse(),
 
-            database:
+            assessment:
 
-                StorageManager.exportDatabase()
-
-        };
-
-
-        this.downloadJSON(
-
-            data,
-
-            "PROYECTO_COMPLETO"
-
-        );
-
-    },
-
-
-
-    //--------------------------------------------------
-    // EXPORTAR CURSOS
-    //--------------------------------------------------
-
-    exportCourses() {
-
-        const data = {
-
-            version: this.VERSION,
-
-            courses:
-
-                StorageManager.getCourses()
-
-        };
-
-
-        this.downloadJSON(
-
-            data,
-
-            "CURSOS"
-
-        );
-
-    },
-
-
-
-    //--------------------------------------------------
-    // EXPORTAR PREGUNTAS
-    //--------------------------------------------------
-
-    exportQuestions() {
-
-        const data = {
-
-            version: this.VERSION,
+                this.getAssessment(),
 
             questions:
 
-                StorageManager.getQuestions()
+                this.getQuestions()
 
         };
 
 
-        this.downloadJSON(
+        localStorage.setItem(
 
-            data,
+            "SPAE_EXAM",
 
-            "BANCO_PREGUNTAS"
+            JSON.stringify(
+                exam
+            )
+
+        );
+
+
+        WorkspaceManager.updateExamStatus(
+
+            "Examen generado."
+
+        );
+
+
+        WorkspaceManager.updateProjectStatus(
+
+            "Examen construido correctamente."
+
+        );
+
+
+        alert(
+
+            "Examen generado correctamente."
 
         );
 
@@ -126,285 +204,183 @@ const Exporter = {
 
 
 
-    //--------------------------------------------------
-    // EXPORTAR EXÁMENES
-    //--------------------------------------------------
+    /*****************************************************
+     GENERAR HTML DE LAS PREGUNTAS
+    *****************************************************/
 
-    exportExams() {
+    generateQuestionsHTML(questions) {
 
-        const data = {
+        if (questions.length === 0) {
 
-            version: this.VERSION,
+            return `
 
-            exams:
+                <p>
 
-                StorageManager.getExams()
+                    No existen preguntas registradas.
 
-        };
+                </p>
 
-
-        this.downloadJSON(
-
-            data,
-
-            "EXAMENES"
-
-        );
-
-    },
-
-
-
-    //--------------------------------------------------
-    // EXPORTAR RESULTADOS DE APRENDIZAJE
-    //--------------------------------------------------
-
-    exportLearningOutcomes() {
-
-        const data = {
-
-            version: this.VERSION,
-
-            outcomes:
-
-                StorageManager.getLearningOutcomes()
-
-        };
-
-
-        this.downloadJSON(
-
-            data,
-
-            "RESULTADOS_APRENDIZAJE"
-
-        );
-
-    },
-
-
-
-    //--------------------------------------------------
-    // EXPORTAR REPORTES
-    //--------------------------------------------------
-
-    exportReports() {
-
-        const data = {
-
-            version: this.VERSION,
-
-            reports:
-
-                StorageManager.getReports()
-
-        };
-
-
-        this.downloadJSON(
-
-            data,
-
-            "REPORTES"
-
-        );
-
-    },
-
-
-
-    //--------------------------------------------------
-    // EXPORTAR BACKUP
-    //--------------------------------------------------
-
-    exportBackup() {
-
-        const backup =
-
-            StorageManager.createBackup();
-
-
-        this.downloadJSON(
-
-            backup,
-
-            "BACKUP"
-
-        );
-
-    },
-
-
-
-    //--------------------------------------------------
-    // EXPORTACIÓN HTML
-    //--------------------------------------------------
-
-    exportHTML(html, filename) {
-
-        const blob = new Blob(
-
-            [html],
-
-            {
-
-                type: "text/html"
-
-            }
-
-        );
-
-
-        this.downloadBlob(
-
-            blob,
-
-            filename + ".html"
-
-        );
-
-    },
-
-
-
-    //--------------------------------------------------
-    // EXPORTAR TEXTO
-    //--------------------------------------------------
-
-    exportText(text, filename) {
-
-        const blob = new Blob(
-
-            [text],
-
-            {
-
-                type: "text/plain"
-
-            }
-
-        );
-
-
-        this.downloadBlob(
-
-            blob,
-
-            filename + ".txt"
-
-        );
-
-    },
-
-
-
-    //--------------------------------------------------
-    // EXPORTACIÓN JSON
-    //--------------------------------------------------
-
-    downloadJSON(data, filename) {
-
-        const json = JSON.stringify(
-
-            data,
-            null,
-            4
-
-        );
-
-
-        const blob = new Blob(
-
-            [json],
-
-            {
-
-                type:
-
-                "application/json"
-
-            }
-
-        );
-
-
-        this.downloadBlob(
-
-            blob,
-
-            `${this.FILE_PREFIX}${filename}.json`
-
-        );
-
-    },
-
-
-
-    //--------------------------------------------------
-    // DESCARGAR BLOB
-    //--------------------------------------------------
-
-    downloadBlob(blob, filename) {
-
-        const url =
-
-            URL.createObjectURL(blob);
-
-
-        const link =
-
-            document.createElement("a");
-
-
-        link.href = url;
-
-        link.download = filename;
-
-
-        document.body.appendChild(link);
-
-        link.click();
-
-        document.body.removeChild(link);
-
-
-        URL.revokeObjectURL(url);
-
-
-        if (window.Notifications) {
-
-            Notifications.success(
-
-                "Archivo exportado correctamente."
-
-            );
+            `;
 
         }
 
+
+        let html = "";
+
+
+        questions.forEach((question, index) => {
+
+
+            html += `
+
+                <div class="workspace-card">
+
+                    <h4>
+
+                        Pregunta ${index + 1}
+
+                    </h4>
+
+
+                    <p>
+
+                        <strong>Tipo:</strong>
+                        ${question.type}
+
+                    </p>
+
+
+                    <p>
+
+                        ${question.statement}
+
+                    </p>
+
+
+                    <ul>
+
+                        <li>A. ${question.alternativeA || ""}</li>
+
+                        <li>B. ${question.alternativeB || ""}</li>
+
+                        <li>C. ${question.alternativeC || ""}</li>
+
+                        <li>D. ${question.alternativeD || ""}</li>
+
+                    </ul>
+
+
+                    <p>
+
+                        <strong>Respuesta correcta:</strong>
+                        ${question.correctAnswer || "-"}
+
+                    </p>
+
+
+                    <p>
+
+                        <strong>Competencia:</strong>
+                        ${question.competency || "-"}
+
+                    </p>
+
+
+                    <p>
+
+                        <strong>Resultado de aprendizaje:</strong>
+                        ${question.learningResult || "-"}
+
+                    </p>
+
+                </div>
+
+                <br>
+
+            `;
+
+        });
+
+
+        return html;
+
     },
 
 
 
-    //--------------------------------------------------
-    // EXPORTACIÓN PEDAGÓGICA
-    //--------------------------------------------------
+    /*****************************************************
+     OBTENER CURSO
+    *****************************************************/
 
-    exportPedagogicalReport(report) {
+    getCourse() {
 
-        const data = {
+        return JSON.parse(
 
-            version: this.VERSION,
+            localStorage.getItem(
 
-            report
+                "SPAE_COURSE"
 
-        };
+            )
+
+        ) || {};
+
+    },
 
 
-        this.downloadJSON(
 
-            data,
+    /*****************************************************
+     OBTENER EVALUACIÓN
+    *****************************************************/
 
-            "REPORTE_PEDAGOGICO"
+    getAssessment() {
+
+        return JSON.parse(
+
+            localStorage.getItem(
+
+                "SPAE_ASSESSMENT"
+
+            )
+
+        ) || {};
+
+    },
+
+
+
+    /*****************************************************
+     OBTENER PREGUNTAS
+    *****************************************************/
+
+    getQuestions() {
+
+        return JSON.parse(
+
+            localStorage.getItem(
+
+                "SPAE_QUESTIONS"
+
+            )
+
+        ) || [];
+
+    },
+
+
+
+    /*****************************************************
+     OBTENER EXAMEN
+    *****************************************************/
+
+    getExam() {
+
+        return JSON.parse(
+
+            localStorage.getItem(
+
+                "SPAE_EXAM"
+
+            )
 
         );
 
@@ -412,54 +388,19 @@ const Exporter = {
 
 
 
-    //--------------------------------------------------
-    // EXPORTAR EXAMEN IMPRIMIBLE
-    //--------------------------------------------------
+    /*****************************************************
+     VERIFICAR EXISTENCIA DEL EXAMEN
+    *****************************************************/
 
-    exportPrintableExam(exam) {
+    exists() {
 
-        const html = `
+        return (
 
-        <html>
+            localStorage.getItem(
 
-        <head>
+                "SPAE_EXAM"
 
-            <title>
-
-                ${exam.title}
-
-            </title>
-
-        </head>
-
-        <body>
-
-            <h1>
-
-                ${exam.title}
-
-            </h1>
-
-            <hr>
-
-            <pre>
-
-${JSON.stringify(exam,null,2)}
-
-            </pre>
-
-        </body>
-
-        </html>
-
-        `;
-
-
-        this.exportHTML(
-
-            html,
-
-            exam.title
+            ) !== null
 
         );
 
@@ -467,17 +408,15 @@ ${JSON.stringify(exam,null,2)}
 
 
 
-    //--------------------------------------------------
-    // EXPORTAR DATOS PERSONALIZADOS
-    //--------------------------------------------------
+    /*****************************************************
+     ELIMINAR EXAMEN
+    *****************************************************/
 
-    exportCustom(filename, data) {
+    deleteExam() {
 
-        this.downloadJSON(
+        localStorage.removeItem(
 
-            data,
-
-            filename
+            "SPAE_EXAM"
 
         );
 
@@ -485,42 +424,17 @@ ${JSON.stringify(exam,null,2)}
 
 
 
-    //--------------------------------------------------
-    // OBTENER TAMAÑO DEL ARCHIVO
-    //--------------------------------------------------
+    /*****************************************************
+     DEBUG
+    *****************************************************/
 
-    getSize(data) {
+    debug() {
 
-        return JSON.stringify(
+        console.log(
 
-            data
+            this.getExam()
 
-        ).length;
-
-    },
-
-
-
-    //--------------------------------------------------
-    // VALIDAR EXPORTACIÓN
-    //--------------------------------------------------
-
-    validate(data) {
-
-        return data !== null &&
-               data !== undefined;
-
-    },
-
-
-
-    //--------------------------------------------------
-    // DEBUG
-    //--------------------------------------------------
-
-    debug(data) {
-
-        console.log(data);
+        );
 
     }
 
@@ -530,25 +444,7 @@ ${JSON.stringify(exam,null,2)}
 
 
 /*********************************************************
-EXPORTACIÓN GLOBAL
+ EXPORTACIÓN GLOBAL
 *********************************************************/
 
-window.Exporter = Exporter;
-
-
-
-/*********************************************************
-INICIALIZACIÓN AUTOMÁTICA
-*********************************************************/
-
-document.addEventListener(
-
-    "DOMContentLoaded",
-
-    () => {
-
-        Exporter.init();
-
-    }
-
-);
+window.ExamModule = ExamModule;
