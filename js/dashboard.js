@@ -1,10 +1,18 @@
 /*********************************************************
  SPAE
 
- Archivo : js/dashboard.js
- Versión : 1.0
+ Sistema Profesional de Autoría de Evaluaciones
 
- Módulo Dashboard del sistema.
+ Archivo:
+ js/dashboard-module.js
+
+ VERSIÓN MVP 2.0
+
+ RESPONSABILIDAD:
+
+ - Mostrar el estado general del proyecto.
+ - Mostrar el flujo de trabajo del docente.
+ - Servir como pantalla de inicio del sistema.
 
 *********************************************************/
 
@@ -12,459 +20,205 @@
 const DashboardModule = {
 
 
-    //--------------------------------------------------
-    // ESTADO DEL DASHBOARD
-    //--------------------------------------------------
+    /*****************************************************
+     RENDERIZAR DASHBOARD
+    *****************************************************/
 
-    statistics: {
+    render() {
 
-        courses: 0,
-        questions: 0,
-        exams: 0,
-        learningOutcomes: 0
+        const course = this.getCourseName();
+
+        const questions = this.getQuestionCount();
+
+
+        WorkspaceManager.render(
+
+            `
+
+            <div class="workspace-container">
+
+                <h2>
+
+                    Bienvenido al SPAE
+
+                </h2>
+
+
+                <p>
+
+                    El Sistema Profesional de Autoría de
+                    Evaluaciones está listo para comenzar.
+
+                </p>
+
+
+                <br>
+
+
+                <h3>
+
+                    Flujo del Instrumento
+
+                </h3>
+
+
+                <ol>
+
+                    <li>Crear curso.</li>
+                    <li>Configurar evaluación.</li>
+                    <li>Crear preguntas.</li>
+                    <li>Construir Blueprint.</li>
+                    <li>Generar examen.</li>
+                    <li>Exportar instrumento.</li>
+
+                </ol>
+
+
+                <br>
+
+
+                <h3>
+
+                    Estado del Proyecto
+
+                </h3>
+
+
+                <p>
+
+                    <strong>Curso:</strong>
+                    ${course}
+
+                </p>
+
+
+                <p>
+
+                    <strong>Total de preguntas:</strong>
+                    ${questions}
+
+                </p>
+
+
+                <br>
+
+
+                <div class="workspace-actions">
+
+                    <button
+
+                        class="workspace-button button-primary"
+
+                        onclick="Navigation.open('course')">
+
+                        Crear Curso
+
+                    </button>
+
+
+                    <button
+
+                        class="workspace-button button-primary"
+
+                        onclick="Navigation.open('question')">
+
+                        Crear Preguntas
+
+                    </button>
+
+
+                    <button
+
+                        class="workspace-button button-success"
+
+                        onclick="Navigation.open('exam')">
+
+                        Construir Examen
+
+                    </button>
+
+                </div>
+
+            </div>
+
+            `
+
+        );
 
     },
 
 
-    //--------------------------------------------------
-    // INICIALIZACIÓN
-    //--------------------------------------------------
 
-    init() {
+    /*****************************************************
+     OBTENER CURSO
+    *****************************************************/
 
-        this.loadStatistics();
+    getCourseName() {
 
-        this.bindQuickActions();
+        const course = JSON.parse(
 
-        this.renderDashboard();
+            localStorage.getItem(
+                "SPAE_COURSE"
+            )
+
+        );
+
+
+        if (!course) {
+
+            return "No registrado.";
+
+        }
+
+
+        return course.name;
+
+    },
+
+
+
+    /*****************************************************
+     TOTAL DE PREGUNTAS
+    *****************************************************/
+
+    getQuestionCount() {
+
+        const questions = JSON.parse(
+
+            localStorage.getItem(
+                "SPAE_QUESTIONS"
+            )
+
+        ) || [];
+
+
+        return questions.length;
+
+    },
+
+
+
+    /*****************************************************
+     DEBUG
+    *****************************************************/
+
+    debug() {
 
         console.log(
-            "Dashboard inicializado."
-        );
 
-    },
-
-
-    //--------------------------------------------------
-    // CARGAR ESTADÍSTICAS
-    //--------------------------------------------------
-
-    loadStatistics() {
-
-        this.statistics.courses = 0;
-        this.statistics.questions = 0;
-        this.statistics.exams = 0;
-        this.statistics.learningOutcomes = 0;
-
-    },
-
-
-    //--------------------------------------------------
-    // ACTUALIZAR ESTADÍSTICAS
-    //--------------------------------------------------
-
-    updateStatistics(data = {}) {
-
-        this.statistics = {
-
-            ...this.statistics,
-            ...data
-
-        };
-
-        this.renderStatistics();
-
-    },
-
-
-    //--------------------------------------------------
-    // RENDER PRINCIPAL
-    //--------------------------------------------------
-
-    renderDashboard() {
-
-        this.renderStatistics();
-
-        this.renderSystemStatus();
-
-    },
-
-
-    //--------------------------------------------------
-    // RENDER DE ESTADÍSTICAS
-    //--------------------------------------------------
-
-    renderStatistics() {
-
-        this.updateElement(
-
-            "stat-courses",
-            this.statistics.courses
-
-        );
-
-        this.updateElement(
-
-            "stat-questions",
-            this.statistics.questions
-
-        );
-
-        this.updateElement(
-
-            "stat-exams",
-            this.statistics.exams
-
-        );
-
-        this.updateElement(
-
-            "stat-outcomes",
-            this.statistics.learningOutcomes
-
-        );
-
-    },
-
-
-    //--------------------------------------------------
-    // RENDER DEL ESTADO DEL SISTEMA
-    //--------------------------------------------------
-
-    renderSystemStatus() {
-
-        this.updateElement(
-
-            "dashboard-version",
-            "v1.0.0"
-
-        );
-
-        this.updateElement(
-
-            "dashboard-status",
-            "Operativo"
-
-        );
-
-    },
-
-
-    //--------------------------------------------------
-    // ACCIONES RÁPIDAS
-    //--------------------------------------------------
-
-    bindQuickActions() {
-
-        const actions = document.querySelectorAll(
-
-            "[data-action]"
-
-        );
-
-
-        actions.forEach(action => {
-
-            action.addEventListener(
-
-                "click",
-
-                () => {
-
-                    this.executeAction(
-
-                        action.dataset.action
-
-                    );
-
-                }
-
-            );
-
-        });
-
-    },
-
-
-    //--------------------------------------------------
-    // EJECUTAR ACCIONES
-    //--------------------------------------------------
-
-    executeAction(action) {
-
-        switch(action){
-
-            case "new-course":
-
-                this.newCourse();
-
-                break;
-
-
-            case "new-exam":
-
-                this.newExam();
-
-                break;
-
-
-            case "new-question":
-
-                this.newQuestion();
-
-                break;
-
-
-            case "open-bank":
-
-                this.openQuestionBank();
-
-                break;
-
-
-            default:
-
-                console.warn(
-
-                    "Acción desconocida:",
-                    action
-
-                );
-
-        }
-
-    },
-
-
-    //--------------------------------------------------
-    // NUEVO CURSO
-    //--------------------------------------------------
-
-    newCourse() {
-
-        console.log(
-            "Crear nuevo curso."
-        );
-
-        if(window.Notifications){
-
-            Notifications.success(
-
-                "Abrir asistente de creación de curso."
-
-            );
-
-        }
-
-    },
-
-
-    //--------------------------------------------------
-    // NUEVO EXAMEN
-    //--------------------------------------------------
-
-    newExam() {
-
-        console.log(
-            "Crear examen."
-        );
-
-        if(window.Notifications){
-
-            Notifications.info(
-
-                "Abrir constructor de exámenes."
-
-            );
-
-        }
-
-    },
-
-
-    //--------------------------------------------------
-    // NUEVA PREGUNTA
-    //--------------------------------------------------
-
-    newQuestion() {
-
-        console.log(
-            "Crear pregunta."
-        );
-
-        if(window.Notifications){
-
-            Notifications.info(
-
-                "Abrir editor de preguntas."
-
-            );
-
-        }
-
-    },
-
-
-    //--------------------------------------------------
-    // BANCO DE PREGUNTAS
-    //--------------------------------------------------
-
-    openQuestionBank() {
-
-        console.log(
-            "Banco de preguntas."
-        );
-
-        if(window.SPAEUI){
-
-            SPAEUI.showView(
-
-                "view-question-bank"
-
-            );
-
-        }
-
-    },
-
-
-    //--------------------------------------------------
-    // ACTUALIZAR ELEMENTOS
-    //--------------------------------------------------
-
-    updateElement(id,value){
-
-        const element = document.getElementById(id);
-
-        if(element){
-
-            element.textContent = value;
-
-        }
-
-    },
-
-
-    //--------------------------------------------------
-    // INFORMACIÓN DEL CURSO
-    //--------------------------------------------------
-
-    setCourseInformation(course){
-
-        if(!course){
-
-            return;
-
-        }
-
-        this.updateElement(
-
-            "dashboard-course-name",
-            course.name
-
-        );
-
-        this.updateElement(
-
-            "dashboard-course-code",
-            course.code
-
-        );
-
-    },
-
-
-    //--------------------------------------------------
-    // INFORMACIÓN DEL EXAMEN
-    //--------------------------------------------------
-
-    setExamInformation(exam){
-
-        if(!exam){
-
-            return;
-
-        }
-
-        this.updateElement(
-
-            "dashboard-exam-name",
-            exam.title
-
-        );
-
-    },
-
-
-    //--------------------------------------------------
-    // REFRESH COMPLETO
-    //--------------------------------------------------
-
-    refresh(){
-
-        this.renderDashboard();
-
-    },
-
-
-    //--------------------------------------------------
-    // LIMPIAR DASHBOARD
-    //--------------------------------------------------
-
-    clear(){
-
-        this.statistics = {
-
-            courses:0,
-            questions:0,
-            exams:0,
-            learningOutcomes:0
-
-        };
-
-        this.renderStatistics();
-
-    },
-
-
-    //--------------------------------------------------
-    // DEBUG
-    //--------------------------------------------------
-
-    debug(){
-
-        console.table(
-
-            this.statistics
+            "Dashboard operativo."
 
         );
 
     }
+
 
 };
 
 
 
 /*********************************************************
-EXPORTACIÓN GLOBAL
+ EXPORTACIÓN GLOBAL
 *********************************************************/
 
 window.DashboardModule = DashboardModule;
-
-
-
-/*********************************************************
-INICIALIZACIÓN
-*********************************************************/
-
-document.addEventListener(
-
-    "DOMContentLoaded",
-
-    () => {
-
-        DashboardModule.init();
-
-    }
-
-);
