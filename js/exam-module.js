@@ -6,528 +6,296 @@
  Archivo:
  js/exam-module.js
 
- Generador y vista previa del examen final.
+ VERSIÓN MVP 2.0
+
+ RESPONSABILIDAD:
+
+ - Construir automáticamente el examen.
+ - Consolidar toda la información del proyecto.
+ - Generar una vista previa del instrumento.
+ - Dejar el examen listo para exportación.
 
 *********************************************************/
 
-const ExamModule = {
 
-    finalExam: null,
+const ExamModule = {
 
 
     /*****************************************************
-     RENDER PRINCIPAL
+     RENDERIZAR MÓDULO
     *****************************************************/
 
     render() {
 
-        const workspace =
-            document.getElementById("workspace");
+        const course = this.getCourse();
+        const assessment = this.getAssessment();
+        const questions = this.getQuestions();
 
-        if (!workspace) return;
 
-        if (!this.validateExam()) {
+        WorkspaceManager.render(
 
-            workspace.innerHTML = `
+            `
 
-                <div class="spae-module">
+            <div class="workspace-container">
 
-                    <h2>
-                        No es posible generar el examen
-                    </h2>
+                <h2>
 
-                    <p>
-                        Verifique que todos los pasos
-                        anteriores hayan sido completados.
-                    </p>
+                    Generador del Examen
 
-                </div>
-
-            `;
-
-            return;
-        }
-
-
-        this.generateFinalExam();
-
-
-        workspace.innerHTML = `
-
-        <div class="spae-module">
-
-            <h2>
-                Vista previa del examen
-            </h2>
-
-            <div id="examPreview">
-
-            </div>
-
-
-            <hr>
-
-            <div class="module-actions">
-
-                <button
-                    onclick="ExamModule.save()">
-
-                    Guardar examen
-
-                </button>
-
-                <button
-                    onclick="EvaluationWorkspace.next()">
-
-                    Continuar
-
-                </button>
-
-            </div>
-
-        </div>
-
-        `;
-
-
-        this.renderPreview();
-
-    },
-
-
-
-    /*****************************************************
-     VALIDACIÓN DEL EXAMEN
-    *****************************************************/
-
-    validateExam() {
-
-        if (!window.PersistenceManager) {
-            return false;
-        }
-
-        const project =
-            PersistenceManager.loadProject();
-
-
-        if (!project.course) return false;
-        if (!project.assessment) return false;
-        if (!project.examDraft) return false;
-        if (!project.blueprint) return false;
-
-        if (
-            !project.course.learningOutcomes ||
-            project.course.learningOutcomes.length === 0
-        ) {
-            return false;
-        }
-
-        if (
-            !project.assessment.sections ||
-            project.assessment.sections.length === 0
-        ) {
-            return false;
-        }
-
-        if (
-            !project.examDraft.questions ||
-            project.examDraft.questions.length === 0
-        ) {
-            return false;
-        }
-
-        return true;
-
-    },
-
-
-
-    /*****************************************************
-     GENERAR EXAMEN FINAL
-    *****************************************************/
-
-    generateFinalExam() {
-
-        const project =
-            PersistenceManager.loadProject();
-
-
-        const course =
-            project.course;
-
-        const assessment =
-            project.assessment;
-
-        const questions =
-            project.examDraft.questions;
-
-
-        this.finalExam = {
-
-            metadata: {
-
-                title:
-                    assessment.name,
-
-                courseName:
-                    course.courseName,
-
-                program:
-                    course.program,
-
-                level:
-                    course.level,
-
-                semester:
-                    course.semester,
-
-                duration:
-                    assessment.duration
-
-            },
-
-            instructions: [
-
-                "Lea atentamente cada pregunta.",
-
-                "Administre adecuadamente su tiempo.",
-
-                "Responda de acuerdo con las instrucciones indicadas.",
-
-                "Revise sus respuestas antes de finalizar."
-
-            ],
-
-            sections:
-
-                assessment.sections,
-
-
-            questions:
-
-                questions,
-
-
-            grading: {
-
-                maximumScore:
-                    assessment.maximumScore,
-
-                passingScore:
-                    assessment.passingScore
-
-            },
-
-
-            footer: {
-
-                message:
-                    "Fin del instrumento de evaluación."
-
-            }
-
-        };
-
-    },
-
-
-
-    /*****************************************************
-     VISTA PREVIA COMPLETA
-    *****************************************************/
-
-    renderPreview() {
-
-        const preview =
-            document.getElementById(
-                "examPreview"
-            );
-
-        if (!preview) return;
-
-
-        preview.innerHTML = `
-
-            ${this.renderHeader()}
-
-            <hr>
-
-            ${this.renderInstructions()}
-
-            <hr>
-
-            ${this.renderSections()}
-
-            <hr>
-
-            ${this.renderQuestions()}
-
-            <hr>
-
-            ${this.renderFooter()}
-
-        `;
-
-    },
-
-
-
-    /*****************************************************
-     CABECERA
-    *****************************************************/
-
-    renderHeader() {
-
-        const meta =
-            this.finalExam.metadata;
-
-
-        return `
-
-        <h1>
-
-            ${meta.title}
-
-        </h1>
-
-
-        <p>
-
-            <strong>Curso:</strong>
-
-            ${meta.courseName}
-
-        </p>
-
-
-        <p>
-
-            <strong>Programa:</strong>
-
-            ${meta.program}
-
-        </p>
-
-
-        <p>
-
-            <strong>Nivel:</strong>
-
-            ${meta.level}
-
-        </p>
-
-
-        <p>
-
-            <strong>Semestre:</strong>
-
-            ${meta.semester}
-
-        </p>
-
-
-        <p>
-
-            <strong>Duración:</strong>
-
-            ${meta.duration} minutos
-
-        </p>
-
-        `;
-
-    },
-
-
-
-    /*****************************************************
-     INSTRUCCIONES
-    *****************************************************/
-
-    renderInstructions() {
-
-        let html = `
-
-        <h3>
-            Instrucciones
-        </h3>
-
-        <ul>
-
-        `;
-
-
-        this.finalExam.instructions.forEach(
-
-            instruction => {
-
-                html += `
-
-                <li>
-
-                    ${instruction}
-
-                </li>
-
-                `;
-
-            }
-
-        );
-
-
-        html += `
-
-        </ul>
-
-        `;
-
-
-        return html;
-
-    },
-
-
-
-    /*****************************************************
-     SECCIONES
-    *****************************************************/
-
-    renderSections() {
-
-        let html = `
-
-        <h3>
-            Estructura del examen
-        </h3>
-
-        `;
-
-
-        this.finalExam.sections.forEach(
-
-            section => {
-
-                html += `
+                </h2>
 
                 <p>
 
-                    <strong>
-                        ${section.type}
-                    </strong>
-
-                    (${section.quantity})
+                    Vista previa del instrumento de evaluación.
 
                 </p>
 
-                `;
+                <br>
 
-            }
+
+                <h3>
+
+                    Información General
+
+                </h3>
+
+                <p>
+
+                    <strong>Curso:</strong>
+                    ${course.name || "No registrado"}
+
+                </p>
+
+                <p>
+
+                    <strong>Evaluación:</strong>
+                    ${assessment.name || "No registrada"}
+
+                </p>
+
+                <p>
+
+                    <strong>Tipo:</strong>
+                    ${assessment.type || "No registrado"}
+
+                </p>
+
+                <p>
+
+                    <strong>Tiempo:</strong>
+                    ${assessment.time || "No registrado"} minutos
+
+                </p>
+
+
+                <br>
+
+
+                <h3>
+
+                    Instrucciones Generales
+
+                </h3>
+
+                <p>
+
+                    Lea atentamente cada pregunta antes de responder.
+
+                </p>
+
+                <p>
+
+                    Utilice argumentos claros y precisos cuando corresponda.
+
+                </p>
+
+
+                <br>
+
+
+                <h3>
+
+                    Preguntas del Instrumento
+
+                </h3>
+
+
+                ${this.generateQuestionsHTML(questions)}
+
+
+                <br>
+
+
+                <button
+
+                    class="workspace-button button-success"
+
+                    onclick="ExamModule.generateExam()">
+
+                    Generar Examen
+
+                </button>
+
+            </div>
+
+            `
 
         );
-
-
-        return html;
 
     },
 
 
 
     /*****************************************************
-     PREGUNTAS
+     GENERAR EXAMEN
     *****************************************************/
 
-    renderQuestions() {
+    generateExam() {
 
-        let html = `
+        const exam = {
 
-        <h3>
-            Preguntas del examen
-        </h3>
+            course:
 
-        `;
+                this.getCourse(),
+
+            assessment:
+
+                this.getAssessment(),
+
+            questions:
+
+                this.getQuestions()
+
+        };
 
 
-        this.finalExam.questions.forEach(
+        localStorage.setItem(
 
-            question => {
+            "SPAE_EXAM",
 
-                html += `
+            JSON.stringify(
+                exam
+            )
 
-                <div class="exam-question">
+        );
+
+
+        WorkspaceManager.updateExamStatus(
+
+            "Examen generado."
+
+        );
+
+
+        WorkspaceManager.updateProjectStatus(
+
+            "Examen construido correctamente."
+
+        );
+
+
+        alert(
+
+            "Examen generado correctamente."
+
+        );
+
+    },
+
+
+
+    /*****************************************************
+     GENERAR HTML DE LAS PREGUNTAS
+    *****************************************************/
+
+    generateQuestionsHTML(questions) {
+
+        if (questions.length === 0) {
+
+            return `
+
+                <p>
+
+                    No existen preguntas registradas.
+
+                </p>
+
+            `;
+
+        }
+
+
+        let html = "";
+
+
+        questions.forEach((question, index) => {
+
+
+            html += `
+
+                <div class="workspace-card">
 
                     <h4>
 
-                        Pregunta
-                        ${question.number}
+                        Pregunta ${index + 1}
 
                     </h4>
 
 
                     <p>
 
-                        <strong>
-                            Tipo:
-                        </strong>
-
+                        <strong>Tipo:</strong>
                         ${question.type}
 
                     </p>
 
-                `;
+
+                    <p>
+
+                        ${question.statement}
+
+                    </p>
 
 
-                html +=
-                    this.renderQuestionContent(
-                        question
-                    );
+                    <ul>
+
+                        <li>A. ${question.alternativeA || ""}</li>
+
+                        <li>B. ${question.alternativeB || ""}</li>
+
+                        <li>C. ${question.alternativeC || ""}</li>
+
+                        <li>D. ${question.alternativeD || ""}</li>
+
+                    </ul>
 
 
-                html += `
+                    <p>
 
-                <hr>
+                        <strong>Respuesta correcta:</strong>
+                        ${question.correctAnswer || "-"}
+
+                    </p>
+
+
+                    <p>
+
+                        <strong>Competencia:</strong>
+                        ${question.competency || "-"}
+
+                    </p>
+
+
+                    <p>
+
+                        <strong>Resultado de aprendizaje:</strong>
+                        ${question.learningResult || "-"}
+
+                    </p>
 
                 </div>
 
-                `;
-
-            }
-
-        );
-
-
-        return html;
-
-    },
-
-
-
-    /*****************************************************
-     CONTENIDO DE LAS PREGUNTAS
-    *****************************************************/
-
-    renderQuestionContent(question) {
-
-        let html = "";
-
-        const data =
-            question.data;
-
-
-        Object.keys(data).forEach(key => {
-
-            html += `
-
-                <p>
-
-                    <strong>
-                        ${key}:
-                    </strong>
-
-                    ${data[key]}
-
-                </p>
+                <br>
 
             `;
 
@@ -541,83 +309,79 @@ const ExamModule = {
 
 
     /*****************************************************
-     PIE DEL EXAMEN
+     OBTENER CURSO
     *****************************************************/
 
-    renderFooter() {
+    getCourse() {
 
-        const grading =
-            this.finalExam.grading;
+        return JSON.parse(
 
-        const footer =
-            this.finalExam.footer;
+            localStorage.getItem(
 
+                "SPAE_COURSE"
 
-        return `
+            )
 
-        <h3>
-            Información de evaluación
-        </h3>
-
-        <p>
-
-            Puntaje máximo:
-
-            ${grading.maximumScore}
-
-        </p>
-
-
-        <p>
-
-            Puntaje mínimo de aprobación:
-
-            ${grading.passingScore}
-
-        </p>
-
-
-        <hr>
-
-
-        <p>
-
-            ${footer.message}
-
-        </p>
-
-        `;
+        ) || {};
 
     },
 
 
 
     /*****************************************************
-     GUARDAR EXAMEN
+     OBTENER EVALUACIÓN
     *****************************************************/
 
-    save() {
+    getAssessment() {
 
-        if (!window.PersistenceManager) {
-            return;
-        }
+        return JSON.parse(
 
+            localStorage.getItem(
 
-        const project =
-            PersistenceManager.loadProject();
+                "SPAE_ASSESSMENT"
 
+            )
 
-        project.finalExam =
-            this.finalExam;
+        ) || {};
 
-
-        PersistenceManager.saveProject(
-            project
-        );
+    },
 
 
-        alert(
-            "Examen generado correctamente."
+
+    /*****************************************************
+     OBTENER PREGUNTAS
+    *****************************************************/
+
+    getQuestions() {
+
+        return JSON.parse(
+
+            localStorage.getItem(
+
+                "SPAE_QUESTIONS"
+
+            )
+
+        ) || [];
+
+    },
+
+
+
+    /*****************************************************
+     OBTENER EXAMEN
+    *****************************************************/
+
+    getExam() {
+
+        return JSON.parse(
+
+            localStorage.getItem(
+
+                "SPAE_EXAM"
+
+            )
+
         );
 
     },
@@ -625,31 +389,36 @@ const ExamModule = {
 
 
     /*****************************************************
-     CARGAR EXAMEN
+     VERIFICAR EXISTENCIA DEL EXAMEN
     *****************************************************/
 
-    load() {
+    exists() {
 
-        if (!window.PersistenceManager) {
-            return null;
-        }
+        return (
 
-        const project =
-            PersistenceManager.loadProject();
+            localStorage.getItem(
 
-        return project.finalExam;
+                "SPAE_EXAM"
+
+            ) !== null
+
+        );
 
     },
 
 
 
     /*****************************************************
-     OBTENER DATOS
+     ELIMINAR EXAMEN
     *****************************************************/
 
-    getData() {
+    deleteExam() {
 
-        return this.finalExam;
+        localStorage.removeItem(
+
+            "SPAE_EXAM"
+
+        );
 
     },
 
@@ -662,10 +431,13 @@ const ExamModule = {
     debug() {
 
         console.log(
-            this.finalExam
+
+            this.getExam()
+
         );
 
     }
+
 
 };
 
@@ -675,5 +447,4 @@ const ExamModule = {
  EXPORTACIÓN GLOBAL
 *********************************************************/
 
-window.ExamModule =
-    ExamModule;
+window.ExamModule = ExamModule;
