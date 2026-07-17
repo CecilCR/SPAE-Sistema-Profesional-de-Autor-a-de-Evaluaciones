@@ -6,525 +6,352 @@
  Archivo:
  js/module-renderer.js
 
- Renderizador centralizado de módulos.
+ VERSIÓN MVP 2.0
+
+ RESPONSABILIDAD ÚNICA:
+
+ - Renderizar el módulo solicitado.
+ - Actualizar el título del workspace.
+ - Actualizar el subtítulo.
+ - Insertar el contenido HTML del módulo.
+
+ NO HACE:
+
+ - Navegación.
+ - Inicialización del sistema.
+ - Gestión de estados.
+ - Guardado.
+ - Lógica pedagógica.
 
 *********************************************************/
 
+
 const ModuleRenderer = {
 
-    //--------------------------------------------------
-    // ESTADO
-    //--------------------------------------------------
 
-    currentModule: null,
+    /*****************************************************
+     CONFIGURACIÓN DE LOS MÓDULOS
+    *****************************************************/
 
-    moduleTitles: {
+    modules: {
 
-        dashboard: "Dashboard",
 
-        course: "Crear Curso",
+        dashboard: {
 
-        question: "Banco de Preguntas",
+            title:
 
-        blueprint: "Blueprint",
+                "Dashboard",
 
-        exam: "Construcción del Examen",
+            subtitle:
 
-        reports: "Centro de Reportes",
+                "Bienvenido al SPAE.",
 
-        settings: "Configuración"
+            object:
+
+                "DashboardModule"
+
+        },
+
+
+        course: {
+
+            title:
+
+                "Crear Curso",
+
+            subtitle:
+
+                "Configure la información general del curso.",
+
+            object:
+
+                "CourseModule"
+
+        },
+
+
+        assessment: {
+
+            title:
+
+                "Configurar Evaluación",
+
+            subtitle:
+
+                "Configure el instrumento evaluativo.",
+
+            object:
+
+                "AssessmentModule"
+
+        },
+
+
+        question: {
+
+            title:
+
+                "Banco de Preguntas",
+
+            subtitle:
+
+                "Diseñe las preguntas del instrumento.",
+
+            object:
+
+                "QuestionModule"
+
+        },
+
+
+        blueprint: {
+
+            title:
+
+                "Blueprint",
+
+            subtitle:
+
+                "Organice la estructura del examen.",
+
+            object:
+
+                "BlueprintModule"
+
+        },
+
+
+        exam: {
+
+            title:
+
+                "Generador de Examen",
+
+            subtitle:
+
+                "Construya el examen completo.",
+
+            object:
+
+                "ExamModule"
+
+        },
+
+
+        export: {
+
+            title:
+
+                "Exportación",
+
+            subtitle:
+
+                "Exporte el instrumento evaluativo.",
+
+            object:
+
+                "ExportModule"
+
+        },
+
+
+        reports: {
+
+            title:
+
+                "Reportes",
+
+            subtitle:
+
+                "Visualice la información del proyecto.",
+
+            object:
+
+                "ReportModule"
+
+        },
+
+
+        settings: {
+
+            title:
+
+                "Configuración",
+
+            subtitle:
+
+                "Personalice el sistema.",
+
+            object:
+
+                "SettingsModule"
+
+        }
+
 
     },
 
 
-    moduleSubtitles: {
 
-        dashboard:
-            "Centro de control académico.",
-
-        course:
-            "Diseño curricular del curso.",
-
-        question:
-            "Constructor profesional de preguntas.",
-
-        blueprint:
-            "Diseño pedagógico del examen.",
-
-        exam:
-            "Generador automático de instrumentos.",
-
-        reports:
-            "Analítica pedagógica y curricular.",
-
-        settings:
-            "Configuración institucional del sistema."
-
-    },
-
-
-    //--------------------------------------------------
-    // INICIALIZACIÓN
-    //--------------------------------------------------
+    /*****************************************************
+     INICIALIZACIÓN
+    *****************************************************/
 
     init() {
 
         console.log(
-            "Module Renderer inicializado."
+
+            "ModuleRenderer MVP inicializado."
+
         );
 
     },
 
 
-    //--------------------------------------------------
-    // RENDER PRINCIPAL
-    //--------------------------------------------------
+
+    /*****************************************************
+     RENDERIZAR MÓDULO
+    *****************************************************/
 
     render(moduleName) {
 
-        try {
 
-            WorkspaceManager.showLoading(
-                "Cargando módulo..."
+        const moduleConfig =
+
+            this.modules[moduleName];
+
+
+        if (!moduleConfig) {
+
+            console.error(
+
+                `No existe configuración para: ${moduleName}`
+
             );
 
+            return;
 
-            this.currentModule =
-                moduleName;
+        }
 
 
-            this.updateHeader(
+        /*
+        ----------------------------------------------
+        Actualizar encabezados.
+        ----------------------------------------------
+        */
+
+        this.updateWorkspaceHeader(
+
+            moduleConfig.title,
+            moduleConfig.subtitle
+
+        );
+
+
+        /*
+        ----------------------------------------------
+        Obtener módulo.
+        ----------------------------------------------
+        */
+
+        const moduleObject =
+
+            window[moduleConfig.object];
+
+
+        /*
+        ----------------------------------------------
+        Si no existe el módulo.
+        ----------------------------------------------
+        */
+
+        if (!moduleObject) {
+
+            this.showModuleUnavailable(
+
                 moduleName
-            );
-
-
-            switch (moduleName) {
-
-                case "dashboard":
-
-                    this.renderDashboard();
-                    break;
-
-
-                case "course":
-
-                    this.renderCourseWizard();
-                    break;
-
-
-                case "question":
-
-                    this.renderQuestionBuilder();
-                    break;
-
-
-                case "blueprint":
-
-                    this.renderBlueprintWizard();
-                    break;
-
-
-                case "exam":
-
-                    this.renderExamBuilder();
-                    break;
-
-
-                case "reports":
-
-                    this.renderReportCenter();
-                    break;
-
-
-                case "settings":
-
-                    this.renderSettings();
-                    break;
-
-
-                default:
-
-                    this.renderNotFound();
-
-            }
-
-        }
-
-        catch (error) {
-
-            console.error(error);
-
-            WorkspaceManager.showError(
-
-                "No fue posible cargar el módulo."
 
             );
 
-        }
-
-    },
-
-
-    //--------------------------------------------------
-    // ACTUALIZAR CABECERA
-    //--------------------------------------------------
-
-    updateHeader(moduleName) {
-
-        WorkspaceManager.setTitle(
-
-            this.moduleTitles[moduleName]
-
-            ||
-
-            "SPAE"
-
-        );
-
-
-        WorkspaceManager.setSubtitle(
-
-            this.moduleSubtitles[moduleName]
-
-            ||
-
-            ""
-
-        );
-
-    },
-
-
-    //--------------------------------------------------
-    // DASHBOARD
-    //--------------------------------------------------
-
-    renderDashboard() {
-
-        WorkspaceManager.setCurrentModule(
-            "dashboard"
-        );
-
-
-        if (window.DashboardView) {
-
-            DashboardView.refresh();
+            return;
 
         }
 
 
-        WorkspaceManager.render(`
+        /*
+        ----------------------------------------------
+        Prioridad 1
 
-            <div class="dashboard-container">
-
-                <h2>Dashboard SPAE</h2>
-
-                <p>
-                El Dashboard se encuentra
-                operativo.
-                </p>
-
-            </div>
-
-        `);
-
-    },
-
-
-    //--------------------------------------------------
-    // COURSE WIZARD
-    //--------------------------------------------------
-
-    renderCourseWizard() {
-
-        WorkspaceManager.setCurrentModule(
-            "course"
-        );
-
+        render()
+        ----------------------------------------------
+        */
 
         if (
 
-            window.CourseWizard &&
-            CourseWizard.start
+            typeof moduleObject.render ===
+            "function"
 
         ) {
 
-            CourseWizard.start();
+            moduleObject.render();
+
+            return;
 
         }
 
 
-        WorkspaceManager.render(`
+        /*
+        ----------------------------------------------
+        Prioridad 2
 
-            <div class="module-container">
-
-                <h2>Crear Curso</h2>
-
-                <p>
-                Course Wizard cargado.
-                </p>
-
-            </div>
-
-        `);
-
-    },
-
-
-    //--------------------------------------------------
-    // QUESTION BUILDER
-    //--------------------------------------------------
-
-    renderQuestionBuilder() {
-
-        WorkspaceManager.setCurrentModule(
-            "question"
-        );
-
+        init()
+        ----------------------------------------------
+        */
 
         if (
 
-            window.QuestionBuilder &&
-            QuestionBuilder.start
+            typeof moduleObject.init ===
+            "function"
 
         ) {
 
-            QuestionBuilder.start();
+            moduleObject.init();
+
+            return;
 
         }
 
 
-        WorkspaceManager.render(`
+        /*
+        ----------------------------------------------
+        Prioridad 3
 
-            <div class="module-container">
-
-                <h2>Banco de Preguntas</h2>
-
-                <p>
-                Question Builder cargado.
-                </p>
-
-            </div>
-
-        `);
-
-    },
-
-
-    //--------------------------------------------------
-    // BLUEPRINT WIZARD
-    //--------------------------------------------------
-
-    renderBlueprintWizard() {
-
-        WorkspaceManager.setCurrentModule(
-            "blueprint"
-        );
-
+        start()
+        ----------------------------------------------
+        */
 
         if (
 
-            window.BlueprintWizard &&
-            BlueprintWizard.start
+            typeof moduleObject.start ===
+            "function"
 
         ) {
 
-            BlueprintWizard.start();
+            moduleObject.start();
+
+            return;
 
         }
 
 
-        WorkspaceManager.render(`
+        /*
+        ----------------------------------------------
+        Error.
+        ----------------------------------------------
+        */
 
-            <div class="module-container">
+        this.showModuleUnavailable(
 
-                <h2>Blueprint</h2>
-
-                <p>
-                Blueprint Wizard cargado.
-                </p>
-
-            </div>
-
-        `);
-
-    },
-
-
-    //--------------------------------------------------
-    // EXAM BUILDER
-    //--------------------------------------------------
-
-    renderExamBuilder() {
-
-        WorkspaceManager.setCurrentModule(
-            "exam"
-        );
-
-
-        if (
-
-            window.ExamBuilder &&
-            ExamBuilder.start
-
-        ) {
-
-            ExamBuilder.start();
-
-        }
-
-
-        WorkspaceManager.render(`
-
-            <div class="module-container">
-
-                <h2>Construcción del Examen</h2>
-
-                <p>
-                Exam Builder cargado.
-                </p>
-
-            </div>
-
-        `);
-
-    },
-
-
-    //--------------------------------------------------
-    // REPORT CENTER
-    //--------------------------------------------------
-
-    renderReportCenter() {
-
-        WorkspaceManager.setCurrentModule(
-            "reports"
-        );
-
-
-        if (
-
-            window.ReportCenter &&
-            ReportCenter.generateCompleteReport
-
-        ) {
-
-            ReportCenter.generateCompleteReport();
-
-        }
-
-
-        WorkspaceManager.render(`
-
-            <div class="module-container">
-
-                <h2>Centro de Reportes</h2>
-
-                <p>
-                Report Center cargado.
-                </p>
-
-            </div>
-
-        `);
-
-    },
-
-
-    //--------------------------------------------------
-    // SETTINGS
-    //--------------------------------------------------
-
-    renderSettings() {
-
-        WorkspaceManager.setCurrentModule(
-            "settings"
-        );
-
-
-        if (
-
-            window.Settings &&
-            Settings.getAll
-
-        ) {
-
-            Settings.getAll();
-
-        }
-
-
-        WorkspaceManager.render(`
-
-            <div class="module-container">
-
-                <h2>Configuración</h2>
-
-                <p>
-                Settings cargado.
-                </p>
-
-            </div>
-
-        `);
-
-    },
-
-
-    //--------------------------------------------------
-    // MÓDULO NO ENCONTRADO
-    //--------------------------------------------------
-
-    renderNotFound() {
-
-        WorkspaceManager.showEmptyState(
-
-            "Módulo no encontrado",
-
-            "El módulo solicitado no existe."
-
-        );
-
-    },
-
-
-    //--------------------------------------------------
-    // RECARGAR MÓDULO
-    //--------------------------------------------------
-
-    reload() {
-
-        if (this.currentModule) {
-
-            this.render(
-                this.currentModule
-            );
-
-        }
-
-    },
-
-
-    //--------------------------------------------------
-    // OBTENER MÓDULO ACTIVO
-    //--------------------------------------------------
-
-    getCurrentModule() {
-
-        return this.currentModule;
-
-    },
-
-
-    //--------------------------------------------------
-    // VERIFICAR MÓDULO ACTIVO
-    //--------------------------------------------------
-
-    isActive(moduleName) {
-
-        return (
-
-            this.currentModule ===
             moduleName
 
         );
@@ -532,48 +359,156 @@ const ModuleRenderer = {
     },
 
 
-    //--------------------------------------------------
-    // LIMPIAR
-    //--------------------------------------------------
 
-    clear() {
+    /*****************************************************
+     ACTUALIZAR ENCABEZADOS
+    *****************************************************/
 
-        this.currentModule = null;
+    updateWorkspaceHeader(
 
-        WorkspaceManager.clear();
+        title,
+        subtitle
+
+    ) {
+
+        const workspaceTitle =
+
+            document.getElementById(
+
+                "workspace-title"
+
+            );
+
+
+        const workspaceSubtitle =
+
+            document.getElementById(
+
+                "workspace-subtitle"
+
+            );
+
+
+        if (workspaceTitle) {
+
+            workspaceTitle.textContent = title;
+
+        }
+
+
+        if (workspaceSubtitle) {
+
+            workspaceSubtitle.textContent = subtitle;
+
+        }
 
     },
 
 
-    //--------------------------------------------------
-    // RESET
-    //--------------------------------------------------
 
-    reset() {
+    /*****************************************************
+     MÓDULO NO DISPONIBLE
+    *****************************************************/
 
-        this.currentModule = null;
+    showModuleUnavailable(
 
-        WorkspaceManager.reset();
+        moduleName
+
+    ) {
+
+        const workspace =
+
+            document.getElementById(
+
+                "workspace"
+
+            );
+
+
+        if (!workspace) {
+
+            return;
+
+        }
+
+
+        workspace.innerHTML = `
+
+            <div class="empty-state">
+
+                <h2>
+
+                    Módulo no disponible
+
+                </h2>
+
+                <p>
+
+                    El módulo "${moduleName}"
+                    aún no se encuentra operativo.
+
+                </p>
+
+            </div>
+
+        `;
+
+
+        console.warn(
+
+            `El módulo "${moduleName}" no está operativo.`
+
+        );
 
     },
 
 
-    //--------------------------------------------------
-    // DEBUG
-    //--------------------------------------------------
+
+    /*****************************************************
+     OBTENER CONFIGURACIÓN
+    *****************************************************/
+
+    getModule(moduleName) {
+
+        return this.modules[moduleName];
+
+    },
+
+
+
+    /*****************************************************
+     LISTAR MÓDULOS
+    *****************************************************/
+
+    getModules() {
+
+        return Object.keys(
+
+            this.modules
+
+        );
+
+    },
+
+
+
+    /*****************************************************
+     DEPURACIÓN
+    *****************************************************/
 
     debug() {
 
-        console.table({
+        console.table(
 
-            currentModule:
-                this.currentModule
+            this.modules
 
-        });
+        );
 
     }
 
+
 };
+
 
 
 /*********************************************************
@@ -581,20 +516,3 @@ const ModuleRenderer = {
 *********************************************************/
 
 window.ModuleRenderer = ModuleRenderer;
-
-
-/*********************************************************
- INICIALIZACIÓN AUTOMÁTICA
-*********************************************************/
-
-document.addEventListener(
-
-    "DOMContentLoaded",
-
-    () => {
-
-        ModuleRenderer.init();
-
-    }
-
-);
