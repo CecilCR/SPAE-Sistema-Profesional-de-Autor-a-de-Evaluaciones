@@ -6,559 +6,231 @@
  Archivo:
  js/blueprint-module.js
 
- Generador automático del Blueprint pedagógico.
+ VERSIÓN MVP 2.0
+
+ RESPONSABILIDAD:
+
+ - Construir automáticamente el Blueprint.
+ - Consolidar la información del proyecto.
+ - Visualizar la estructura del instrumento.
 
 *********************************************************/
 
-const BlueprintModule = {
 
-    blueprint: {},
+const BlueprintModule = {
 
 
     /*****************************************************
-     RENDER
+     RENDERIZAR MÓDULO
     *****************************************************/
 
     render() {
 
-        this.generateBlueprint();
+        const course = this.getCourse();
+        const assessment = this.getAssessment();
+        const questions = this.getQuestions();
 
-        const workspace =
-            document.getElementById("workspace");
-
-        if (!workspace) return;
+        const totalQuestions = questions.length;
 
 
-        workspace.innerHTML = `
+        WorkspaceManager.render(
 
-        <div class="spae-module">
+            `
 
-            <h2>
-                Blueprint de la evaluación
-            </h2>
+            <div class="workspace-container">
 
-            <div id="bpSummary"></div>
+                <h2>Blueprint del Instrumento</h2>
 
-            <hr>
+                <p>
+                    El Blueprint se genera automáticamente
+                    con la información registrada.
+                </p>
 
-            <div id="bpLearningOutcomes"></div>
+                <br>
 
-            <hr>
 
-            <div id="bpDistribution"></div>
+                <h3>Curso</h3>
 
-            <hr>
+                <p>
+                    <strong>Nombre:</strong>
+                    ${course.name || "No registrado"}
+                </p>
 
-            <div id="bpDifficulty"></div>
+                <p>
+                    <strong>Programa:</strong>
+                    ${course.program || "No registrado"}
+                </p>
 
-            <hr>
 
-            <div id="bpRecommendations"></div>
+                <br>
 
-            <hr>
 
-            <div id="bpStatus"></div>
+                <h3>Evaluación</h3>
 
-            <hr>
+                <p>
+                    <strong>Nombre:</strong>
+                    ${assessment.name || "No registrada"}
+                </p>
 
-            <div class="module-actions">
+                <p>
+                    <strong>Tipo:</strong>
+                    ${assessment.type || "No registrado"}
+                </p>
+
+                <p>
+                    <strong>Tiempo:</strong>
+                    ${assessment.time || "No registrado"} minutos
+                </p>
+
+                <p>
+                    <strong>Ponderación:</strong>
+                    ${assessment.weight || "No registrada"} %
+                </p>
+
+                <p>
+                    <strong>Nivel Cognitivo:</strong>
+                    ${assessment.bloom || "No registrado"}
+                </p>
+
+
+                <br>
+
+
+                <h3>Banco de Preguntas</h3>
+
+                <p>
+                    <strong>Total:</strong>
+                    ${totalQuestions}
+                </p>
+
+
+                <br>
+
+
+                <h3>Distribución por tipo</h3>
+
+                ${this.generateQuestionDistribution(questions)}
+
+
+                <br>
+
+
+                <h3>Competencias</h3>
+
+                <p>
+                    ${assessment.competencies || "No registradas"}
+                </p>
+
+
+                <br>
+
+
+                <h3>Resultados de Aprendizaje</h3>
+
+                <p>
+                    ${assessment.learningResults || "No registrados"}
+                </p>
+
+
+                <br>
+
 
                 <button
-                    onclick="BlueprintModule.save()">
+                    class="workspace-button button-success"
+                    onclick="BlueprintModule.updateBlueprintStatus()">
 
-                    Guardar Blueprint
-
-                </button>
-
-                <button
-                    onclick="EvaluationWorkspace.next()">
-
-                    Continuar
+                    Confirmar Blueprint
 
                 </button>
 
             </div>
 
-        </div>
+            `
 
-        `;
-
-
-        this.renderAssessmentSummary();
-        this.renderLearningOutcomes();
-        this.renderQuestionDistribution();
-        this.renderDifficultyDistribution();
-        this.renderRecommendations();
-        this.renderStatus();
+        );
 
     },
 
 
 
     /*****************************************************
-     GENERAR BLUEPRINT
+     DISTRIBUCIÓN DE PREGUNTAS
     *****************************************************/
 
-    generateBlueprint() {
+    generateQuestionDistribution(questions) {
 
-        if (!window.PersistenceManager) {
-            return;
-        }
+        if (questions.length === 0) {
 
-        const project =
-            PersistenceManager.loadProject();
-
-
-        const course =
-            project.course || {};
-
-        const assessment =
-            project.assessment || {};
-
-        const examDraft =
-            project.examDraft || {};
-
-
-        this.blueprint = {
-
-            course,
-
-            assessment,
-
-            examDraft,
-
-            recommendations: []
-
-        };
-
-
-        this.generateRecommendations();
-
-    },
-
-
-
-    /*****************************************************
-     RESUMEN
-    *****************************************************/
-
-    renderAssessmentSummary() {
-
-        const element =
-            document.getElementById(
-                "bpSummary"
-            );
-
-        const assessment =
-            this.blueprint.assessment;
-
-
-        element.innerHTML = `
-
-            <h3>
-                Resumen del instrumento
-            </h3>
-
-            <p>
-                Nombre:
-                ${assessment.name || "-"}
-            </p>
-
-            <p>
-                Tipo:
-                ${assessment.type || "-"}
-            </p>
-
-            <p>
-                Duración:
-                ${assessment.duration || "-"} minutos
-            </p>
-
-            <p>
-                Total de preguntas:
-                ${assessment.totalQuestions || 0}
-            </p>
-
-            <p>
-                Puntaje máximo:
-                ${assessment.maximumScore || "-"}
-            </p>
-
-        `;
-
-    },
-
-
-
-    /*****************************************************
-     RESULTADOS DE APRENDIZAJE
-    *****************************************************/
-
-    renderLearningOutcomes() {
-
-        const element =
-            document.getElementById(
-                "bpLearningOutcomes"
-            );
-
-        const outcomes =
-            this.blueprint.course.learningOutcomes || [];
-
-
-        let html = `
-        <h3>
-            Resultados de aprendizaje
-        </h3>
-        `;
-
-
-        if (outcomes.length === 0) {
-
-            html += `
-            <p>No registrados.</p>
-            `;
+            return "<p>No existen preguntas registradas.</p>";
 
         }
 
 
-        outcomes.forEach((outcome, index) => {
-
-            html += `
-
-                <p>
-
-                    RA ${index + 1}:
-
-                    ${outcome.description}
-
-                </p>
-
-            `;
-
-        });
-
-
-        element.innerHTML = html;
-
-    },
-
-
-
-    /*****************************************************
-     DISTRIBUCIÓN
-    *****************************************************/
-
-    renderQuestionDistribution() {
-
-        const element =
-            document.getElementById(
-                "bpDistribution"
-            );
-
-        const sections =
-            this.blueprint.assessment.sections || [];
-
-
-        let html = `
-        <h3>
-            Distribución del examen
-        </h3>
-        `;
-
-
-        sections.forEach(section => {
-
-            html += `
-
-                <p>
-
-                    ${section.type}
-
-                    :
-
-                    ${section.quantity}
-
-                </p>
-
-            `;
-
-        });
-
-
-        element.innerHTML = html;
-
-    },
-
-
-
-    /*****************************************************
-     DIFICULTAD
-    *****************************************************/
-
-    renderDifficultyDistribution() {
-
-        const element =
-            document.getElementById(
-                "bpDifficulty"
-            );
-
-        const questions =
-            this.blueprint.examDraft.questions || [];
-
-
-        let low = 0;
-        let medium = 0;
-        let high = 0;
+        const distribution = {};
 
 
         questions.forEach(question => {
 
-            const difficulty =
-                question.data?.difficulty;
+            const type = question.type;
 
-            if (difficulty === "Baja") low++;
-            if (difficulty === "Media") medium++;
-            if (difficulty === "Alta") high++;
+            distribution[type] =
 
-        });
-
-
-        element.innerHTML = `
-
-            <h3>
-                Distribución de dificultad
-            </h3>
-
-            <p>
-                Baja:
-                ${low}
-            </p>
-
-            <p>
-                Media:
-                ${medium}
-            </p>
-
-            <p>
-                Alta:
-                ${high}
-            </p>
-
-        `;
-
-    },
-
-
-
-    /*****************************************************
-     RECOMENDACIONES
-    *****************************************************/
-
-    generateRecommendations() {
-
-        const recommendations =
-            [];
-
-
-        const course =
-            this.blueprint.course;
-
-        const questions =
-            this.blueprint.examDraft.questions || [];
-
-
-        if (
-            (course.learningOutcomes || []).length === 0
-        ) {
-
-            recommendations.push(
-                "No existen resultados de aprendizaje registrados."
-            );
-
-        }
-
-
-        if (
-            questions.length === 0
-        ) {
-
-            recommendations.push(
-                "No existen preguntas construidas."
-            );
-
-        }
-
-
-        let openQuestions = 0;
-
-        questions.forEach(q => {
-
-            if (
-                q.type ===
-                "Pregunta abierta"
-            ) {
-
-                openQuestions++;
-
-            }
+                (distribution[type] || 0) + 1;
 
         });
 
 
-        if (openQuestions === 0) {
-
-            recommendations.push(
-                "No existen preguntas abiertas en la evaluación."
-            );
-
-        }
+        let html = "<ul>";
 
 
-        this.blueprint.recommendations =
-            recommendations;
-
-    },
-
-
-
-    renderRecommendations() {
-
-        const element =
-            document.getElementById(
-                "bpRecommendations"
-            );
-
-
-        let html = `
-        <h3>
-            Recomendaciones del sistema
-        </h3>
-        `;
-
-
-        if (
-            this.blueprint.recommendations.length === 0
-        ) {
+        for (const type in distribution) {
 
             html += `
-            <p>
-                No existen observaciones.
-            </p>
+
+                <li>
+
+                    ${type}: ${distribution[type]}
+
+                </li>
+
             `;
 
         }
 
 
-        this.blueprint.recommendations.forEach(
+        html += "</ul>";
 
-            recommendation => {
 
-                html += `
+        return html;
 
-                    <p>
+    },
 
-                    • ${recommendation}
 
-                    </p>
 
-                `;
+    /*****************************************************
+     ACTUALIZAR ESTADO DEL BLUEPRINT
+    *****************************************************/
 
-            }
+    updateBlueprintStatus() {
+
+        WorkspaceManager.updateBlueprintStatus(
+
+            "Blueprint generado."
 
         );
 
 
-        element.innerHTML = html;
+        WorkspaceManager.updateProjectStatus(
 
-    },
+            "Blueprint construido correctamente."
 
-
-
-    /*****************************************************
-     ESTADO DEL EXAMEN
-    *****************************************************/
-
-    renderStatus() {
-
-        const element =
-            document.getElementById(
-                "bpStatus"
-            );
-
-
-        element.innerHTML = `
-
-            <h3>
-                Estado del instrumento
-            </h3>
-
-            <p>
-                Curso ............... OK
-            </p>
-
-            <p>
-                Evaluación .......... OK
-            </p>
-
-            <p>
-                Preguntas ........... OK
-            </p>
-
-            <p>
-                Blueprint ........... OK
-            </p>
-
-            <p>
-
-                <strong>
-                Instrumento listo
-                para generar el examen.
-                </strong>
-
-            </p>
-
-        `;
-
-    },
-
-
-
-    /*****************************************************
-     VALIDACIÓN
-    *****************************************************/
-
-    validate() {
-
-        return true;
-
-    },
-
-
-
-    /*****************************************************
-     GUARDAR
-    *****************************************************/
-
-    save() {
-
-        if (!window.PersistenceManager) {
-            return;
-        }
-
-        const project =
-            PersistenceManager.loadProject();
-
-        project.blueprint =
-            this.blueprint;
-
-
-        PersistenceManager.saveProject(
-            project
         );
 
 
         alert(
-            "Blueprint guardado correctamente."
+
+            "Blueprint generado correctamente."
+
         );
 
     },
@@ -566,31 +238,86 @@ const BlueprintModule = {
 
 
     /*****************************************************
-     CARGAR
+     OBTENER CURSO
     *****************************************************/
 
-    load() {
+    getCourse() {
 
-        if (!window.PersistenceManager) {
-            return;
-        }
+        return JSON.parse(
 
-        const project =
-            PersistenceManager.loadProject();
+            localStorage.getItem(
 
-        return project.blueprint;
+                "SPAE_COURSE"
+
+            )
+
+        ) || {};
 
     },
 
 
 
     /*****************************************************
-     DATOS
+     OBTENER EVALUACIÓN
     *****************************************************/
 
-    getData() {
+    getAssessment() {
 
-        return this.blueprint;
+        return JSON.parse(
+
+            localStorage.getItem(
+
+                "SPAE_ASSESSMENT"
+
+            )
+
+        ) || {};
+
+    },
+
+
+
+    /*****************************************************
+     OBTENER PREGUNTAS
+    *****************************************************/
+
+    getQuestions() {
+
+        return JSON.parse(
+
+            localStorage.getItem(
+
+                "SPAE_QUESTIONS"
+
+            )
+
+        ) || [];
+
+    },
+
+
+
+    /*****************************************************
+     EXPORTAR BLUEPRINT
+    *****************************************************/
+
+    getBlueprint() {
+
+        return {
+
+            course:
+
+                this.getCourse(),
+
+            assessment:
+
+                this.getAssessment(),
+
+            questions:
+
+                this.getQuestions()
+
+        };
 
     },
 
@@ -602,11 +329,14 @@ const BlueprintModule = {
 
     debug() {
 
-        console.table(
-            this.blueprint
+        console.log(
+
+            this.getBlueprint()
+
         );
 
     }
+
 
 };
 
@@ -616,5 +346,4 @@ const BlueprintModule = {
  EXPORTACIÓN GLOBAL
 *********************************************************/
 
-window.BlueprintModule =
-    BlueprintModule;
+window.BlueprintModule = BlueprintModule;
